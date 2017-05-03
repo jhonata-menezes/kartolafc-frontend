@@ -52,7 +52,7 @@ export default {
     }
   },
   methods: {
-    searchTimes: function (event) {
+    searchTimes: function () {
       event.preventDefault()
       if (this.pesquisaTimes) {
         var self = this
