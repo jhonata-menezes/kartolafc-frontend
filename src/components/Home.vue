@@ -4,8 +4,7 @@
     <div class="field">
       <p class="control">
         <input type="text" class="input is-success" v-model="pesquisaTimes" @keyup.enter="searchTimes" placeholder="Digite o time para pesquisar">
-      </p
-    </div>
+      </p>
     </div>
 
     <div>

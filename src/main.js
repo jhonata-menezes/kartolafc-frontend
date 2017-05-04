@@ -6,7 +6,6 @@ import router from './router'
 
 Vue.config.productionTip = false
 
-import 'bulma/css/bulma.css'
 import 'font-awesome/css/font-awesome.css'
 
 /* eslint-disable no-new */

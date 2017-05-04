@@ -3,8 +3,10 @@
         <nav class="nav has-shadow">
       <div class="nav-left">
         <a class="nav-item ">
-          <router-link to="/"><img src="/static/img/logo.png" alt="KartolaFC logo"></router-link>
+          <router-link to="/"><img src="/static/img/logo.png" alt="KartolaFC logo"> artolaFC</router-link>
         </a>
+        <router-link class="nav-item is-tab is-hidden-mobile" to="/">Inicio</router-link>
+        <router-link class="nav-item is-tab is-hidden-mobile" to="/ligas">Ligas</router-link>
       </div>
       <div class="nav-center">
       <a class="nav-item">
@@ -13,7 +15,7 @@
         </a>
         <a class="nav-item is-tab is-active">
           <span>
-           <strong>Times Escalados: {{ status.times_escalados }}</strong>
+           Times Escalados: {{ status.times_escalados }}
           </span>
         </a>
         <a class="nav-item is-tab is-active">
