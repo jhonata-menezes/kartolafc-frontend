@@ -1,14 +1,18 @@
 <template>
   <div>
-    <h1>KartolaFC mostra a pontuação de seu time e colegas</h1>
-    <div class="field">
+  <div class="section">
+    <div class="container">
+      <div class="heading">
+        <h2 class="title">KartolaFC mostra a pontuação de seu time e colegas</h2>
+      </div>
+      <div class="field">
       <p class="control">
         <input type="text" class="input is-success" v-model="pesquisaTimes" @keyup.enter="searchTimes" placeholder="Digite o time para pesquisar">
       </p>
     </div>
 
     <div>
-      <table class="table">
+      <table class="table is-striped">
         <thead>
           <tr>
             <th title="Nome do Time">Nome do Time</th>
@@ -36,6 +40,8 @@
         </tr>
       </tbody>
     </table>
+  </div>
+  </div>
   </div>
 </div>
 </template>

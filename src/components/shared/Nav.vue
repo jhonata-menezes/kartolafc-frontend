@@ -1,35 +1,35 @@
 <template>
     <div>
         <nav class="nav has-shadow">
-      <div class="nav-left">
-        <a class="nav-item ">
-          <router-link to="/"><img src="/static/img/logo.png" alt="KartolaFC logo"> artolaFC</router-link>
-        </a>
-        <router-link class="nav-item is-tab is-hidden-mobile" to="/">Inicio</router-link>
-        <router-link class="nav-item is-tab is-hidden-mobile" to="/ligas">Ligas</router-link>
-      </div>
-      <div class="nav-center">
-      <a class="nav-item">
-          <span>
-          </span>
-        </a>
-        <a class="nav-item is-tab is-active">
-          <span>
-           Times Escalados: {{ status.times_escalados }}
-          </span>
-        </a>
-        <a class="nav-item is-tab is-active">
-          <span>
-          Rodada Atual: {{ status.rodada_atual }}
-          </span>
-        </a>
-        <a class="nav-item is-tab is-active">
-          <span v-if="status.fechamento">
-          Mercado Fecha em  <b>{{ diasParaFecharMercado }}</b>
-          </span>
-        </a>
-        <a class="nav-item">
-        </a>
+          <div class="container">
+            <div class="nav-left">
+            <a class="nav-item ">
+              <router-link to="/"><img src="/static/img/logo.png" alt="KartolaFC logo"> artolaFC</router-link>
+            </a>
+            <a class="nav-item is-tab is-hidden-mobile" >
+              <router-link to="/">Inicio</router-link>
+            </a>
+            <a class="nav-item is-tab is-hidden-mobile" >
+              <router-link to="/ligas">Ligas</router-link>
+            </a>
+          </div>
+          <div class="nav-right">
+            <a class="nav-item is-tab is-active">
+              <span>
+              Times Escalados: {{ status.times_escalados }}
+              </span>
+          </a>
+          <a class="nav-item is-tab is-active">
+            <span>
+              Rodada Atual: {{ status.rodada_atual }}
+            </span>
+          </a>
+          <a class="nav-item is-tab is-active">
+            <span v-if="status.fechamento">
+              Mercado Fecha em  <b>{{ diasParaFecharMercado }}</b>
+            </span>
+          </a>
+        </div>
       </div>
     </nav>
     </div>

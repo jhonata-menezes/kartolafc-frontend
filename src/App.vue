@@ -1,8 +1,8 @@
 <template>
   <div>
     <navbar></navbar>
-    <div class="section">
-      <div id="app" class="content">
+    <div class="">
+      <div id="app" class="">
       </div>
     </div>
       <router-view></router-view>
