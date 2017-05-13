@@ -16,6 +16,7 @@
   "dependencies": {
     "axios": "^0.16.1",
     "bulma": "^0.4.1",
+    "dexie": "^2.0.0-beta.10",
     "font-awesome": "^4.7.0",
     "node-sass": "^4.5.2",
     "pwa-manifest-webpack-plugin": "^1.0.3",
