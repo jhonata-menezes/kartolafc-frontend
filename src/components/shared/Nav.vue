@@ -13,13 +13,11 @@
               <router-link to="/ligas">Ligas</router-link>
             </a>
           </div>
-          <div class="nav-right">
-            <a class="nav-item is-tab is-active">
-              <span>
-              Times Escalados: {{ status.times_escalados }}
-              </span>
+          <div class="nav-center">
+            <a class="nav-item is-tab">
+              <span>Times Escalados: {{ status.times_escalados }}</span>
           </a>
-          <a class="nav-item is-tab is-active">
+          <a class="nav-item is-tab">
             <span>
               Rodada Atual: {{ status.rodada_atual }}
             </span>

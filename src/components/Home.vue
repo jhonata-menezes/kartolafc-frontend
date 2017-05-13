@@ -3,43 +3,64 @@
   <div class="section">
     <div class="container">
       <div class="heading">
-        <h2 class="title">KartolaFC mostra a pontuação de seu time e colegas</h2>
+        <h2 class="title has-text-centered">KartolaFC mostra a pontuação de seu time e colegas</h2>
       </div>
-      <div class="field">
-      <p class="control">
-        <input type="text" class="input is-success" v-model="pesquisaTimes" @keyup.enter="searchTimes" placeholder="Digite o time para pesquisar">
-      </p>
-    </div>
+      <div>
+        <div class="columns is-mobile">
+  <div class="column is-one-third is-5">
+    <div class="section">
+      <p class="title">Jogadores Mais Escalados</p>
+      <div class="card" v-for="destaque of destaques.slice(0, quantidadeDestaques())">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <figure class="image is-64x64">
+                <img :src="destaque.Atleta.foto" alt="Image">
+              </figure>
+            </div>
+            <div class="media-content">
+              <p class="title is-4">{{ destaque.Atleta.apelido }}</p>
+              <div class="subtitle is-6">
+                <p>Escalações: {{ destaque.escalacoes }}</p>
+                <p>Preço: ${{ destaque.Atleta.preco_editorial }}</p>
+                <p>Posição: {{ destaque.posicao }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <div>
-      <table class="table is-striped">
-        <thead>
-          <tr>
-            <th title="Nome do Time">Nome do Time</th>
-            <th title="Nome Cartoleiro">Nome Cartoleiro</th>
-            <th title="Escudo">Escudo</th>
-            <th title="Foto de Perfil">Foto de Perfil</th>
-            <th title="Pró">Pró</th>
-            <th title="Ver Time">Ver Time</th>
-            <th title="Favoritos">Favoritos</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="time in retornoTimes" @click>
-          <th>{{ time.nome }}</th>
-          <th>{{ time.nome_cartola }}</th>
-          <th>
-            <img :src="time.url_escudo_svg" class="image is-48x48">
-          </th>
-          <th>
-            <img :src="time.foto_perfil" class="image is-48x48">
-          </th>
-          <th><img class="image is-48x48" :src="time.assinante ? '/static/img/afirmativo.png' : '/static/img/negativo.png'"></th>
-          <th><router-link :to="{ name: 'Time', params: { id: time.time_id }}"><a class="button is-warning">Ver Time</a></router-link></th>
-          <th><i class="fa fa-star-o" aria-hidden="true"></i></th>
-        </tr>
-      </tbody>
-    </table>
+      <div class="panel">
+        <button class="button is-primary is-outlined is-fullwidth" @click="mostrarTodosDestaques = !mostrarTodosDestaques">
+          <span v-if="mostrarTodosDestaques">Ocultar Lista</span>
+          <span v-else>Mostrar a Lista</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="column olumn is-one-third is-5">
+    <div class="section">
+      <div>
+        <div v-if="meuTime.time_id">
+          Meu Time: {{meuTime.nome}}
+          <a class="link" @click="limparMeuTime">Apagar Meu Time</a>
+        </div>
+        <div v-else>
+          <div class="field is-grouped">
+            <input type="text" class="input control" v-model="pesquisaTimes" placeholder="Nome ou cartoleiro do seu time" @keyup.enter="searchTimes"><button @click="searchTimes" class="button is-light control">Pesquisar</button>
+          </div>
+          <div v-for="time of retornoTimes">
+            Nome do Time: {{ time.nome }}
+            Nome do cartoleiro: {{ time.nome_cartola }}
+            <div>
+              <a class="is-link" @click="setMeuTime(time)">Salvar Time</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
   </div>
   </div>
   </div>
@@ -48,12 +69,16 @@
 
 <script>
 import {http} from './../axios'
+import db from './../dexie'
 
 export default {
   data () {
     return {
       retornoTimes: [],
-      pesquisaTimes: ''
+      pesquisaTimes: '',
+      destaques: [],
+      mostrarTodosDestaques: false,
+      meuTime: {}
     }
   },
   methods: {
@@ -64,15 +89,55 @@ export default {
         http.get('/times/' + this.pesquisaTimes).then(function (r) {
           if (r.data.times) {
             self.retornoTimes = r.data.times
+            // console.log(r.data)
           } else {
             self.retornoTimes = []
           }
         })
       }
+    },
+
+    getDestaques: function () {
+      var self = this
+      http.get('/mercado/destaques').then(r => {
+        self.destaques = r.data
+      })
+    },
+
+    quantidadeDestaques: function () {
+      return this.mostrarTodosDestaques ? 100 : 3
+    },
+
+    getMeuTime: function () {
+      var self = this
+      db.meuTime.toArray().then(function (time) {
+        if (time.length === 1) {
+          self.meuTime = time[0]
+        }
+      }).catch(function (err) {
+        console.log(err)
+      })
+    },
+
+    setMeuTime: function (time) {
+      var self = this
+      db.meuTime.clear()
+      db.meuTime.put(time).then(function () {
+        self.getMeuTime()
+        console.log('time salvo ou atualizado')
+      }).catch(err => {
+        console.log('erro ao salvar meu time', err)
+      })
+    },
+
+    limparMeuTime: function () {
+      db.meuTime.clear()
+      this.meuTime = {}
     }
   },
-  watch: {
-    //
+  mounted: function () {
+    this.getDestaques()
+    this.getMeuTime()
   }
 }
 </script>
