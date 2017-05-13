@@ -24,6 +24,6 @@ export default new Router({
     path: '/ligas',
     name: 'Ligas',
     component: Ligas
-  }],
-  mode: 'history'
+  }]
+  // mode: 'history'
 })
