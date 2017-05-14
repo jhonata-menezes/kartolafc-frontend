@@ -10,6 +10,9 @@
               <router-link to="/">Inicio</router-link>
             </a>
             <a class="nav-item is-tab is-hidden-mobile" >
+              <router-link to="/times">Times</router-link>
+            </a>
+            <a class="nav-item is-tab is-hidden-mobile" >
               <router-link to="/ligas">Ligas</router-link>
             </a>
           </div>
@@ -22,7 +25,7 @@
               Rodada Atual: {{ status.rodada_atual }}
             </span>
           </a>
-          <a class="nav-item is-tab is-active">
+          <a class="nav-item is-tab">
             <span v-if="status.fechamento">
             <div v-if="diasParaFecharMercado > 0">
               Mercado Fecha em  <b>{{ diasParaFecharMercado }}</b>

@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import Bulma from '@/components/Bulma'
-import Time from '@/components/Time'
+import Time from '@/components/Times/Time'
 import Ligas from '@/components/Ligas/Ligas'
+import Times from '@/components/Times/Times'
 
 Vue.use(Router)
 
@@ -24,6 +25,10 @@ export default new Router({
     path: '/ligas',
     name: 'Ligas',
     component: Ligas
+  }, {
+    path: '/times',
+    name: 'Times',
+    component: Times
   }]
   // mode: 'history'
 })
