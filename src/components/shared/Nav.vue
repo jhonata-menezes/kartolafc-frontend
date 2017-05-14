@@ -24,7 +24,12 @@
           </a>
           <a class="nav-item is-tab is-active">
             <span v-if="status.fechamento">
+            <div v-if="diasParaFecharMercado > 0">
               Mercado Fecha em  <b>{{ diasParaFecharMercado }}</b>
+            </div>
+            <div v-else>
+              Mercado Fechado
+            </div>
             </span>
           </a>
         </div>

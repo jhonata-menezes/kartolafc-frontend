@@ -41,9 +41,30 @@
   <div class="column olumn is-one-third is-5">
     <div class="section">
       <div>
-        <div v-if="meuTime.time_id">
-          Meu Time: {{meuTime.nome}}
-          <a class="link" @click="limparMeuTime">Apagar Meu Time</a>
+        <div v-if="meuTime.time">
+          <div class="card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-64x64">
+                   <img :src="meuTime.time.url_escudo_svg" alt="Escudo">
+                  </figure>
+                </div>
+                <div class="media-left">
+                  <figure class="image is-64x64">
+                   <img :src="meuTime.time.foto_perfil" alt="Perfil Facebook">
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <div class="container">
+                    <h4 class="title is-4">{{ meuTime.time.nome }}</h4>
+                    Cartoleiro: <h5 class="title is-5">{{ meuTime.time.nome_cartola }}</h5>
+                  </div>
+                </div>
+              </div>
+               <a class="link" @click="limparMeuTime">Apagar Meu Time</a>
+            </div>           
+          </div>
         </div>
         <div v-else>
           <div class="field is-grouped">
@@ -122,11 +143,13 @@ export default {
     setMeuTime: function (time) {
       var self = this
       db.meuTime.clear()
-      db.meuTime.put(time).then(function () {
-        self.getMeuTime()
-        console.log('time salvo ou atualizado')
-      }).catch(err => {
-        console.log('erro ao salvar meu time', err)
+      http.get('/time/id/' + time.time_id).then(function (r) {
+        db.meuTime.put(r.data).then(function () {
+          self.getMeuTime()
+          console.log('time salvo ou atualizado')
+        }).catch(err => {
+          console.log('erro ao salvar meu time', err)
+        }).catch(err => { console.log('endpoint nao respondeu', err) })
       })
     },
 

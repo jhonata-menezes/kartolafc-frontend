@@ -1,6 +1,7 @@
 <template>
   <div>
     <navbar></navbar>
+    <meu-menu></meu-menu>
     <div class="">
       <div id="app" class="">
       </div>
@@ -12,10 +13,12 @@
 
 <script>
 import Nav from '@/components/shared/Nav'
+import MeuMenu from '@/components/shared/Menu'
 export default {
   name: 'app',
   components: {
-    'navbar': Nav
+    'navbar': Nav,
+    'meu-menu': MeuMenu
   }
 }
 </script>
