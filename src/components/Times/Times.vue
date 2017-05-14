@@ -8,9 +8,11 @@
             <div>
               <div>
                 <div class="field is-grouped">
-                  <input type="text" class="input control" v-model="pesquisaTimes" placeholder="Nome ou cartoleiro do seu time" @keyup.enter="searchTimes"><button @click="searchTimes" class="button is-light control">Pesquisar</button>
+                  <input type="text" class="input control" v-model="pesquisaTimes" placeholder="Adicionar Times" @keyup.enter="searchTimes">
+                  <button @click="searchTimes" class="button is-success control">Pesquisar</button>
+                  <button @click="retornoTimes = []" class="button is-danger control">Limpar</button>
                 </div>
-                <div v-for="time of retornoTimes">
+                <div v-for="(time, k) of retornoTimes">
                   <div class="box">
                     <div class="media">
                       <div class="media-left">
@@ -26,11 +28,28 @@
                       <div class="media-content">
                         <div class="content">
                           <p>
-                            <strong>{{ time.nome }}</strong><br/>
-                            <small>Cartoleiro: </small> <small>{{ time.nome_cartola }}</small><br/>
-                            <a class="is-link" @click="setMeuTime(time)">Salvar</a>
+                            <strong>{{ time.nome }}</strong>
+                            <br/>
+                            <small>Cartoleiro: </small> <small>{{ time.nome_cartola }}</small>
+                            <br/>
+                            
+                            <a class="is-link" @click="salvarTime(k)">Adicionar</a>
                           </p>
                         </div>
+                      </div>
+                      <div class="media-right">
+                        <figure class="image is-32x32">
+                          <small>Pró</small>
+                          <img class="" :src="time.assinante ? '/static/img/afirmativo.png' : '/static/img/negativo.png'">
+                        </figure>
+                      </div>
+                      <div class="media-right">
+                        <figure class="image is-32x32">
+                          <small>Adicionar</small>
+                          <div class="is-pulled-right">
+                            <i @click="salvarTime(k)" :class="time.existe_database === true ? 'fa fa-star fa-2x' : 'fa fa-star-o fa-2x'" aria-hidden="true"></i>
+                          </div>
+                        </figure>
                       </div>
                     </div>
                   <div>
@@ -92,13 +111,36 @@ export default {
       })
     },
 
+    salvarTime: function (k) {
+      var self = this
+      db.meusTimes.put(self.retornoTimes[k]).then(function (item) {
+        self.retornoTimes[k].existe_database = true
+      }).catch(err => { console.log(err) })
+    },
+
+    existeTimeDatabase: function (k) {
+      if (k >= 0) {
+        var self = this
+        db.meusTimes.get(this.retornoTimes[k].time_id, function (item) {
+          if (item) {
+            self.retornoTimes[k].existe_database = true
+          } else {
+            self.retornoTimes[k].existe_database = false
+          }
+        })
+      }
+      return true
+    },
+
     searchTimes: function () {
       if (this.pesquisaTimes) {
         var self = this
         http.get('/times/' + this.pesquisaTimes).then(function (r) {
           if (r.data.times) {
             self.retornoTimes = r.data.times
-            // console.log(r.data)
+            self.retornoTimes.forEach(function (item, k) {
+              self.existeTimeDatabase(k)
+            })
           } else {
             self.retornoTimes = []
           }
