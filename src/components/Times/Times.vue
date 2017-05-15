@@ -148,6 +148,9 @@ export default {
     calculaPontos: function (time) {
       let total = 0
       let self = this
+      if (!time.atletas) {
+        return 0
+      }
       time.atletas.forEach(function (atleta) {
         if (self.pontuados.atletas[atleta.atleta_id]) {
           total += self.pontuados.atletas[atleta.atleta_id].pontuacao

@@ -100,7 +100,7 @@
                 </div>
                 <div v-else>
                   <div class="field is-grouped">
-                    <input type="text" class="input control" v-model="pesquisaTimes" placeholder="Nome ou cartoleiro do seu time" @keyup.enter="searchTimes"><button @click="searchTimes" class="button is-light control">Pesquisar</button>
+                    <input type="text" class="input is-3" v-model="pesquisaTimes" placeholder="Nome ou cartoleiro do seu time" @keyup.enter="searchTimes"><button @click="searchTimes" class="button is-light control">Pesquisar</button>
                   </div>
                   <div v-for="time of retornoTimes">
                     <div class="box">
