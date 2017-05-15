@@ -12,9 +12,6 @@
             <a class="nav-item is-tab is-hidden-mobile" >
               <router-link to="/times">Times</router-link>
             </a>
-            <a class="nav-item is-tab is-hidden-mobile" >
-              <router-link to="/ligas">Ligas</router-link>
-            </a>
           </div>
           <div class="nav-center">
             <a class="nav-item is-tab">

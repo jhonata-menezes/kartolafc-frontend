@@ -33,7 +33,8 @@
                             <small>Cartoleiro: </small> <small>{{ time.nome_cartola }}</small>
                             <br/>
                             
-                            <a class="is-link" @click="salvarTime(k)">Adicionar</a>
+                            <a class="is-link" @click="salvarTime(k)" v-if="!time.existe_database">Adicionar</a>
+                            <a class="is-link" @click="removerTime(k)" v-else="time.existe_database">Remover</a>
                           </p>
                         </div>
                       </div>
@@ -45,7 +46,7 @@
                       </div>
                       <div class="media-right">
                         <figure class="image is-32x32">
-                          <small>Adicionar</small>
+                          <small>&nbsp</small>
                           <div class="is-pulled-right">
                             <i @click="salvarTime(k)" :class="existeTimeDatabase(k) && time.existe_database ? 'fa fa-star fa-2x' : 'fa fa-star-o fa-2x'" aria-hidden="true"></i>
                           </div>
@@ -63,18 +64,20 @@
                 <div class="media">
                   <div class="media-left">
                     <figure class="image is-96x96">
-                      <img :src="time.url_escudo_svg" alt="Image">
+                      <img :src="time.time.url_escudo_svg" alt="Image">
                     </figure>
                   </div>
                   <div class="media-left">
                     <figure class="image is-96x96">
-                      <img :src="time.foto_perfil" alt="Image">
+                      <img :src="time.time.foto_perfil" alt="Image">
                     </figure>
                   </div>
                   <div class="media-content">
-                    <p class="title is-4">{{ time.apelido }}</p>
+                    <p class="title is-4">{{ time.time.nome }}</p>
                     <div class="subtitle is-6">
-                      <p>Pontuação: {{ time.pontuacao }}</p>
+                      <p>Cartoleiro: {{ time.nome_cartola }}</p>
+                      <p>Pontos: {{ calculaPontos(time) }}</p>
+                      <p>Patrimônio: {{ time.patrimonio }}</p>
                     </div>
                   </div>
                 </div>
@@ -96,7 +99,8 @@ export default {
     return {
       times: [],
       retornoTimes: [],
-      pesquisaTimes: ''
+      pesquisaTimes: '',
+      pontuados: {}
     }
   },
   methods: {
@@ -104,10 +108,19 @@ export default {
       var self = this
       db.meusTimes.toArray().then(function (times) {
         if (times.length >= 1) {
-          self.times = times
+          self.atualizaDadosTimes(times)
         }
       }).catch(function (err) {
         console.log(err)
+      })
+    },
+
+    atualizaDadosTimes: function (times) {
+      var self = this
+      times.forEach(function (time, k) {
+        http.get('/time/id/' + time.time_id).then(function (r) {
+          self.times.push(r.data)
+        })
       })
     },
 
@@ -116,6 +129,31 @@ export default {
       db.meusTimes.put(self.retornoTimes[k]).then(function (item) {
         self.$set(self.retornoTimes[k], 'existe_database', true)
       }).catch(err => { console.log(err) })
+    },
+
+    removerTime: function (k) {
+      var self = this
+      db.meusTimes.delete(self.retornoTimes[k].time_id).then(function (item) {
+        self.$set(self.retornoTimes[k], 'existe_database', false)
+      }).catch(err => { console.log(err) })
+    },
+
+    getPontuados: function () {
+      var self = this
+      http.get('/atletas/pontuados').then(function (r) {
+        self.pontuados = r.data
+      }).catch(err => { console.log(err) })
+    },
+
+    calculaPontos: function (time) {
+      let total = 0
+      let self = this
+      time.atletas.forEach(function (atleta) {
+        if (self.pontuados.atletas[atleta.atleta_id]) {
+          total += self.pontuados.atletas[atleta.atleta_id].pontuacao
+        }
+      })
+      return total.toFixed(2)
     },
 
     existeTimeDatabase: function (k) {
@@ -147,6 +185,7 @@ export default {
   },
   mounted: function () {
     this.getTimesDatabase()
+    this.getPontuados()
   },
   computed: {
     //
