@@ -47,7 +47,7 @@
                         <figure class="image is-32x32">
                           <small>Adicionar</small>
                           <div class="is-pulled-right">
-                            <i @click="salvarTime(k)" :class="time.existe_database === true ? 'fa fa-star fa-2x' : 'fa fa-star-o fa-2x'" aria-hidden="true"></i>
+                            <i @click="salvarTime(k)" :class="existeTimeDatabase(k) && time.existe_database ? 'fa fa-star fa-2x' : 'fa fa-star-o fa-2x'" aria-hidden="true"></i>
                           </div>
                         </figure>
                       </div>
@@ -114,18 +114,18 @@ export default {
     salvarTime: function (k) {
       var self = this
       db.meusTimes.put(self.retornoTimes[k]).then(function (item) {
-        self.retornoTimes[k].existe_database = true
+        self.$set(self.retornoTimes[k], 'existe_database', true)
       }).catch(err => { console.log(err) })
     },
 
     existeTimeDatabase: function (k) {
       if (k >= 0) {
-        var self = this
+        let self = this
         db.meusTimes.get(this.retornoTimes[k].time_id, function (item) {
           if (item) {
-            self.retornoTimes[k].existe_database = true
+            self.$set(self.retornoTimes[k], 'existe_database', true)
           } else {
-            self.retornoTimes[k].existe_database = false
+            self.$set(self.retornoTimes[k], 'existe_database', false)
           }
         })
       }
@@ -138,9 +138,6 @@ export default {
         http.get('/times/' + this.pesquisaTimes).then(function (r) {
           if (r.data.times) {
             self.retornoTimes = r.data.times
-            self.retornoTimes.forEach(function (item, k) {
-              self.existeTimeDatabase(k)
-            })
           } else {
             self.retornoTimes = []
           }
@@ -151,7 +148,7 @@ export default {
   mounted: function () {
     this.getTimesDatabase()
   },
-  watch: {
+  computed: {
     //
   }
 }
