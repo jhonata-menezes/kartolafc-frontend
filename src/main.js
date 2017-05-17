@@ -3,11 +3,18 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import VueAnalytics from 'vue-analytics'
+import {analytics} from './config'
 
 Vue.config.productionTip = false
 
 import 'bulma/css/bulma.css'
 import 'font-awesome/css/font-awesome.css'
+
+Vue.use(VueAnalytics, {
+  id: analytics,
+  router
+})
 
 /* eslint-disable no-new */
 new Vue({
