@@ -1,40 +1,44 @@
 <template>
     <div>
-        <nav class="nav has-shadow">
-          <div class="container">
+        <nav class="nav">
             <div class="nav-left">
-            <a class="nav-item ">
-              <router-link to="/"><img src="/static/img/logo.png" alt="KartolaFC logo"> artolaFC</router-link>
-            </a>
-            <a class="nav-item is-tab is-hidden-mobile" >
-              <router-link to="/">Inicio</router-link>
-            </a>
-            <a class="nav-item is-tab is-hidden-mobile" >
-              <router-link to="/times">Times</router-link>
-            </a>
-          </div>
-          <div class="nav-center">
-            <a class="nav-item is-tab">
-              <span>Times Escalados: {{ status.times_escalados }}</span>
-          </a>
-          <a class="nav-item is-tab">
-            <span>
-              Rodada Atual: {{ status.rodada_atual }}
-            </span>
-          </a>
-          <a class="nav-item is-tab">
-            <span v-if="status.fechamento">
-              <div v-if="status.status_mercado == 1">
-                Mercado Fecha em  <b>{{ diasParaFecharMercado }}</b>
-              </div>
-              <div v-else>
-                Mercado Fechado
-              </div>
-            </span>
-          </a>
-        </div>
-      </div>
-    </nav>
+              <a class="nav-item ">
+                <router-link to="/"><img src="/static/img/logo.png" alt="KartolaFC logo"> artolaFC</router-link>
+              </a>
+              <a class="nav-item" >
+                <router-link to="/">Inicio</router-link>
+              </a>
+              <a class="nav-item" >
+                <router-link to="/times">Times</router-link>
+              </a>
+            </div>
+            <span class="nav-toggle" :class="menuIsActive ? 'is-active' : ''" @click="menuIsActive = !menuIsActive">
+                <br/>
+                <a class="is-link">+</a>
+              </span>
+            <div class="nav-right nav-menu" :class="menuIsActive ? 'is-active' : ''">
+              <a class="nav-item is-active">
+                <span>Times Escalados: {{ status.times_escalados }}</span>
+              </a>
+              <a class="nav-item ">
+                <span>
+                  Rodada Atual: {{ status.rodada_atual }}
+                </span>
+              </a>
+              <a class="nav-item">
+                <span v-if="status.fechamento">
+                  <div v-if="status.status_mercado == 1">
+                    Mercado Fecha em  <b>{{ diasParaFecharMercado }}</b>
+                  </div>
+                  <div v-else>
+                    Mercado Fechado
+                  </div>
+                </span>
+              </a>
+
+            </div>
+
+        </nav>
     </div>
 </template>
 
@@ -44,7 +48,8 @@ import {http} from '@/axios'
 export default {
   data () {
     return {
-      status: {}
+      status: {},
+      menuIsActive: false
     }
   },
   created: function () {
