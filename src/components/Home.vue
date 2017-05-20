@@ -53,7 +53,6 @@
                       <p class="title is-4">{{ destaque.Atleta.apelido }}</p>
                       <div class="subtitle is-6">
                         <p>Escalações: {{ destaque.escalacoes }}</p>
-                        <p>Preço: ${{ destaque.Atleta.preco_editorial }}</p>
                         <p>Posição: {{ destaque.posicao }}</p>
                       </div>
                     </div>

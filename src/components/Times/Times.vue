@@ -50,7 +50,7 @@
                           <img class="" :src="time.assinante ? '/static/img/afirmativo.png' : '/static/img/negativo.png'">
                         </figure>
                       </div>
-                      <div class="media-right">
+                      <div class="media-right is-hidden-mobile">
                         <figure class="image is-32x32">
                           <small>&nbsp</small>
                           <div class="is-pulled-right">
@@ -65,16 +65,18 @@
               </div>
             </div>
             </div>
-            <div class="card" v-for="time of times">
+           <div>
+             <br/>
+            <div class="card" v-for="(time, k) of times">
               <div class="card-content">
                 <div class="media">
                   <div class="media-left">
-                    <figure class="image is-96x96">
+                    <figure class="image is-48x48">
                       <img :src="time.time.url_escudo_svg" alt="Image">
                     </figure>
                   </div>
                   <div class="media-left">
-                    <figure class="image is-96x96">
+                    <figure class="image is-48x48">
                       <img :src="time.time.foto_perfil" alt="Image">
                     </figure>
                   </div>
@@ -85,12 +87,14 @@
                       <p>Pontos: {{ calculaPontos(time) }}</p>
                       <p>Patrimônio: {{ time.patrimonio }}</p>
                     </div>
+                    <a class="is-link" @click="removerTimeLista(k)">Remover</a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   </div>
@@ -133,14 +137,30 @@ export default {
     salvarTime: function (k) {
       var self = this
       db.meusTimes.put(self.retornoTimes[k]).then(function (item) {
-        self.$set(self.retornoTimes[k], 'existe_database', true)
+        self.retornoTimes.splice(k, 1)
+        self.addTimeAposSalva(item)
       }).catch(err => { console.log(err) })
     },
 
+    addTimeAposSalva: function (timeId) {
+      var self = this
+      http.get('/time/id/' + timeId).then(function (r) {
+        self.times.push(r.data)
+      })
+    },
+
     removerTime: function (k) {
+      console.log(k)
       var self = this
       db.meusTimes.delete(self.retornoTimes[k].time_id).then(function (item) {
         self.$set(self.retornoTimes[k], 'existe_database', false)
+      }).catch(err => { console.log(err) })
+    },
+
+    removerTimeLista: function (k) {
+      var self = this
+      db.meusTimes.delete(self.times[k].time.time_id).then(function (item) {
+        self.times.splice(k, 1)
       }).catch(err => { console.log(err) })
     },
 
