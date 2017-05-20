@@ -67,7 +67,7 @@
             </div>
            <div>
              <br/>
-            <div class="card" v-for="(time, k) of times">
+            <div class="card" v-for="(time, k) of timesOrdenados">
               <div class="card-content">
                 <div class="media">
                   <div class="media-left">
@@ -215,8 +215,24 @@ export default {
     this.getTimesDatabase()
     this.getPontuados()
   },
+
   computed: {
-    //
+    timesOrdenados: function () {
+      let self = this
+      let times = this.times
+      times.sort(function (a, b) {
+        let time1 = parseFloat(self.calculaPontos(a))
+        let time2 = parseFloat(self.calculaPontos(b))
+        if (time1 < time2) {
+          return 1
+        }
+        if (time1 > time2) {
+          return -1
+        }
+        return 0
+      })
+      return times
+    }
   }
 }
 </script>
