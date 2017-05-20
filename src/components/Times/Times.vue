@@ -83,9 +83,8 @@
                   <div class="media-content">
                     <p class="title is-4">{{ time.time.nome }}</p>
                     <div class="subtitle is-6">
-                      <p>Cartoleiro: {{ time.nome_cartola }}</p>
+                      <p>Cartoleiro: {{ time.time.nome_cartola }}</p>
                       <p>Pontos: {{ calculaPontos(time) }}</p>
-                      <p>Patrimônio: {{ time.patrimonio }}</p>
                     </div>
                     <a class="is-link" @click="removerTimeLista(k)">Remover</a>
                   </div>
