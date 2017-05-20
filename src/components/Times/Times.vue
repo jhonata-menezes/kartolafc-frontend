@@ -9,13 +9,14 @@
               <div>
                 <div class="field">
                   <p class="control">
-                    <input type="text" class="input" v-model="pesquisaTimes" placeholder="Adicionar Times" @keyup.enter="searchTimes">
+                    <input type="text" class="input" v-model="pesquisaTimes" placeholder="Adicionar Times" autofocus @keyup.enter="searchTimes">
                   </p>
                 </div>
                 <div class="field">
                   <p class="control">
                     <button @click="searchTimes" class="button is-success ">Pesquisar</button>
-                     <button @click="retornoTimes = []" class="button is-danger ">Limpar</button>
+                    <button @click="retornoTimes = []" class="button is-danger ">Limpar</button>
+                    <button @click="retornoTimes = []" class="button"><router-link to="/ligas">Pesquisar times na liga</router-link></button>
                   </p>
                 </div>
                 <div v-for="(time, k) of retornoTimes">
