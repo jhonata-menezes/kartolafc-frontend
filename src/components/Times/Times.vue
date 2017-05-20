@@ -7,10 +7,16 @@
             <h3 class="title is-3">Times</h3>
             <div>
               <div>
-                <div class="field is-grouped">
-                  <input type="text" class="input control" v-model="pesquisaTimes" placeholder="Adicionar Times" @keyup.enter="searchTimes">
-                  <button @click="searchTimes" class="button is-success control">Pesquisar</button>
-                  <button @click="retornoTimes = []" class="button is-danger control">Limpar</button>
+                <div class="field">
+                  <p class="control">
+                    <input type="text" class="input" v-model="pesquisaTimes" placeholder="Adicionar Times" @keyup.enter="searchTimes">
+                  </p>
+                </div>
+                <div class="field">
+                  <p class="control">
+                    <button @click="searchTimes" class="button is-success ">Pesquisar</button>
+                     <button @click="retornoTimes = []" class="button is-danger ">Limpar</button>
+                  </p>
                 </div>
                 <div v-for="(time, k) of retornoTimes">
                   <div class="box">
@@ -148,7 +154,7 @@ export default {
     calculaPontos: function (time) {
       let total = 0
       let self = this
-      if (!time.atletas) {
+      if (!time.atletas || !self.pontuados.atletas) {
         return 0
       }
       time.atletas.forEach(function (atleta) {
