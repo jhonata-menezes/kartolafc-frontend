@@ -87,11 +87,12 @@
                         <div class="media-content">
                           <div class="container">
                             <h5 class="title is-5">{{ meuTime.time.nome }}</h5>
-                            Cartoleiro: <h5 class="title is-5">{{ meuTime.time.nome_cartola }}</h5>
+                            <p>Cartoleiro: {{ meuTime.time.nome_cartola }}</p>
                           </div>
+                          <p>Pontos: {{ calculaPontos(meuTime) }}</p>
                         </div>
                       </div>
-                      <a class="link" @click="limparMeuTime">Apagar Meu Time</a>
+                      <a class="link" @click="limparMeuTime">Remover</a>
                     </div>           
                   </div>
                 </div>
@@ -172,6 +173,20 @@ export default {
       }
     },
 
+    calculaPontos: function (time) {
+      let total = 0
+      let self = this
+      if (!time.atletas || !self.pontuados.atletas) {
+        return 0
+      }
+      time.atletas.forEach(function (atleta) {
+        if (self.pontuados.atletas[atleta.atleta_id]) {
+          total += self.pontuados.atletas[atleta.atleta_id].pontuacao
+        }
+      })
+      return total.toFixed(2)
+    },
+
     getStatus: function () {
       var self = this
       http.get('/mercado/status').then(function (r) {
@@ -211,7 +226,10 @@ export default {
       var self = this
       db.meuTime.toArray().then(function (time) {
         if (time.length === 1) {
-          self.meuTime = time[0]
+          time = time[0]
+          http.get('/time/id/' + time.time.time_id).then(function (r) {
+            self.meuTime = r.data
+          })
         }
       }).catch(function (err) {
         console.log(err)

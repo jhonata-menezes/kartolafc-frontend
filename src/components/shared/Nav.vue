@@ -11,6 +11,9 @@
               <a class="nav-item" >
                 <router-link to="/times">Times</router-link>
               </a>
+              <a class="nav-item" >
+                <router-link to="/ligas">Ligas</router-link>
+              </a>
             </div>
             <span class="nav-toggle" :class="menuIsActive ? 'is-active' : ''" @click="menuIsActive = !menuIsActive">
                 <br/>
