@@ -86,8 +86,9 @@
                     <div class="subtitle is-6">
                       <p>Cartoleiro: {{ time.time.nome_cartola }}</p>
                       <p>Pontos: {{ calculaPontos(time) }}</p>
+                      <p>Posição Geral: {{ time.posicao }}</p>
+                      <a class="is-link" @click="removerTimeLista(k)">Remover</a>
                     </div>
-                    <a class="is-link" @click="removerTimeLista(k)">Remover</a>
                   </div>
                 </div>
               </div>
@@ -129,7 +130,9 @@ export default {
       var self = this
       times.forEach(function (time, k) {
         http.get('/time/id/' + time.time_id).then(function (r) {
-          self.times.push(r.data)
+          self.getRankingGeral(r.data, function (data) {
+            self.times.push(r.data)
+          })
         })
       })
     },
@@ -169,6 +172,16 @@ export default {
       http.get('/atletas/pontuados').then(function (r) {
         self.pontuados = r.data
       }).catch(err => { console.log(err) })
+    },
+
+    getRankingGeral: function (time, callback) {
+      http.get('/ranking/time/id/' + time.time.time_id).then(function (r) {
+        if (r.data.posicao >= 1) {
+          time.posicao = r.data.posicao
+          callback(time)
+        }
+      })
+      return true
     },
 
     calculaPontos: function (time) {
@@ -233,6 +246,10 @@ export default {
         return 0
       })
       return times
+    },
+
+    timesComputed: function () {
+      //
     }
   }
 }

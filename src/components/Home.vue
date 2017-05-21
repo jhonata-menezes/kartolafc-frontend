@@ -66,7 +66,7 @@
           <div class="column is-5">
             <div class="section">
             <p class="title">Meu Time</p>
-              <div class="scrollabed">
+              <div class="">
                 <div v-if="meuTime.time">
                   <div class="card">
                     <div class="card-content">
@@ -85,6 +85,9 @@
                             <p>Cartoleiro: {{ meuTime.time.nome_cartola }}</p>
                           </div>
                           <p>Pontos: {{ calculaPontos(meuTime) }}</p>
+                          <p v-if="status.status_mercado === 2">
+                            Posicao Geral: {{ meuTime.posicao }}
+                          </p>
                         </div>
                       </div>
                       <a class="link" @click="limparMeuTime">Remover</a>
@@ -217,6 +220,7 @@ export default {
           time = time[0]
           http.get('/time/id/' + time.time.time_id).then(function (r) {
             self.meuTime = r.data
+            self.getRankingGeral()
           })
         }
       }).catch(function (err) {
@@ -234,6 +238,13 @@ export default {
         }).catch(err => {
           console.log('erro ao salvar meu time', err)
         }).catch(err => { console.log('endpoint nao respondeu', err) })
+      })
+    },
+
+    getRankingGeral: function () {
+      let self = this
+      http.get('/ranking/time/id/' + this.meuTime.time.time_id).then(function (r) {
+        self.$set(self.meuTime, 'posicao', r.data.posicao)
       })
     },
 
