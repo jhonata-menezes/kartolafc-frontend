@@ -14,11 +14,11 @@
                 <input type="text" class="input" placeholder="Nome" v-model="pesquisaNomeAtletaPontuacao">
               </div>
               <div class="scrollabed">
-                <div class="card" v-for="(atleta, k) of atletasPontuadosOrdenados">
+                <div class="card" v-for="(atleta, k) of atletasPontuados">
                   <div class="card-content">
                     <div class="media">
                       <div class="media-left">
-                        <figure class="image is-64x64">
+                        <figure class="image is-48x48">
                           <img :src="atleta.foto" alt="Image">
                         </figure>
                       </div>
@@ -67,7 +67,7 @@
             <div class="section">
               <p class="title">Pontuação Geral <span class="tag is-warning">Em Testes</span></p>
               <div class="scrollabed">
-                <div class="card" v-for="(time, k) of melhoresTimes">
+                <div class="card" v-for="(time, k) of rankingGeralTimes">
                   <div class="card-content">
                     <div class="media">
                       <div class="media-left">
@@ -380,7 +380,7 @@ export default {
       return []
     },
 
-    atletasPontuadosOrdenados: function () {
+    rankingGeralTimes: function () {
       return this.melhoresTimes.sort(function (a, b) {
         if (a.posicao > b.posicao) {
           return 1
