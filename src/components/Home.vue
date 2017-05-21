@@ -3,7 +3,7 @@
   <div class="section">
     <div class="container">
       <div class="heading">
-        <h2 class="title has-text-centered">KartolaFC mostra a pontuação de seu time e colegas</h2>
+        <h2 class="title has-text-centered">KartolaFC</h2>
       </div>
       <div>
         <div class="columns">
@@ -13,65 +13,60 @@
               <div>
                 <input type="text" class="input" placeholder="Nome" v-model="pesquisaNomeAtletaPontuacao">
               </div>
-              <div class="card" v-for="atleta of atletasPontuados.slice(0, quantidadePontuacao())">
-                <div class="card-content">
-                  <div class="media">
-                    <div class="media-left">
-                      <figure class="image is-64x64">
-                        <img :src="atleta.foto" alt="Image">
-                      </figure>
-                    </div>
-                    <div class="media-content">
-                      <p class="title is-4">{{ atleta.apelido }}</p>
-                      <div class="subtitle is-6">
-                        <p>Pontuação: {{ atleta.pontuacao }}</p>
+              <div class="scrollabed">
+                <div class="card" v-for="(atleta, k) of atletasPontuados">
+                  <div class="card-content">
+                    <div class="media">
+                      <div class="media-left">
+                        <figure class="image is-64x64">
+                          <img :src="atleta.foto" alt="Image">
+                        </figure>
+                      </div>
+                      <div class="media-content">
+                        <p class="title is-4">{{ atleta.apelido }}</p>
+                        <div class="subtitle is-6">
+                          <p>Pontuação: {{ atleta.pontuacao }}</p>
+                          <p>
+                            Preço: ${{ getPrecoAtleta(atleta.atleta_id) }}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="panel">
-                <button class="button is-primary is-outlined is-fullwidth" @click="mostrarTodosPontuacao = !mostrarTodosPontuacao">
-                  <span v-if="mostrarTodosPontuacao">Ocultar Lista</span>
-                  <span v-else>Mostrar a Lista</span>
-                </button>
               </div>
             </div>
           </div>
           <div class="column is-4">
             <div class="section">
               <p class="title">Mais Escalados</p>
-              <div class="card" v-for="destaque of destaques.slice(0, quantidadeDestaques())">
-                <div class="card-content">
-                  <div class="media">
-                    <div class="media-left">
-                      <figure class="image is-64x64">
-                        <img :src="destaque.Atleta.foto" alt="Image">
-                      </figure>
-                    </div>
-                    <div class="media-content">
-                      <p class="title is-4">{{ destaque.Atleta.apelido }}</p>
-                      <div class="subtitle is-6">
-                        <p>Escalações: {{ destaque.escalacoes }}</p>
-                        <p>Posição: {{ destaque.posicao }}</p>
+              <div class="scrollabed">
+                <div class="card" v-for="destaque of destaques">
+                  <div class="card-content">
+                    <div class="media">
+                      <div class="media-left">
+                        <figure class="image is-64x64">
+                          <img :src="destaque.Atleta.foto" alt="Image">
+                        </figure>
+                      </div>
+                      <div class="media-content">
+                        <p class="title is-4">{{ destaque.Atleta.apelido }}</p>
+                        <div class="subtitle is-6">
+                          <p>Escalações: {{ destaque.escalacoes }}</p>
+                          <p>Posição: {{ destaque.posicao }}</p>
+                          <p>Preço: ${{ getPrecoAtleta(destaque.Atleta.atleta_id) }}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="panel">
-                <button class="button is-primary is-outlined is-fullwidth" @click="mostrarTodosDestaques = !mostrarTodosDestaques">
-                  <span v-if="mostrarTodosDestaques">Ocultar Lista</span>
-                  <span v-else>Mostrar a Lista</span>
-                </button>
               </div>
             </div>
           </div>
           <div class="column is-5">
             <div class="section">
             <p class="title">Meu Time</p>
-              <div>
+              <div class="scrollabed">
                 <div v-if="meuTime.time">
                   <div class="card">
                     <div class="card-content">
@@ -148,13 +143,13 @@ export default {
       retornoTimes: [],
       pesquisaTimes: '',
       destaques: [],
-      mostrarTodosDestaques: false,
       meuTime: {},
       mercadoAberto: true,
       pontuados: {},
       pesquisaNomeAtletaPontuacao: '',
-      mostrarTodosPontuacao: false,
-      status: {}
+      status: {},
+      mercado: {},
+      mercadoAtletas: {}
     }
   },
   methods: {
@@ -195,6 +190,7 @@ export default {
         } else {
           self.status = {}
         }
+        self.getMercado()
       })
     },
 
@@ -203,14 +199,6 @@ export default {
       http.get('/mercado/destaques').then(r => {
         self.destaques = r.data
       })
-    },
-
-    quantidadeDestaques: function () {
-      return this.mostrarTodosDestaques ? 100 : 3
-    },
-
-    quantidadePontuacao: function () {
-      return this.mostrarTodosPontuacao ? 100 : 3
     },
 
     getPontuados: function () {
@@ -252,6 +240,48 @@ export default {
     limparMeuTime: function () {
       db.meuTime.clear()
       this.meuTime = {}
+    },
+
+    getMercadoRequest: function () {
+      let self = this
+      http.get('/atletas/mercado').then(function (r) {
+        if (r.data) {
+          self.mercado = r.data
+          self.mercadoAtletaId()
+          r.data.rodada_atual = self.status.rodada_atual
+          db.mercado.put(r.data).catch(err => {
+            console.log(err)
+          })
+        }
+      })
+    },
+
+    getMercado: function () {
+      if (this.status.rodada_atual) {
+        let self = this
+        db.mercado.get(this.status.rodada_atual, function (item) {
+          if (item) {
+            self.mercado = item
+            self.mercadoAtletaId()
+          } else {
+            self.getMercadoRequest()
+          }
+        })
+      }
+    },
+
+    mercadoAtletaId: function () {
+      if (this.mercado.atletas) {
+        this.mercado.atletas.forEach(function (element) {
+          this.$set(this.mercadoAtletas, element.atleta_id, element)
+        }, this)
+      }
+    },
+
+    getPrecoAtleta: function (atletaId) {
+      if (atletaId && this.mercadoAtletas[atletaId]) {
+        return this.mercadoAtletas[parseInt(atletaId)].preco_num
+      }
     }
   },
   mounted: function () {
@@ -270,6 +300,7 @@ export default {
         for (let k in atletas) {
           if (atletas.hasOwnProperty(k)) {
             if (atletas[k].apelido.toLowerCase().indexOf(searchLowerCase) >= 0) {
+              atletas[k].atleta_id = k
               matches.push(atletas[k])
             }
           }
@@ -293,4 +324,10 @@ export default {
 </script>
 
 <style scoped>
+
+.scrollabed {
+  overflow: auto;
+  max-height: 350px;
+}
+
 </style>
