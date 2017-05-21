@@ -14,7 +14,7 @@
                 <input type="text" class="input" placeholder="Nome" v-model="pesquisaNomeAtletaPontuacao">
               </div>
               <div class="scrollabed">
-                <div class="card" v-for="(atleta, k) of atletasPontuados">
+                <div class="card" v-for="(atleta, k) of atletasPontuadosOrdenados">
                   <div class="card-content">
                     <div class="media">
                       <div class="media-left">
@@ -55,6 +55,37 @@
                           <p>Escalações: {{ destaque.escalacoes }}</p>
                           <p>Posição: {{ destaque.posicao }}</p>
                           <p>Preço: ${{ getPrecoAtleta(destaque.Atleta.atleta_id) }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="section">
+              <p class="title">Pontuação Geral <span class="tag is-warning">Em Testes</span></p>
+              <div class="scrollabed">
+                <div class="card" v-for="(time, k) of melhoresTimes">
+                  <div class="card-content">
+                    <div class="media">
+                      <div class="media-left">
+                        <figure class="image is-48x48">
+                          <img :src="time.time.time.foto_perfil" alt="Image">
+                        </figure>
+                      </div>
+                      <div class="media-left">
+                        <figure class="image is-48x48">
+                          <img :src="time.time.time.url_escudo_svg" alt="Image">
+                        </figure>
+                      </div>
+                      <div class="media-content">
+                        <p class="title is-4">{{ time.time.time.nome }}</p>
+                        <div class="subtitle is-6">
+                          <p>Cartoleiro: {{ time.time.time.nome_cartola }}</p>
+                          <p>Posição: {{ time.posicao }}</p>
+                          <p>Pontuação: {{ time.pontuacao }}</p>
                         </div>
                       </div>
                     </div>
@@ -129,6 +160,7 @@
             </div>
             </div>
           </div>
+          
         </div>
       </div>
     </div>
@@ -152,7 +184,8 @@ export default {
       pesquisaNomeAtletaPontuacao: '',
       status: {},
       mercado: {},
-      mercadoAtletas: {}
+      mercadoAtletas: {},
+      melhoresTimes: []
     }
   },
   methods: {
@@ -293,6 +326,21 @@ export default {
       if (atletaId && this.mercadoAtletas[atletaId]) {
         return this.mercadoAtletas[parseInt(atletaId)].preco_num
       }
+    },
+
+    getRankingMelhores: function () {
+      let self = this
+      http.get('/ranking/melhores').then(function (r) {
+        if (r.data) {
+          r.data.slice(0, 10).forEach(function (time, k) {
+            http.get('/time/id/' + time.time_id).then(function (r) {
+              time.time = r.data
+              time.posicao = (k + 1)
+              self.melhoresTimes.push(time)
+            })
+          }, this)
+        }
+      })
     }
   },
   mounted: function () {
@@ -300,6 +348,7 @@ export default {
     this.getMeuTime()
     this.getPontuados()
     this.getStatus()
+    this.getRankingMelhores()
   },
 
   computed: {
@@ -329,6 +378,18 @@ export default {
         return matches
       }
       return []
+    },
+
+    atletasPontuadosOrdenados: function () {
+      return this.melhoresTimes.sort(function (a, b) {
+        if (a.posicao > b.posicao) {
+          return 1
+        }
+        if (a.posicao < b.posicao) {
+          return -1
+        }
+        return 0
+      })
     }
   }
 }

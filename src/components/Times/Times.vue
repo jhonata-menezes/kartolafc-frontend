@@ -224,6 +224,7 @@ export default {
         })
       }
     }
+
   },
   mounted: function () {
     this.getTimesDatabase()
