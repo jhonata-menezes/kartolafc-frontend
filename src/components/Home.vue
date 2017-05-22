@@ -85,7 +85,7 @@
                         <div class="subtitle is-6">
                           <p>Cartoleiro: {{ time.time.time.nome_cartola }}</p>
                           <p>Posição: {{ time.posicao }}</p>
-                          <p>Pontuação: {{ time.pontuacao }}</p>
+                          <p>Pontuação: {{ time.pontuacao.toFixed(2) }}</p>
                         </div>
                       </div>
                     </div>

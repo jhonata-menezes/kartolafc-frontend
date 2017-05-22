@@ -20,7 +20,7 @@
                 <a class="is-link">+</a>
               </span>
             <div class="nav-right nav-menu" :class="menuIsActive ? 'is-active' : ''">
-              <a class="nav-item is-active">
+              <a class="nav-item">
                 <span>Times Escalados: {{ status.times_escalados }}</span>
               </a>
               <a class="nav-item ">
