@@ -8,7 +8,7 @@
       <div>
         <div class="columns">
           <div class="column is-4" v-if="status.status_mercado === 2">
-            <div class="section">
+            <div class="">
               <p class="title">Pontuação</p>
               <div>
                 <input type="text" class="input" placeholder="Nome" v-model="pesquisaNomeAtletaPontuacao">
@@ -38,7 +38,7 @@
             </div>
           </div>
           <div class="column is-4">
-            <div class="section">
+            <div class="">
               <p class="title">Mais Escalados</p>
               <div class="scrollabed">
                 <div class="card" v-for="destaque of destaques">
@@ -64,7 +64,7 @@
             </div>
           </div>
           <div class="column is-4">
-            <div class="section">
+            <div class="">
               <p class="title">Pontuação Geral <span class="tag is-warning">Em Testes</span></p>
               <div class="scrollabed">
                 <div class="card" v-for="(time, k) of rankingGeralTimes">
@@ -95,7 +95,7 @@
             </div>
           </div>
           <div class="column is-5">
-            <div class="section">
+            <div class="">
             <p class="title">Meu Time</p>
               <div class="">
                 <div v-if="meuTime.time">
