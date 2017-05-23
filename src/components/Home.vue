@@ -219,14 +219,8 @@ export default {
     },
 
     getStatus: function () {
-      var self = this
-      http.get('/mercado/status').then(function (r) {
-        if (r.data) {
-          self.status = r.data
-        } else {
-          self.status = {}
-        }
-        self.getMercado()
+      this.$kartolafc.status.getStatus(status => {
+        this.status = status
       })
     },
 
@@ -247,14 +241,9 @@ export default {
     },
 
     getMeuTime: function () {
-      var self = this
-      db.meuTime.toArray().then(function (time) {
+      db.meuTime.toArray().then(time => {
         if (time.length === 1) {
-          time = time[0]
-          http.get('/time/id/' + time.time.time_id).then(function (r) {
-            self.meuTime = r.data
-            self.getRankingGeral()
-          })
+          this.meuTime = time[0]
         }
       }).catch(function (err) {
         console.log(err)
@@ -347,7 +336,6 @@ export default {
     this.getDestaques()
     this.getMeuTime()
     this.getPontuados()
-    this.getStatus()
     this.getRankingMelhores()
   },
 

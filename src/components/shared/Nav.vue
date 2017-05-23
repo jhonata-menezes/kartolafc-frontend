@@ -1,25 +1,24 @@
 <template>
     <div>
-        <nav class="nav">
+        <nav class="nav has-shadow">
             <div class="nav-left">
-              <a class="nav-item ">
-                <router-link to="/"><img src="/static/img/logo.png" alt="KartolaFC logo"> artolaFC</router-link>
-              </a>
-              <a class="nav-item" >
-                <router-link to="/">Inicio</router-link>
-              </a>
-              <a class="nav-item" >
-                <router-link to="/times">Times</router-link>
-              </a>
-              <a class="nav-item" >
-                <router-link to="/ligas">Ligas</router-link>
-              </a>
+              <router-link class="nav-item" to="/"><img src="/static/img/logo.png" alt="KartolaFC logo">&nbspartolaFC</router-link>
+              <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/' ? 'is-active': ''" to="/">Inicio</router-link>
+              <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/times' ? 'is-active' : ''" to="/times">Times</router-link>
+              <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/ligas' ? 'is-active' : ''" to="/ligas">Ligas</router-link>
             </div>
-            <span class="nav-toggle" :class="menuIsActive ? 'is-active' : ''" @click="menuIsActive = !menuIsActive">
-                <br/>
-                <a class="is-link">+</a>
-              </span>
+
+            <span class="nav-toggle " :class="menuIsActive ? 'is-active' : ''" @click="menuIsActive = !menuIsActive">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span v-if="!menuIsActive"></span>
+            </span>
+
             <div class="nav-right nav-menu" :class="menuIsActive ? 'is-active' : ''">
+              <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/' ? 'is-active': ''" to="/">Inicio</router-link>
+              <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/times' ? 'is-active': ''" to="/times">Times</router-link>
+              <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/ligas' ? 'is-active': ''"to="/ligas">Ligas</router-link>
               <a class="nav-item">
                 <span>Times Escalados: {{ status.times_escalados }}</span>
               </a>
@@ -46,7 +45,6 @@
 </template>
 
 <script>
-import {http} from '@/axios'
 
 export default {
   data () {
@@ -55,14 +53,9 @@ export default {
       menuIsActive: false
     }
   },
-  created: function () {
-    var self = this
-    http.get('/mercado/status').then(function (r) {
-      if (r.data) {
-        self.status = r.data
-      } else {
-        self.status = {}
-      }
+  mounted: function () {
+    this.$kartolafc.status.getStatus(status => {
+      this.status = status
     })
   },
   computed: {

@@ -3,7 +3,7 @@
     <navbar></navbar>
     <meu-menu></meu-menu>
     <div class="">
-      <div id="app" class="">
+      <div id="app">
       </div>
     </div>
       <router-view></router-view>
@@ -19,6 +19,10 @@ export default {
   components: {
     'navbar': Nav,
     'meu-menu': MeuMenu
+  },
+
+  created () {
+    this.$kartolafc.status.getStatus((a) => {})
   }
 }
 </script>

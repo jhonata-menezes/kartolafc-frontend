@@ -5,6 +5,9 @@ import App from './App'
 import router from './router'
 import VueAnalytics from 'vue-analytics'
 import {analytics} from './config'
+import kartolafc from './pluginKartolafc'
+
+Vue.use(kartolafc)
 
 Vue.config.productionTip = false
 
