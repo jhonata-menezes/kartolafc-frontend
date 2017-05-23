@@ -1,11 +1,13 @@
 import getStatus from './services/status'
 import getTime from './services/time'
+import getMercado from './services/mercado'
 
 let instaled = false
 
 let kartolafc = {}
 kartolafc.status = getStatus
 kartolafc.time = getTime
+kartolafc.mercado = getMercado
 
 // plugin install
 const install = Vue => {

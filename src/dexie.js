@@ -14,7 +14,7 @@ db.version(3).stores({
 
 db.version(4).stores({
   meuTime: `time.time_id`,
-  meusTimes: 'time.time_id,rodada_atual,status_mercado',
+  meusTimes: `time.time_id`,
   mercado: `rodada_atual`
 }).upgrade(function (t) {
     // An upgrade function for version 3 will upgrade data based on version 2.

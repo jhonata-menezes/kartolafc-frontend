@@ -15,8 +15,8 @@
               <span v-if="!menuIsActive"></span>
             </span>
 
-            <div class="nav-right nav-menu" :class="menuIsActive ? 'is-active' : ''">
-              <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/' ? 'is-active': ''" to="/">Inicio</router-link>
+            <div class="nav-right nav-menu" :class="menuIsActive ? 'is-active' : ''" @click="menuIsActive = !menuIsActive">
+              <router-link class="nav-item is-tab is-hidden-tablet"  :class="this.$route.path === '/' ? 'is-active': ''" to="/">Inicio</router-link>
               <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/times' ? 'is-active': ''" to="/times">Times</router-link>
               <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/ligas' ? 'is-active': ''"to="/ligas">Ligas</router-link>
               <a class="nav-item">

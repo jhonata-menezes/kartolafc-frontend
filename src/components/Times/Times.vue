@@ -86,7 +86,7 @@
                     <div class="subtitle is-6">
                       <p>Cartoleiro: {{ time.time.nome_cartola }}</p>
                       <p>Pontos: {{ calculaPontos(time) }}</p>
-                      <p>Posição Geral: {{ time.posicao }}</p>
+                      <p v-if="status.status_mercado === 2">Posição Geral: {{ time.posicao }}</p>
                       <a class="is-link" @click="removerTimeLista(k)">Remover</a>
                     </div>
                   </div>
@@ -111,15 +111,19 @@ export default {
       times: [],
       retornoTimes: [],
       pesquisaTimes: '',
-      pontuados: {}
+      pontuados: {},
+      status: {}
     }
   },
   methods: {
     getTimesDatabase: function () {
-      var self = this
-      db.meusTimes.toArray().then(function (times) {
+      db.meusTimes.toArray().then(times => {
         if (times.length >= 1) {
-          self.atualizaDadosTimes(times)
+          if (status.status_mercado === 2) {
+            this.atualizaDadosTimes(times)
+          } else {
+            this.times = times
+          }
         }
       }).catch(function (err) {
         console.log(err)
@@ -127,50 +131,41 @@ export default {
     },
 
     atualizaDadosTimes: function (times) {
-      var self = this
-      times.forEach(function (time, k) {
-        http.get('/time/id/' + time.time_id).then(function (r) {
-          self.getRankingGeral(r.data, function (data) {
-            self.times.push(r.data)
+      times.forEach((time, k) => {
+        this.$kartolafc.time.getTime(time.time.time_id, t => {
+          this.getRankingGeral(t, data => {
+            this.times.push(data)
           })
         })
       })
     },
 
     salvarTime: function (k) {
-      var self = this
-      db.meusTimes.put(self.retornoTimes[k]).then(function (item) {
-        self.retornoTimes.splice(k, 1)
-        self.addTimeAposSalva(item)
-      }).catch(err => { console.log(err) })
+      this.addTimeAposSalva(this.retornoTimes[k].time_id)
+      this.retornoTimes.splice(k, 1)
     },
 
     addTimeAposSalva: function (timeId) {
-      var self = this
-      http.get('/time/id/' + timeId).then(function (r) {
-        self.times.push(r.data)
+      this.$kartolafc.time.getTime(timeId, t => {
+        this.times.push(t)
       })
     },
 
     removerTime: function (k) {
-      console.log(k)
-      var self = this
-      db.meusTimes.delete(self.retornoTimes[k].time_id).then(function (item) {
-        self.$set(self.retornoTimes[k], 'existe_database', false)
+      db.meusTimes.delete(self.retornoTimes[k].time_id).then(item => {
+        this.$set(this.retornoTimes[k], 'existe_database', false)
       }).catch(err => { console.log(err) })
     },
 
     removerTimeLista: function (k) {
-      var self = this
-      db.meusTimes.delete(self.times[k].time.time_id).then(function (item) {
-        self.times.splice(k, 1)
+      db.meusTimes.delete(this.times[k].time.time_id).then(item => {
+        this.times.splice(k, 1)
       }).catch(err => { console.log(err) })
     },
 
     getPontuados: function () {
-      var self = this
-      http.get('/atletas/pontuados').then(function (r) {
-        self.pontuados = r.data
+      http.get('/atletas/pontuados').then(r => {
+        this.pontuados = r.data
       }).catch(err => { console.log(err) })
     },
 
@@ -214,12 +209,11 @@ export default {
 
     searchTimes: function () {
       if (this.pesquisaTimes) {
-        var self = this
-        http.get('/times/' + this.pesquisaTimes).then(function (r) {
+        http.get('/times/' + this.pesquisaTimes).then(r => {
           if (r.data.times) {
-            self.retornoTimes = r.data.times
+            this.retornoTimes = r.data.times
           } else {
-            self.retornoTimes = []
+            this.retornoTimes = []
           }
         })
       }

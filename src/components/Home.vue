@@ -243,7 +243,9 @@ export default {
     getMeuTime: function () {
       db.meuTime.toArray().then(time => {
         if (time.length === 1) {
-          this.meuTime = time[0]
+          this.$kartolafc.getTime(time[0].time.time_id, t => {
+            this.meuTime = t
+          })
         }
       }).catch(function (err) {
         console.log(err)
@@ -251,11 +253,11 @@ export default {
     },
 
     setMeuTime: function (time) {
-      var self = this
-      db.meuTime.clear()
-      http.get('/time/id/' + time.time_id).then(function (r) {
-        db.meuTime.put(r.data).then(function () {
-          self.getMeuTime()
+      this.limparMeuTime()
+      this.$kartolafc.time.getTime(time.time_id, t => {
+        this.meuTime = t
+        // precisa salva meu time em uma tabela separada, apenas para nao criar coluna ou alguma flag
+        db.meuTime.put(time).then(() => {
           console.log('time salvo ou atualizado')
         }).catch(err => {
           console.log('erro ao salvar meu time', err)
@@ -275,32 +277,11 @@ export default {
       this.meuTime = {}
     },
 
-    getMercadoRequest: function () {
-      let self = this
-      http.get('/atletas/mercado').then(function (r) {
-        if (r.data) {
-          self.mercado = r.data
-          self.mercadoAtletaId()
-          r.data.rodada_atual = self.status.rodada_atual
-          db.mercado.put(r.data).catch(err => {
-            console.log(err)
-          })
-        }
-      })
-    },
-
     getMercado: function () {
-      if (this.status.rodada_atual) {
-        let self = this
-        db.mercado.get(this.status.rodada_atual, function (item) {
-          if (item) {
-            self.mercado = item
-            self.mercadoAtletaId()
-          } else {
-            self.getMercadoRequest()
-          }
-        })
-      }
+      this.$kartolafc.mercado.getMercado(m => {
+        this.mercado = m
+        this.mercadoAtletaId()
+      })
     },
 
     mercadoAtletaId: function () {
@@ -337,6 +318,7 @@ export default {
     this.getMeuTime()
     this.getPontuados()
     this.getRankingMelhores()
+    this.getMercado()
   },
 
   computed: {

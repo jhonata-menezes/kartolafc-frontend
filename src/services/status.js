@@ -4,8 +4,9 @@ let run = false
 let status = {}
 
 const getStatus = (callback, force = false) => {
-  if (run === true && !force) {
+  if (status.rodada_atual && run === true && !force) {
     callback(status)
+    return
   }
   run = true
   http.get('/mercado/status').then(function (r) {

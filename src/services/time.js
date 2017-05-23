@@ -1,17 +1,29 @@
 import {http} from './../axios'
 import db from './../dexie'
+import getStatus from './status'
 
-const getTime = (timeId, callback) => {
-  db.meusTimes.get(timeId, function (item) {
-    if (item) {
-      callback(item)
-    } else {
-      http.get('/time/id/' + timeId).then(r => {
-        db.meusTimes.put(r.data).then(newItem => {
-          callback(r.data)
+const getTime = function (timeId, callback) {
+  getStatus.getStatus(s => {
+    db.meusTimes.get(timeId, item => {
+      if (item) {
+        if (item.status_mercado === s.status_mercado && item.rodada_atual === s.rodada_atual) {
+          // mantem esse time enquanto o mercado e a rodada forem iguais
+          callback(item)
+        } else {
+          db.meusTimes.delete(timeId).then(() => {
+            getTime(timeId, callback)
+          })
+        }
+      } else {
+        http.get('/time/id/' + timeId).then(r => {
+          r.data.rodada_atual = s.rodada_atual
+          r.data.status_mercado = s.status_mercado
+          db.meusTimes.put(r.data).then(newItem => {
+            callback(r.data)
+          })
         })
-      })
-    }
+      }
+    })
   })
 }
 
