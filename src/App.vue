@@ -21,8 +21,8 @@ export default {
     'meu-menu': MeuMenu
   },
 
-  created () {
-    this.$kartolafc.status.getStatus((a) => {})
+  created: function () {
+    this.$kartolafc.pontuados.getPontuados(a => {})
   }
 }
 </script>

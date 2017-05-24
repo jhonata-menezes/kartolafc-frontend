@@ -76,18 +76,21 @@
                       <img :src="time.time.url_escudo_svg" alt="Image">
                     </figure>
                   </div>
-                  <div class="media-left">
-                    <figure class="image is-48x48">
+                  <div class="media-left is-hidden-mobile">
+                    <figure class="image is-32x32">
                       <img :src="time.time.foto_perfil" alt="Image">
                     </figure>
                   </div>
                   <div class="media-content">
-                    <p class="title is-4">{{ time.time.nome }}</p>
+                    <p class="title is-6">{{ time.time.nome }}</p>
                     <div class="subtitle is-6">
-                      <p>Cartoleiro: {{ time.time.nome_cartola }}</p>
+                      <p>{{ time.time.nome_cartola }}</p>
                       <p>Pontos: {{ calculaPontos(time) }}</p>
                       <p v-if="status.status_mercado === 2">Posição Geral: {{ time.posicao }}</p>
-                      <a class="is-link" @click="removerTimeLista(k)">Remover</a>
+                      <div class="block">
+                        <a class="button is-info is-small" @click="ativarModal(time)">Ver Time</a>
+                        <a class="button is-danger is-small" @click="removerTimeLista(k)">Remover</a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -98,16 +101,22 @@
       </div>
       </div>
     </section>
+    <escalacao-time :timemodal="modal.time" :active="modal.active" @update:active="val => modal.active = val" ></escalacao-time>
   </div>
 </template>
 
 <script>
 import {http} from './../../axios'
 import db from './../../dexie'
+import TemplateTime from './../shared/EscalacaoTime'
 
 export default {
   data () {
     return {
+      modal: {
+        active: false,
+        time: {}
+      },
       times: [],
       retornoTimes: [],
       pesquisaTimes: '',
@@ -117,13 +126,16 @@ export default {
   },
   methods: {
     getTimesDatabase: function () {
+      this.times = []
       db.meusTimes.toArray().then(times => {
         if (times.length >= 1) {
-          if (status.status_mercado === 2) {
-            this.atualizaDadosTimes(times)
-          } else {
-            this.times = times
-          }
+          times.forEach(function (element) {
+            if (status.status_mercado === 2 && element.status_mercado !== 2) {
+              this.atualizaDadosTimes(times)
+            } else {
+              this.times.push(element)
+            }
+          }, this)
         }
       }).catch(function (err) {
         console.log(err)
@@ -132,9 +144,11 @@ export default {
 
     atualizaDadosTimes: function (times) {
       times.forEach((time, k) => {
-        this.$kartolafc.time.getTime(time.time.time_id, t => {
-          this.getRankingGeral(t, data => {
-            this.times.push(data)
+        db.meusTimes.delete(time.time.time_id).then(() => {
+          this.$kartolafc.time.getTime(time.time.time_id, t => {
+            this.getRankingGeral(t, data => {
+              this.times.push(data)
+            })
           })
         })
       })
@@ -160,12 +174,6 @@ export default {
     removerTimeLista: function (k) {
       db.meusTimes.delete(this.times[k].time.time_id).then(item => {
         this.times.splice(k, 1)
-      }).catch(err => { console.log(err) })
-    },
-
-    getPontuados: function () {
-      http.get('/atletas/pontuados').then(r => {
-        this.pontuados = r.data
       }).catch(err => { console.log(err) })
     },
 
@@ -217,12 +225,16 @@ export default {
           }
         })
       }
+    },
+
+    ativarModal: function (time) {
+      this.modal.active = true
+      this.modal.time = time
     }
 
   },
   mounted: function () {
     this.getTimesDatabase()
-    this.getPontuados()
   },
 
   computed: {
@@ -246,6 +258,16 @@ export default {
     timesComputed: function () {
       //
     }
+  },
+
+  created: function () {
+    this.$kartolafc.pontuados.getPontuados(p => {
+      this.pontuados = p
+    })
+  },
+
+  components: {
+    'escalacao-time': TemplateTime
   }
 }
 </script>

@@ -63,37 +63,6 @@
               </div>
             </div>
           </div>
-          <div class="column is-4">
-            <div class="">
-              <p class="title">Pontuação Geral <span class="tag is-warning">Em Testes</span></p>
-              <div class="scrollabed">
-                <div class="card" v-for="(time, k) of rankingGeralTimes">
-                  <div class="card-content">
-                    <div class="media">
-                      <div class="media-left">
-                        <figure class="image is-48x48">
-                          <img :src="time.time.time.foto_perfil" alt="Image">
-                        </figure>
-                      </div>
-                      <div class="media-left">
-                        <figure class="image is-48x48">
-                          <img :src="time.time.time.url_escudo_svg" alt="Image">
-                        </figure>
-                      </div>
-                      <div class="media-content">
-                        <p class="title is-4">{{ time.time.time.nome }}</p>
-                        <div class="subtitle is-6">
-                          <p>Cartoleiro: {{ time.time.time.nome_cartola }}</p>
-                          <p>Posição: {{ time.posicao }}</p>
-                          <p>Pontuação: {{ time.pontuacao.toFixed(2) }}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="column is-5">
             <div class="">
             <p class="title">Meu Time</p>
@@ -113,15 +82,16 @@
                         <div class="media-content">
                           <div class="container">
                             <h5 class="title is-5">{{ meuTime.time.nome }}</h5>
-                            <p>Cartoleiro: {{ meuTime.time.nome_cartola }}</p>
+                            <p>{{ meuTime.time.nome_cartola }}</p>
                           </div>
                           <p>Pontos: {{ calculaPontos(meuTime) }}</p>
                           <p v-if="status.status_mercado === 2">
                             Posicao Geral: {{ meuTime.posicao }}
                           </p>
+                          <a class="button is-info is-small" @click="modal.active=true; modal.time=meuTime">Ver Time</a>
+                          <a class="button is-danger is-small" @click="limparMeuTime">Remover</a>
                         </div>
                       </div>
-                      <a class="link" @click="limparMeuTime">Remover</a>
                     </div>           
                   </div>
                 </div>
@@ -160,10 +130,10 @@
             </div>
             </div>
           </div>
-          
         </div>
       </div>
     </div>
+    <escalacao-time :timemodal="modal.time" :active="modal.active" @update:active="val => modal.active = val"></escalacao-time>
   </div>
 </div>
 </template>
@@ -171,10 +141,19 @@
 <script>
 import {http} from './../axios'
 import db from './../dexie'
+import EscalacaoTime from './shared/EscalacaoTime'
 
 export default {
+  components: {
+    'escalacao-time': EscalacaoTime
+  },
+
   data () {
     return {
+      modal: {
+        active: false,
+        time: {}
+      },
       retornoTimes: [],
       pesquisaTimes: '',
       destaques: [],
@@ -184,8 +163,7 @@ export default {
       pesquisaNomeAtletaPontuacao: '',
       status: {},
       mercado: {},
-      mercadoAtletas: {},
-      melhoresTimes: []
+      mercadoAtletas: {}
     }
   },
   methods: {
@@ -225,25 +203,15 @@ export default {
     },
 
     getDestaques: function () {
-      var self = this
       http.get('/mercado/destaques').then(r => {
-        self.destaques = r.data
+        this.destaques = r.data
       })
-    },
-
-    getPontuados: function () {
-      if (this.mercadoAberto) {
-        var self = this
-        http.get('/atletas/pontuados').then(r => {
-          self.pontuados = r.data
-        })
-      }
     },
 
     getMeuTime: function () {
       db.meuTime.toArray().then(time => {
         if (time.length === 1) {
-          this.$kartolafc.getTime(time[0].time.time_id, t => {
+          this.$kartolafc.time.getTime(time[0].time.time_id, t => {
             this.meuTime = t
           })
         }
@@ -257,7 +225,7 @@ export default {
       this.$kartolafc.time.getTime(time.time_id, t => {
         this.meuTime = t
         // precisa salva meu time em uma tabela separada, apenas para nao criar coluna ou alguma flag
-        db.meuTime.put(time).then(() => {
+        db.meuTime.put(t).then(() => {
           console.log('time salvo ou atualizado')
         }).catch(err => {
           console.log('erro ao salvar meu time', err)
@@ -296,29 +264,13 @@ export default {
       if (atletaId && this.mercadoAtletas[atletaId]) {
         return this.mercadoAtletas[parseInt(atletaId)].preco_num
       }
-    },
-
-    getRankingMelhores: function () {
-      let self = this
-      http.get('/ranking/melhores').then(function (r) {
-        if (r.data) {
-          r.data.slice(0, 10).forEach(function (time, k) {
-            http.get('/time/id/' + time.time_id).then(function (r) {
-              time.time = r.data
-              time.posicao = (k + 1)
-              self.melhoresTimes.push(time)
-            })
-          }, this)
-        }
-      })
     }
   },
-  mounted: function () {
+  created: function () {
     this.getDestaques()
     this.getMeuTime()
-    this.getPontuados()
-    this.getRankingMelhores()
     this.getMercado()
+    this.$kartolafc.pontuados.getPontuados(p => { this.pontuados = p })
   },
 
   computed: {
@@ -348,18 +300,6 @@ export default {
         return matches
       }
       return []
-    },
-
-    rankingGeralTimes: function () {
-      return this.melhoresTimes.sort(function (a, b) {
-        if (a.posicao > b.posicao) {
-          return 1
-        }
-        if (a.posicao < b.posicao) {
-          return -1
-        }
-        return 0
-      })
     }
   }
 }

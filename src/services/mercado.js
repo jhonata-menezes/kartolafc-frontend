@@ -1,5 +1,6 @@
 import { http } from './../axios'
 import db from './../dexie'
+import getStatus from './status'
 
 const getMercado = (callback) => {
   db.mercado.toArray().then(result => {
@@ -20,7 +21,23 @@ const getMercado = (callback) => {
             })
           }
         })
+      } else {
+        callback(mercadoResult)
       }
+    } else {
+      http.get('/atletas/mercado').then(r => {
+        if (r.data) {
+          getStatus.getStatus(status => {
+            r.data.data_criado = new Date()
+            r.data.rodada_atual = status.rodada_atual
+            db.mercado.put(r.data).then(() => {
+              callback(r.data)
+            }).catch(err => {
+              console.log(err)
+            })
+          })
+        }
+      })
     }
   })
 }

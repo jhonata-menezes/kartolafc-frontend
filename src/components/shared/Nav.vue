@@ -6,6 +6,7 @@
               <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/' ? 'is-active': ''" to="/">Inicio</router-link>
               <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/times' ? 'is-active' : ''" to="/times">Times</router-link>
               <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/ligas' ? 'is-active' : ''" to="/ligas">Ligas</router-link>
+              <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/ranking/times' ? 'is-active' : ''" to="/ranking/times">Melhores Times da Rodada</router-link>
             </div>
 
             <span class="nav-toggle " :class="menuIsActive ? 'is-active' : ''" @click="menuIsActive = !menuIsActive">
@@ -19,7 +20,8 @@
               <router-link class="nav-item is-tab is-hidden-tablet"  :class="this.$route.path === '/' ? 'is-active': ''" to="/">Inicio</router-link>
               <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/times' ? 'is-active': ''" to="/times">Times</router-link>
               <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/ligas' ? 'is-active': ''"to="/ligas">Ligas</router-link>
-              <a class="nav-item">
+              <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/ranking/times' ? 'is-active': ''"to="/ranking/times">Melhores Times da Rodada</router-link>
+              <!--<a class="nav-item">
                 <span>Times Escalados: {{ status.times_escalados }}</span>
               </a>
               <a class="nav-item ">
@@ -36,7 +38,7 @@
                     Mercado Fechado
                   </div>
                 </span>
-              </a>
+              </a>-->
 
             </div>
 
