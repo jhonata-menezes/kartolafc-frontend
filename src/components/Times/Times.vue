@@ -127,7 +127,12 @@ export default {
   methods: {
     getTimesDatabase: function () {
       this.times = []
-      db.meusTimes.toArray().then(times => {
+      db.meusTimes.toCollection().filter(item => {
+        if (item.favorito) {
+          return true
+        }
+        return false
+      }).toArray(times => {
         if (times.length >= 1) {
           times.forEach(function (element) {
             if (status.status_mercado === 2 && element.status_mercado !== 2) {
@@ -161,6 +166,14 @@ export default {
 
     addTimeAposSalva: function (timeId) {
       this.$kartolafc.time.getTime(timeId, t => {
+        db.meusTimes.update(timeId, {favorito: true}).then(u => {
+          // adiciona time como favorito dos amigos
+          if (u) {
+            console.log('time salvo na tabela', timeId)
+          } else {
+            console.log('time não foi salvo na tabela', timeId)
+          }
+        })
         this.times.push(t)
       })
     },
