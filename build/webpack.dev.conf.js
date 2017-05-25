@@ -37,12 +37,12 @@ module.exports = merge(baseWebpackConfig, {
         new FriendlyErrorsPlugin(),
 
         new manifestPlugin({
-            name: 'Kartola',
-            description: 'Kartola - Veja pontuação do seu time e de seus colegas.',
+            name: 'KartolaFC',
+            description: 'KartolaFC - Veja pontuação do seu time e de seus colegas.',
             display: 'fullscreen',
             icon: {
                 src: path.resolve('src/assets/logo.png'),
-                sizes: [200]
+                sizes: [800]
             }
         }),
     ]
