@@ -16,7 +16,7 @@
                   <p class="control">
                     <button @click="searchTimes" class="button is-success ">Pesquisar</button>
                     <button @click="retornoTimes = []" class="button is-danger ">Limpar</button>
-                    <button @click="retornoTimes = []" class="button"><router-link to="/ligas">Pesquisar times na liga</router-link></button>
+                    <button @click="retornoTimes = []" class="button"><router-link to="/ligas">Times da liga</router-link></button>
                   </p>
                 </div>
                 <div v-for="(time, k) of retornoTimes">
