@@ -13,7 +13,6 @@
               <span></span>
               <span></span>
               <span></span>
-              <span v-if="!menuIsActive"></span>
             </span>
 
             <div class="nav-right nav-menu" :class="menuIsActive ? 'is-active' : ''" @click="menuIsActive = !menuIsActive">
