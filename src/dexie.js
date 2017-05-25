@@ -16,11 +16,18 @@ db.version(4).stores({
   meuTime: `time.time_id`,
   meusTimes: `time.time_id`,
   mercado: `rodada_atual`
-}).upgrade(function (t) {
-    // An upgrade function for version 3 will upgrade data based on version 2.
-  return t.meusTimes.toCollection().modify(function (time) {
-    delete time.time_id
-  })
+})
+
+db.open().catch(err => {
+  console.log('open', err)
+  let req = indexedDB.deleteDatabase('kartolafc')
+  req.onsuccess = function () {
+    console.log('deletado com sucesso')
+    location.reload()
+  }
+  req.onerror = function () {
+    console.log('nao foi possivel deletar')
+  }
 })
 
 export default db
