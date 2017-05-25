@@ -27,6 +27,7 @@
                         <p>Cartoleiro: {{ time.time.nome_cartola }}</p>
                         <p>Posição: {{ time.posicao }}</p>
                         <p>Pontuação: {{ time.pontuacao.toFixed(2) }}</p>
+                        <p>Pró: {{ time.time.assinante ? 'sim' : 'não' }}</p>
                         <a class="button is-info is-small" @click="ativarModal(time)">Ver Time</a>
                       </div>
                     </div>

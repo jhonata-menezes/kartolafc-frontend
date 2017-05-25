@@ -18,8 +18,9 @@
         </header>
         <section class="modal-card-body" v-if="time.atletas.length >= 1">
           <div class="has-text-centered">
-            <b>Rodada</b>: {{ time.rodada_atual }} <b>Pontuação</b>: {{ somaPontuacao(time) }}
-            <div v-if="posicaoGeral"><b>Posição</b>: {{posicaoGeral}}</div>
+            <b>Rodada</b>: {{ time.rodada_atual }} <b> Pontuação</b>: {{ somaPontuacao(time) }}
+            <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
+            <span v-if="posicaoGeral"> <b>Posição</b>: {{posicaoGeral}}</span>
           </div>
           <hr class="hr">
           <div v-for="t of time.atletas">
