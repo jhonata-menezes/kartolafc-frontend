@@ -7,7 +7,6 @@ const getMercado = (callback) => {
     if (result.length >= 1) {
       let mercadoResult = result[0]
       if (parseInt(new Date() - new Date(mercadoResult.data_criado)) >= 3599941) {
-        console.log(result.length)
         // necessario atualizar, passou mais de 1 hora que esta na tabela
         http.get('/atletas/mercado').then(r => {
           if (r.data) {

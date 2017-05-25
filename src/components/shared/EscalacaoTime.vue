@@ -14,11 +14,12 @@
               <img :src="time.time.foto_perfil">
             </picture>
           </p>
-          <button class="delete" @click="closeModal()" @keydown.27="closeModal()"></button>
+          <button class="delete" @click="closeModal()"></button>
         </header>
         <section class="modal-card-body" v-if="time.atletas.length >= 1">
           <div class="has-text-centered">
             <b>Rodada</b>: {{ time.rodada_atual }} <b>Pontuação</b>: {{ somaPontuacao(time) }}
+            <div v-if="posicaoGeral"><b>Posição</b>: {{posicaoGeral}}</div>
           </div>
           <hr class="hr">
           <div v-for="t of time.atletas">
@@ -54,10 +55,13 @@
 </template>
 
 <script>
+import {http} from './../../axios'
+
 export default {
   data () {
     return {
-      atletasPontuados: {}
+      atletasPontuados: {},
+      posicaoGeral: 0
     }
   },
 
@@ -82,6 +86,17 @@ export default {
         return pos.charAt(0).toUpperCase() + pos.slice(1)
       }
       return ''
+    },
+
+    getRankingGeral: function () {
+      if (this.timemodal.time) {
+        http.get('/ranking/time/id/' + this.timemodal.time.time_id).then(r => {
+          if (r.data.posicao >= 1) {
+            this.posicaoGeral = r.data.posicao
+          }
+        })
+      }
+      return true
     }
   },
 
@@ -96,6 +111,7 @@ export default {
           return 0
         })
       }
+      this.getRankingGeral()
       return this.timemodal
     }
   },

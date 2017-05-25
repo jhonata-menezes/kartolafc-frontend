@@ -179,7 +179,7 @@ export default {
     },
 
     removerTime: function (k) {
-      db.meusTimes.delete(self.retornoTimes[k].time_id).then(item => {
+      db.meusTimes.delete(this.retornoTimes[k].time_id).then(item => {
         this.$set(this.retornoTimes[k], 'existe_database', false)
       }).catch(err => { console.log(err) })
     },
