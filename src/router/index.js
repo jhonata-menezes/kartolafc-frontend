@@ -5,6 +5,7 @@ import Time from '@/components/Times/Time'
 import Ligas from '@/components/Ligas/Ligas'
 import Times from '@/components/Times/Times'
 import RankingTimes from '@/components/ranking/Times'
+import RodadaJogos from '@/components/rodada/Jogos'
 
 Vue.use(Router)
 
@@ -29,6 +30,10 @@ export default new Router({
     path: '/ranking/times',
     name: 'RankingTimes',
     component: RankingTimes
+  }, {
+    path: '/rodada/jogos/:rodada?',
+    name: 'RodadaJogos',
+    component: RodadaJogos
   }]
   // mode: 'history'
 })
