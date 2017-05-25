@@ -78,34 +78,32 @@ export default {
     },
 
     salvarTimesLiga: function (liga) {
-      var self = this
-      http.get('/liga/' + liga.slug + '/' + 1).then(function (r) {
+      http.get('/liga/' + liga.slug + '/' + 1).then(r => {
         if (r.data) {
-          console.log(r.data.liga.total_times_liga, parseInt(parseInt(r.data.liga.total_times_liga) / 20))
-          for (var i = 0; i <= parseInt(parseInt(r.data.liga.total_times_liga) / 20); i++) {
+          for (let i = 0; i <= parseInt(parseInt(r.data.liga.total_times_liga) / 20); i++) {
             if (i === 6) {
               break
             }
-            self.salvarTimesLigaPage(liga, (i + 1))
+            this.salvarTimesLigaPage(liga, (i + 1))
           }
         }
       })
     },
 
     salvarTimesLigaPage: function (liga, page) {
-      var self = this
-      http.get('/liga/' + liga.slug + '/' + page).then(function (r) {
+      http.get('/liga/' + liga.slug + '/' + page).then(r => {
         if (r.data) {
-          r.data.times.forEach(function (time) {
-            self.salvarTime(time.time_id)
+          r.data.times.forEach(time => {
+            this.salvarTime(time.time_id)
           })
         }
       })
     },
 
     salvarTime: function (timeId) {
-      // var self = this
-      db.meusTimes.put({time_id: timeId}).catch(err => { console.log(err) })
+      this.$kartolafc.time.getTime(timeId, t => {
+        db.meusTimes.update(timeId, {favorito: true}).catch(err => { console.log(err) })
+      })
     }
   }
 }
