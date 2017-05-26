@@ -6,13 +6,26 @@ import router from './router'
 import VueAnalytics from 'vue-analytics'
 import {analytics} from './config'
 import kartolafc from './pluginKartolafc'
-
-Vue.use(kartolafc)
-
-Vue.config.productionTip = false
-
+import VueProgressBar from 'vue-progressbar'
 import 'bulma/css/bulma.css'
 import 'font-awesome/css/font-awesome.css'
+
+let optionsProgress = {
+  color: '#00d1b2',
+  failedColor: '#874b4b',
+  thickness: '2px',
+  transition: {
+    speed: '0.2s',
+    opacity: '0.6s',
+    termination: 300
+  },
+  autoRevert: true
+}
+
+Vue.use(kartolafc)
+Vue.use(VueProgressBar, optionsProgress)
+
+Vue.config.productionTip = false
 
 Vue.use(VueAnalytics, {
   id: analytics,

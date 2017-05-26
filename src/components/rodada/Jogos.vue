@@ -6,23 +6,20 @@
           <div class="column is-half is-offset-one-quarter">
             <p>
               <div class="pull-left">
-                <i class="tag is-success button" @click="alteraRodada((rodadaAtual - 1))">
-                  <i class="fa fa-chevron-left" aria-hidden="true"></i>
-                   &nbsp Anterior 
-                </i>
+                <router-link  class="button tag" :disabled="rodadaAtual<=1" :to="{ name: 'RodadaJogos', params: { rodada: (rodadaAtual - 1) }}">
+                  <i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp Anterior
+                </router-link>
               </div>
               <div class="pull-right">
-                <i class="tag is-success" @click="alteraRodada((rodadaAtual + 1))">
-                  Próxima &nbsp
-                  <i class="fa fa-chevron-right" aria-hidden="true">
-                  </i>
-                </i>
+                <router-link class="button tag" :disabled="rodadaAtual>=20" :to="{ name: 'RodadaJogos', params: { rodada: (rodadaAtual + 1) }}">Próxima &nbsp
+                  <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                </router-link>
               </div>
             </p><br/>
             <div class="content">
-              <h4 class="title is-4 has-text-centered">Rodada Atual {{partida.rodada}} </h4>
+              <h4 class="title is-4 has-text-centered">Rodada Atual {{rodadaAtual}} </h4>
             </div>
-            <div class="">
+            <div v-if="partida.rodada >= 1" class="">
               <article class="media" v-for="p of partidasOrdenadas">
                 <div class="media-content">
                   <div class="content">
@@ -45,11 +42,15 @@
                           <img :src="partida.clubes[p.clube_visitante_id].Escudos['30x30']" alt="Escudo">
                         </picture>
                       </div>
-                      <i class="tag is-dark is-small">Detalhes</i>
+                      <i class="tag is-dark is-small" @click="exibirdetalhes(p)">Detalhes</i>
                     </div>
                   </div>
                 </div>
               </article>
+            </div>
+            <div>
+              <notificacao :ativar="alerta" :mensagem="'Não foi possivel obter a rodada ' + rodadaAtual + ' ou ainda não está disponível'" @update:ativar="v => alerta=v"></notificacao>
+              <detalhes-jogo :ativar="detalhes.ativar" :jogoRodada="detalhes.jogo" @update:ativar="v => detalhes.ativar=v"></detalhes-jogo>
             </div>
           </div>
         </div>
@@ -61,45 +62,76 @@
 <script>
 import { http } from './../../axios'
 import moment from 'moment'
+import ModalNotificacao from './../shared/ModalNotificacao'
+import JogoRodada from './../shared/JogoRodada'
 
 export default {
+  components: {
+    'notificacao': ModalNotificacao,
+    'detalhes-jogo': JogoRodada
+  },
+
   data () {
     return {
+      detalhes: {
+        jogo: {},
+        ativar: false
+      },
       partida: {},
-      rodadaAtual: 0
+      rodadaAtual: 0,
+      alerta: false
     }
   },
 
   methods: {
-    alteraRodada: function (rodada) {
-      this.$route.params.rodada = rodada
-      this.rodadaAtual = rodada
-      this.getPartida(rodada)
-    },
-
     getPartida: function (rodada = 0) {
+      this.$Progress.start()
+      this.$Progress.increase(50)
       http.get('/partidas/' + rodada).then(r => {
         if (r.data.rodada) {
           this.partida = r.data
           this.rodadaAtual = r.data.rodada
+        } else {
+          this.rodadaAtual = parseInt(rodada)
+          this.alerta = true
+          this.partida = {}
         }
-      }).catch(err => { console.log(err) })
+        this.$Progress.finish()
+      }).catch(err => {
+        console.log(err)
+        this.$Progress.fail()
+        this.alerta = true
+        this.partida = {}
+      })
     },
 
     getDateFormat: function (dt) {
       let d = moment(dt)
       return d.format('DD/MM HH:mm')
+    },
+
+    createdComponent: function () {
+      if (this.$route.params.rodada) {
+        this.getPartida(this.$route.params.rodada)
+      } else {
+        // rodada 0 é a rodada atual
+        this.getPartida(0)
+      }
+    },
+
+    exibirdetalhes: function (j) {
+      this.detalhes.ativar = true
+      this.detalhes.jogo = j
     }
   },
 
   created: function () {
-    if (this.$route.params.rodada) {
-      this.getPartida(this.$route.params.rodada)
-      this.rodadaAtual = this.$route.params.rodada
-    } else {
-      // rodada 0 é a rodada atual
-      this.getPartida(0)
-    }
+    this.createdComponent()
+  },
+
+  watch: {
+    // observa alguma mudanca na rota
+    '$route': 'createdComponent'
   },
 
   computed: {

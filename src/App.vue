@@ -4,9 +4,9 @@
     <meu-menu></meu-menu>
     <div class="">
       <div id="app">
+        <router-view></router-view>
+        <vue-progress-bar></vue-progress-bar>
       </div>
-    </div>
-      <router-view></router-view>
     </div>
   </div>
 </template>
