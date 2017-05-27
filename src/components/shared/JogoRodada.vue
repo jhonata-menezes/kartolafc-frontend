@@ -4,41 +4,47 @@
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">
-            <picture class="image is-24x24 is-pulled-right">
+          <p class="modal-card-title has-text-centered">
+            <picture class="">
               <img :src="pontuados.clubes[jogoRodada.clube_casa_id].Escudos['30x30']" alt="escudo">
             </picture>
-            <h3 class="title is-3">{{pontuados.clubes[jogoRodada.clube_casa_id].abreviacao}}
-              X {{pontuados.clubes[jogoRodada.clube_visitante_id].abreviacao}}</h3></br>
-            <small class="subtitle is-small">{{time.time.nome_cartola}}</small>-->
-            <picture class="image is-24x24 is-pulled-right">
+            <strong class="subtitle is-3">{{pontuados.clubes[jogoRodada.clube_casa_id].abreviacao}} {{jogoRodada.placar_oficial_mandante}}
+              X {{jogoRodada.placar_oficial_visitante}} {{pontuados.clubes[jogoRodada.clube_visitante_id].abreviacao}}</strong>
+            <picture class="">
               <img :src="pontuados.clubes[jogoRodada.clube_visitante_id].Escudos['30x30']">
             </picture>
+              <br/>
+            <small class="subtitle is-6">
+              {{jogoRodada.local}} {{ getDateFormat(jogoRodada.partida_data)}}
+            </small>
           </p>
           <button class="delete" @click="closeModal()"></button>
         </header>
         <section class="modal-card-body">
           <div class="has-text-centered">
-            <b> Casa</b>: {{ somaPontuacao(time) }}
-            <b>Posição</b>: {{posicaoGeral}}
+            Pontos:  <b>{{pontuados.clubes[jogoRodada.clube_casa_id].abreviacao}}</b>: {{ somaPontuacao(jogoRodada.clube_casa_id) }}
+            <b>  {{pontuados.clubes[jogoRodada.clube_visitante_id].abreviacao}}</b>: {{ somaPontuacao(jogoRodada.clube_visitante_id) }}
+            <span class="icon is-pulled-right" @click="ordenarPor='pontuacao'; ordenarAsc=(ordenarAsc * -1)">
+              <i class="fa" :class="ordenarAsc === 1 ? 'fa-sort-asc' : 'fa-sort-desc'" alt='ordenar' title="Ordenar por pontuação"></i>
+            </span>
+            <hr class="hr">
           </div>
-          <hr class="hr">
-          <div v-for="t of time.atletas">
-            <article class="media">
-              <figure class="media-left">
-                <p class="image is-16x16">
-                  <img :src="atletasPontuados.clubes[t.clube_id].Escudos['30x30']">
-                </p>
-              </figure>
-              <div class="media-content">
-                <div class="content">
-                  <p>
-                    <strong>{{ t.apelido }}</strong><small> {{ posicao(t) }}</small>
-                  </p>
+          <div>
+            <div v-for="(atl, k) of timeComMaisAtletas">
+              <article class="media">
+                <div class="media-content">
+                  <div class="content">
+                    <p>
+                      <small class="is-pulled-left" v-if="timesPorClubeId[jogoRodada.clube_casa_id][k]">{{timesPorClubeId[jogoRodada.clube_casa_id][k].pontuacao}} <strong> {{timesPorClubeId[jogoRodada.clube_casa_id][k].apelido}}</strong></small>
+                      <small class="is-pulled-right" v-if="timesPorClubeId[jogoRodada.clube_visitante_id][k]"><strong>{{timesPorClubeId[jogoRodada.clube_visitante_id][k].apelido}} </strong> {{timesPorClubeId[jogoRodada.clube_visitante_id][k].pontuacao}}</small>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </article>
-            <hr class="hr-atleta">
+              </article>
+              <hr class="hr-atleta">
+            </div>
+          </div>
+          <div>
           </div>
         </section>
         <footer class="modal-card-foot">
@@ -49,6 +55,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
 
   props: ['jogoRodada', 'ativar'],
@@ -56,8 +64,9 @@ export default {
   data () {
     return {
       pontuados: {},
-      timeCasa: [],
-      timeVisitante: []
+      timesPorClubeId: [],
+      ordenarPor: 'posicao_id',
+      ordenarAsc: 1
     }
   },
 
@@ -66,35 +75,59 @@ export default {
       this.$emit('update:ativar', false)
     },
 
-    getJogadoresTimeCasa: function (timeId) {
-      pontuados.atletas.forEach((e, k) => {
-        if (e.clubeId === timeId) {
-          e.alteta_id = k
-          timeCasa.push(e)
+    criaTimesPorClubeId: function () {
+      this.timesPorClubeId = []
+      Object.keys(this.pontuados.atletas).forEach((atl, id) => {
+        let tempAtl = this.pontuados.atletas[atl]
+        if (!(this.timesPorClubeId[tempAtl.clube_id] instanceof Array)) {
+          this.timesPorClubeId[tempAtl.clube_id] = []
         }
-      }, this)
+        tempAtl.atleta_id = atl
+        this.timesPorClubeId[tempAtl.clube_id].push(tempAtl)
+      })
     },
 
-    getJogadoresTimeVisitante: function (timeId) {
-      pontuados.atletas.forEach((e, k) => {
-        if (e.clubeId === timeId) {
-          e.alteta_id = k
-          timeCasa.push(e)
-        }
-      }, this)
-    },
-
-    somaPontuacao: function (time) {
+    somaPontuacao: function (timeId) {
       let soma = 0
-      for (k of time) {
-        soma += time.pontuacao
+      for (let k of this.timesPorClubeId[timeId]) {
+        if (k.pontuacao) {
+          soma += parseFloat(k.pontuacao)
+        }
       }
+      return soma.toFixed(2)
+    },
+
+    getDateFormat: function (dt) {
+      let d = moment(dt)
+      return d.format('DD/MM HH:mm')
+    },
+
+    ordenaTimes: function () {
+      this.timesPorClubeId.forEach((t, k) => {
+        this.timesPorClubeId[k].sort((t1, t2) => {
+          if (t1[this.ordenarPor] && t2[this.ordenarPor]) {
+            if (t1[this.ordenarPor] > t2[this.ordenarPor]) return this.ordenarAsc
+            if (t1[this.ordenarPor] && t1[this.ordenarPor] < t2[this.ordenarPor]) return (this.ordenarAsc * -1)
+          }
+          return 0
+        })
+      })
+    },
+
+    cleanConfigs: function () {
+      this.ordenarPor = 'posicao_id'
+      this.ordenarAsc = 1
     }
+  },
+
+  watch: {
+    'ativar': 'cleanConfigs'
   },
 
   created: function () {
     this.$kartolafc.pontuados.getPontuados(p => {
       this.pontuados = p
+      this.criaTimesPorClubeId()
     })
 
     document.addEventListener('keydown', (e) => {
@@ -105,10 +138,22 @@ export default {
   },
 
   computed: {
+    timeComMaisAtletas: function () {
+      let totalCasa = this.timesPorClubeId[this.jogoRodada.clube_casa_id].length
+      let totalVisitante = this.timesPorClubeId[this.jogoRodada.clube_visitante_id].length
+      this.ordenaTimes()
+      return totalCasa > totalVisitante ? this.timesPorClubeId[this.jogoRodada.clube_casa_id] : this.timesPorClubeId[this.jogoRodada.clube_visitante_id]
+    }
   }
 }
 </script>
 
 <style>
+.hr {
+  margin: 0.2rem 0.2rem
+}
 
+.hr-atleta {
+  margin: 0.1rem 0.1rem
+}
 </style>

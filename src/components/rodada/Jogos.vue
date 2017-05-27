@@ -42,7 +42,7 @@
                           <img :src="partida.clubes[p.clube_visitante_id].Escudos['30x30']" alt="Escudo">
                         </picture>
                       </div>
-                      <i class="tag is-dark is-small" @click="exibirdetalhes(p)">Detalhes</i>
+                      <i class="button tag is-dark" @click="exibirdetalhes(p)">Detalhes</i>
                     </div>
                   </div>
                 </div>
