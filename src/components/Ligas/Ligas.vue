@@ -14,11 +14,11 @@
                 </div>
                 <div class="field">
                   <p class="control">
-                    <button @click="searchLigas" class="button is-success ">Pesquisar</button>
+                    <button @click="searchLigas" class="button is-success">Pesquisar</button>
                   </p>
                 </div>
                 <div v-for="(liga, k) of ligas">
-                  <div class="box">
+                  <div class="">
                     <div class="media">
                       <div class="media-left">
                         <figure class="image is-48x48">
@@ -28,18 +28,38 @@
                       <div class="media-content">
                         <div class="content">
                           <p>
-                            <strong>{{ liga.nome }}</strong>
+                            <strong class="title is-5">{{ liga.nome }}</strong>
                             <br/>
-                            <small>Descricao: </small> <small>{{ liga.descricao }}</small>
-                            <br/>
-                            <small>Tipo: </small> <small>{{ liga.tipo }}</small>
-                            <br/>
-                            <a class="is-link" @click="salvarTimesLiga(liga)">Adicionar times desta liga</a>
+                            <small class="subtitle is-6 is-small is-clearfix">Descricao: {{ liga.descricao }}</small>
+                            <small class="is-clearfix">Tipo: {{ liga.tipo }}</small>
+                            <a class="is-link" @click="salvarLiga(liga)">Adicionar liga</a>
                           </p>
                         </div>
                       </div>
                     </div>
-                  <div>
+                </div>
+                <hr class='hr'>
+              </div>
+              <div>
+                <div v-for="(l, k) of minhasLigas">
+                  <div class="card-content">
+                    <div class="media">
+                      <div class="media-left">
+                        <figure class="image is-48x48">
+                          <img :src="l.liga.url_flamula_svg" alt="Image">
+                        </figure>
+                      </div>
+                      <div class="media-content">
+                        <p class="title is-6">{{ l.liga.nome }}</p>
+                        <div class="subtitle is-6">
+                          <p>Total de times: {{ l.liga.total_times_liga }}</p>
+                          <div class="block">
+                            <router-link class="button is-info is-small" :to="{name:'Liga', params: { slug: l.liga.slug }}">Ver Liga</router-link>
+                            <a class="button is-danger is-small" @click="removerLiga(k)">Remover</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -50,6 +70,7 @@
         </div>
       </div>
       </div>
+      <notificacao :ativar="modal.ativar" :mensagem="modal.mensagem" @update:ativar="v => modal.ativar=v"></notificacao>
     </section>
   </div>
 </template>
@@ -57,42 +78,79 @@
 <script>
 import {http} from '@/axios'
 import db from './../../dexie'
+import ModalNotificacao from './../shared/ModalNotificacao'
 
 export default {
+  components: {
+    'notificacao': ModalNotificacao
+  },
+
   data () {
     return {
+      modal: {
+        mensagem: '',
+        ativar: false
+      },
       pesquisaLigas: '',
-      ligas: []
+      ligas: [],
+      ligasASeremGravadas: {},
+      minhasLigas: []
     }
   },
   methods: {
     searchLigas: function () {
-      var self = this
-      http.get('/ligas/' + this.pesquisaLigas).then(function (r) {
+      this.$Progress.start()
+      http.get('/ligas/' + this.pesquisaLigas).then(r => {
+        this.$Progress.finish()
         if (r.data) {
-          self.ligas = r.data
+          this.ligas = r.data
         } else {
-          self.ligas = []
+          this.ligas = []
         }
       })
     },
 
-    salvarTimesLiga: function (liga) {
+    salvarLiga: function (liga) {
       http.get('/liga/' + liga.slug + '/' + 1).then(r => {
         if (r.data) {
+          if (r.data.liga.total_times_liga > 100) {
+            this.mensagemLigaCemTimes()
+            return
+          }
+          this.$Progress.start()
           for (let i = 0; i <= parseInt(parseInt(r.data.liga.total_times_liga) / 20); i++) {
             if (i === 6) {
               break
             }
-            this.salvarTimesLigaPage(liga, (i + 1))
+            // salva os times na tabela de times
+            this.ligasASeremGravadas = {}
+            this.salvarTimesLigaPage(liga, (i + 1), l => {
+              db.ligas.get(l.liga.slug, item => {
+                this.$Progress.increase(10)
+                if (this.ligasASeremGravadas.times) {
+                  this.ligasASeremGravadas.times = this.ligasASeremGravadas.times.concat(l.times)
+                } else {
+                  this.ligasASeremGravadas = l
+                }
+                if (this.ligasASeremGravadas.times.length >= parseInt(this.ligasASeremGravadas.liga.total_times_liga)) {
+                  db.ligas.put(this.ligasASeremGravadas).then(r => {
+                    this.$Progress.finish()
+                    this.mensagemLigaSalva()
+                  }).catch(err => {
+                    console.log(err)
+                  })
+                }
+              })
+            })
           }
         }
       })
     },
 
-    salvarTimesLigaPage: function (liga, page) {
+    salvarTimesLigaPage: function (liga, page, callback) {
       http.get('/liga/' + liga.slug + '/' + page).then(r => {
         if (r.data) {
+          callback(r.data)
           r.data.times.forEach(time => {
             this.salvarTime(time.time_id)
           })
@@ -102,13 +160,47 @@ export default {
 
     salvarTime: function (timeId) {
       this.$kartolafc.time.getTime(timeId, t => {
-        db.meusTimes.update(timeId, {favorito: true}).catch(err => { console.log(err) })
+        db.meusTimes.update(timeId, {favorito_liga: true}).catch(err => { console.log(err) })
+      })
+    },
+
+    mensagemLigaCemTimes: function () {
+      this.modal.mensagem = 'Liga com mais de 100 times, não é possivel adicionar'
+      this.moda.ativar = true
+    },
+
+    mensagemLigaSalva: function () {
+      this.modal.mensagem = 'Liga salva'
+      this.modal.ativar = true
+      this.ligas = []
+      this.getMinhasLigas()
+    },
+
+    getMinhasLigas: function () {
+      db.ligas.toArray(d => {
+        this.minhasLigas = d
+      })
+    },
+
+    removerLiga: function (k) {
+      db.ligas.delete(this.minhasLigas[k].liga.slug).then(r => {
+        this.minhasLigas.splice(k, 1)
+      }).catch(err => {
+        console.log(err)
       })
     }
+  },
+
+  created: function () {
+    this.getMinhasLigas()
   }
+
 }
 </script>
 
 <style>
+.hr {
+  margin: 0.3rem 0.3rem
+}
   
 </style>

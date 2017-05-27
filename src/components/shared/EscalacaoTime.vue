@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div v-if="time.time" class="modal" :class="active != false ? 'is-active' : ''">
+    <div v-if="time.time" class="modal" :class="active != false ? 'is-active' : ''" @click="closeModal()">
       <div class="modal-background"></div>
-      <div class="modal-card">
+      <div class="modal-card" @click.stop>
         <header class="modal-card-head">
           <p class="modal-card-title">
             <picture class="image is-24x24 is-pulled-right">
               <img :src="time.time.url_escudo_svg">
             </picture>
-            <strong class="title">{{time.time.nome}}</strong></br>
-            <small class="subtitle is-small">{{time.time.nome_cartola}}</small>
+            <strong class="title is-5">{{time.time.nome}}</strong></br>
+            <small class="subtitle is-small is-6">{{time.time.nome_cartola}}</small>
             <picture class="image is-24x24 is-pulled-right">
               <img :src="time.time.foto_perfil">
             </picture>
@@ -120,6 +120,12 @@ export default {
   created: function () {
     this.$kartolafc.pontuados.getPontuados(p => {
       this.atletasPontuados = p
+    })
+
+    document.addEventListener('keydown', (e) => {
+      if (this.active === true && e.keyCode === 27) {
+        this.closeModal()
+      }
     })
   }
 }
