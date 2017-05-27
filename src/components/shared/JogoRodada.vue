@@ -59,7 +59,7 @@ import moment from 'moment'
 
 export default {
 
-  props: ['jogoRodada', 'ativar'],
+  props: ['jogoRodada', 'ativar', 'rodada'],
 
   data () {
     return {
@@ -117,6 +117,9 @@ export default {
     cleanConfigs: function () {
       this.ordenarPor = 'posicao_id'
       this.ordenarAsc = 1
+      if (this.pontuados.rodada !== this.rodada) {
+        this.$emit('update:ativar', 'erro rodada')
+      }
     }
   },
 

@@ -49,8 +49,8 @@
               </article>
             </div>
             <div>
-              <notificacao :ativar="alerta" :mensagem="'Não foi possivel obter a rodada ' + rodadaAtual + ' ou ainda não está disponível'" @update:ativar="v => alerta=v"></notificacao>
-              <detalhes-jogo :ativar="detalhes.ativar" :jogoRodada="detalhes.jogo" @update:ativar="v => detalhes.ativar=v"></detalhes-jogo>
+              <notificacao :ativar="alerta" :mensagem="mensagem" @update:ativar="v => alerta=v"></notificacao>
+              <detalhes-jogo :ativar="detalhes.ativar" :rodada="partida.rodada" :jogoRodada="detalhes.jogo" @update:ativar="v => { if (v=='erro rodada') { setMensagem('Rodada sem pontuação no momento'); detalhes.ativar=false; alerta=true } else { detalhes.ativar=v } }"></detalhes-jogo>
             </div>
           </div>
         </div>
@@ -79,7 +79,8 @@ export default {
       },
       partida: {},
       rodadaAtual: 0,
-      alerta: false
+      alerta: false,
+      mensagem: ''
     }
   },
 
@@ -87,6 +88,7 @@ export default {
     getPartida: function (rodada = 0) {
       this.$Progress.start()
       this.$Progress.increase(50)
+      this.setMensagem()
       http.get('/partidas/' + rodada).then(r => {
         if (r.data.rodada) {
           this.partida = r.data
@@ -122,6 +124,13 @@ export default {
     exibirdetalhes: function (j) {
       this.detalhes.ativar = true
       this.detalhes.jogo = j
+    },
+
+    setMensagem: function (m = '') {
+      if (m === '') {
+        m = 'Não foi possivel obter a rodada ' + this.rodadaAtual + ' ou ainda não está disponível'
+      }
+      this.mensagem = m
     }
   },
 
