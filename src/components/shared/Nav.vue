@@ -1,7 +1,7 @@
 <template>
     <div>
         <nav class="nav has-shadow">
-            <div class="nav-left">
+            <div class="nav-left-overflow nav-left">
               <router-link class="nav-item" to="/"><img src="/static/img/logo.png" alt="KartolaFC logo">&nbspartolaFC</router-link>
               <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/' ? 'is-active': ''" to="/">Inicio</router-link>
               <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/times' ? 'is-active' : ''" to="/times">Times</router-link>
@@ -84,6 +84,8 @@ export default {
 }
 </script>
 
-<style>
-    
+<style scoped>
+    .nav-left-overflow {
+      overflow: visible; 
+    }
 </style>
