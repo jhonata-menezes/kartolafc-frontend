@@ -16,7 +16,7 @@ export default new Router({
     name: 'Home',
     component: Home
   }, {
-    path: '/time/:id',
+    path: '/time/id/:id',
     name: 'Time',
     component: Time
   }, {

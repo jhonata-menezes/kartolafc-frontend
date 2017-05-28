@@ -1,31 +1,32 @@
 <template>
   <div>
-    <h1>Time: {{ time.nome }}</h1>
-    <h3>Nome Cartola: {{ time.nome_cartola }}</h3>
-
-</div>
+    <escalacao-time :timemodal="time" :active="modal.ativar" @update:active="val => modal.ativar = val" ></escalacao-time>
+  </div>
 </template>
 
 <script>
-import {http} from './../../axios'
+import TemplateTime from './../shared/EscalacaoTime'
 
 export default {
+  components: {
+    'escalacao-time': TemplateTime
+  },
+
   data () {
     return {
+      modal: {
+        ativar: false
+      },
       time: {}
     }
   },
-  props: {
-    //
-  },
+
   mounted: function () {
     if (this.$route.params.id) {
-      var self = this
-      http.get('/time/id/' + this.$route.params.id).then(function (r) {
-        if (r.data.time) {
-          self.time = r.data.time
-        } else {
-          self.time = {}
+      this.$kartolafc.time.getTime(this.$route.params.id, t => {
+        if (t) {
+          this.time = t
+          this.modal.ativar = true
         }
       })
     }

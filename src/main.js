@@ -9,6 +9,7 @@ import kartolafc from './pluginKartolafc'
 import VueProgressBar from 'vue-progressbar'
 import 'bulma/css/bulma.css'
 import 'font-awesome/css/font-awesome.css'
+import SocialSharing from 'vue-social-sharing'
 
 let optionsProgress = {
   color: '#00d1b2',
@@ -22,6 +23,7 @@ let optionsProgress = {
   autoRevert: true
 }
 
+Vue.use(SocialSharing)
 Vue.use(kartolafc)
 Vue.use(VueProgressBar, optionsProgress)
 

@@ -48,8 +48,18 @@
             <p>Time não escalado</p>
           </div>
         </section>
-        <!--<footer class="modal-card-foot">
-        </footer>-->
+        <footer class="modal-card-foot" v-if="time.time">
+          <social-sharing :url="'https://kartolafc.com.br/#/time/id/' + time.time.time_id"  :title="time.time.nome" :description="'Veja minha pontuação e time no KartolaFC ' + somaPontuacao(time)" inline-template>
+            <div class="title is-5"> Compartilhar 
+                <network network="facebook">&nbsp 
+                  <i class="fa fa-facebook"></i>
+                </network>&nbsp &nbsp
+                <network network="whatsapp">
+                  <i class="fa fa-whatsapp"></i>
+                </network>
+            </div>
+          </social-sharing>
+        </footer>
       </div>
     </div>
   </div>

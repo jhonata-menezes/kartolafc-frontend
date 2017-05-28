@@ -23,7 +23,8 @@
     "vue": "^2.2.6",
     "vue-analytics": "^4.1.2",
     "vue-progressbar": "^0.7.2",
-    "vue-router": "^2.3.1"
+    "vue-router": "^2.3.1",
+    "vue-social-sharing": "^2.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
