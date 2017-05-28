@@ -11,12 +11,12 @@
             <strong class="title is-5">{{time.time.nome}}</strong></br>
             <small class="subtitle is-small is-6">{{time.time.nome_cartola}}</small>
             <picture class="image is-24x24 is-pulled-right">
-              <img :src="time.time.foto_perfil">
+              <img :src="time.time.foto_perfil" @error="defaultImage(time)">
             </picture>
           </p>
           <button class="delete" @click="closeModal()"></button>
         </header>
-        <section class="modal-card-body" v-if="time.atletas.length >= 1">
+        <section class="modal-card-body" v-if="time.atletas">
           <div class="has-text-centered">
             <b>Rodada</b>: {{ time.rodada_atual }} <b> Pontuação</b>: {{ somaPontuacao(time) }}
             <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
@@ -107,6 +107,11 @@ export default {
           }
         })
       }
+      return true
+    },
+
+    defaultImage: function (src) {
+      src.time.foto_perfil = '/static/img/icon.png'
       return true
     }
   },

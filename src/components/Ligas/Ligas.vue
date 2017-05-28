@@ -9,7 +9,7 @@
               <div>
                 <div class="field">
                   <p class="control">
-                    <input type="text" class="input" v-model="pesquisaLigas" placeholder="Pesquisar Ligas" autofocus @keyup.enter="searchLigas">
+                    <input type="text" class="input" v-model="pesquisaLigas" placeholder="Pesquisar Ligas" @keyup.enter="searchLigas">
                   </p>
                 </div>
                 <div class="field">
@@ -22,7 +22,7 @@
                     <div class="media">
                       <div class="media-left">
                         <figure class="image is-48x48">
-                          <img :src="liga.imagem" alt="Escudo">
+                          <img :src="liga.imagem" alt="Escudo" @error="defaultImage(liga)">
                         </figure>
                       </div>
                       <div class="media-content">
@@ -188,6 +188,11 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+
+    defaultImage: function (liga) {
+      liga.imagem = '/static/img/icon.png'
+      return true
     }
   },
 

@@ -20,11 +20,11 @@
                   </p>
                 </div>
                 <div v-for="(time, k) of retornoTimes">
-                  <div class="box">
+                  <div class="">
                     <div class="media">
                       <div class="media-left">
                         <figure class="image is-48x48">
-                          <img :src="time.url_escudo_svg" alt="Escudo">
+                          <img :src="time.url_escudo_svg" alt="Escudo" @error="defaultImage(time)">
                         </figure>
                       </div>
                       <div class="media-left">
@@ -60,9 +60,8 @@
                         </figure>
                       </div>
                     </div>
-                  <div>
-                  </div>
                 </div>
+                <hr class="hr">
               </div>
             </div>
             </div>
@@ -73,7 +72,7 @@
                 <div class="media">
                   <div class="media-left">
                     <figure class="image is-48x48">
-                      <img :src="time.time.url_escudo_svg" alt="Image">
+                      <img :src="time.time.url_escudo_svg" alt="Image" @error="defaultImage(time.time)">
                     </figure>
                   </div>
                   <div class="media-left is-hidden-mobile">
@@ -243,6 +242,11 @@ export default {
     ativarModal: function (time) {
       this.modal.active = true
       this.modal.time = time
+    },
+
+    defaultImage: function (time) {
+      time.url_escudo_svg = '/static/img/icon.png'
+      return true
     }
 
   },
@@ -286,4 +290,11 @@ export default {
 </script>
 
 <style scoped>
+.hr {
+  margin: 0.2rem 0.2rem
+}
+
+.hr-atleta {
+  margin: 0.1rem 0.1rem
+}
 </style>
