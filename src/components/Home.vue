@@ -7,7 +7,7 @@
       </div>
       <div>
         <div class="columns">
-          <div class="column is-4" v-if="status.status_mercado === 2">
+          <div class="column is-4" v-if="status.status_mercado == 2">
             <div class="">
               <p class="title">Pontuação</p>
               <div>
@@ -270,6 +270,7 @@ export default {
     this.getDestaques()
     this.getMeuTime()
     this.getMercado()
+    this.getStatus()
     this.$kartolafc.pontuados.getPontuados(p => { this.pontuados = p })
   },
 
