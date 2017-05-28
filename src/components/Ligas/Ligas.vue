@@ -135,7 +135,7 @@ export default {
                 if (this.ligasASeremGravadas.times.length >= parseInt(this.ligasASeremGravadas.liga.total_times_liga)) {
                   db.ligas.put(this.ligasASeremGravadas).then(r => {
                     this.$Progress.finish()
-                    this.mensagemLigaSalva()
+                    // this.mensagemLigaSalva()
                   }).catch(err => {
                     console.log(err)
                   })

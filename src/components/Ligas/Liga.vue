@@ -127,7 +127,7 @@ export default {
                   soma += p.atletas[atl.atleta_id].pontuacao
                 }
               }
-              if (this.liga.times[k].pontuacao >= 0) {
+              if (this.liga.times[k].pontuacao !== undefined) {
                 this.liga.times[k].pontuacao = soma
               } else {
                 this.$set(this.liga.times[k], 'pontuacao', soma)

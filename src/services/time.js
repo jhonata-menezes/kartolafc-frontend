@@ -7,8 +7,15 @@ const getTime = function (timeId, callback) {
     db.meusTimes.get(timeId, item => {
       if (item) {
         if (item.status_mercado === s.status_mercado && item.rodada_atual === s.rodada_atual) {
-          // mantem esse time enquanto o mercado e a rodada forem iguais
-          callback(item)
+          // alguns times pode estar com nome vazio
+          if (item.time.nome === undefined || item.time.nome === '') {
+            db.meusTimes.delete(timeId).then(() => {
+              getTime(timeId, callback)
+            })
+          } else {
+            // mantem esse time enquanto o mercado e a rodada forem iguais
+            callback(item)
+          }
         } else {
           db.meusTimes.delete(timeId).then(() => {
             getTime(timeId, callback)
