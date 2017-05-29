@@ -8,6 +8,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
 
 var path = require('path')
 var manifestPlugin = require('pwa-manifest-webpack-plugin')
@@ -104,6 +105,10 @@ var webpackConfig = merge(baseWebpackConfig, {
                 src: path.resolve('src/assets/logo.png'),
                 sizes: [800]
             }
+        }),
+
+        new ServiceWorkerWebpackPlugin({
+          entry: path.resolve('src/serviceWorker/sw.js'),
         }),
     ]
 })
