@@ -105,9 +105,9 @@ export default {
     ordenaTimes: function () {
       this.timesPorClubeId.forEach((t, k) => {
         this.timesPorClubeId[k].sort((t1, t2) => {
-          if (t1[this.ordenarPor] && t2[this.ordenarPor]) {
+          if (t1[this.ordenarPor] !== undefined && t2[this.ordenarPor] !== undefined) {
             if (t1[this.ordenarPor] > t2[this.ordenarPor]) return this.ordenarAsc
-            if (t1[this.ordenarPor] && t1[this.ordenarPor] < t2[this.ordenarPor]) return (this.ordenarAsc * -1)
+            if (t1[this.ordenarPor] < t2[this.ordenarPor]) return (this.ordenarAsc * -1)
           }
           return 0
         })
