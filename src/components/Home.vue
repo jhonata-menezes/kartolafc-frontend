@@ -168,7 +168,6 @@ export default {
   },
   methods: {
     searchTimes: function () {
-      event.preventDefault()
       if (this.pesquisaTimes) {
         var self = this
         http.get('/times/' + this.pesquisaTimes).then(function (r) {
