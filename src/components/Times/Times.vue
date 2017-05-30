@@ -67,8 +67,8 @@
             </div>
            <div>
              <br/>
-            <div class="card" v-for="(time, k) of timesOrdenados">
-              <div class="card-content">
+            <div class="" v-for="(time, k) of timesOrdenados">
+              <div class="">
                 <div class="media">
                   <div class="media-left">
                     <figure class="image is-48x48">
@@ -93,6 +93,7 @@
                     </div>
                   </div>
                 </div>
+                <hr class="hr">
               </div>
             </div>
           </div>
@@ -291,10 +292,7 @@ export default {
 
 <style scoped>
 .hr {
-  margin: 0.2rem 0.2rem
+  margin: 0.3rem 0.3rem
 }
 
-.hr-atleta {
-  margin: 0.1rem 0.1rem
-}
 </style>

@@ -8,8 +8,8 @@
               <span class="tag is-warning">Em Testes</span>
             </p>              
             <div class="">
-              <div class="card" v-for="(time, k) of rankingGeralTimes">
-                <div class="card-content">
+              <div class="" v-for="(time, k) of rankingGeralTimes">
+                <div class="">
                   <div class="media">
                     <div class="media-left">
                       <figure class="image is-32x32">
@@ -22,9 +22,9 @@
                       </figure>
                     </div>
                     <div class="media-content">
-                      <p class="title is-4">{{ time.time.nome }}</p>
+                      <p class="title is-5">{{ time.time.nome }}</p>
                       <div class="subtitle is-6">
-                        <p>Cartoleiro: {{ time.time.nome_cartola }}</p>
+                        <p>{{ time.time.nome_cartola }}</p>
                         <p>Posição: {{ time.posicao }}</p>
                         <p>Pontuação: {{ time.pontuacao.toFixed(2) }}</p>
                         <p>Pró: {{ time.time.assinante ? 'sim' : 'não' }}</p>
@@ -33,6 +33,7 @@
                     </div>
                   </div>
                 </div>
+                <hr class="hr">
               </div>
             </div>
             <div class="block">
@@ -123,5 +124,7 @@ export default {
 </script>
 
 <style scoped>
-
+.hr {
+  margin: 0.3rem 0.3rem
+}
 </style>
