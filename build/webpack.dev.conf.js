@@ -5,6 +5,7 @@ var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
 
 var path = require('path')
 var manifestPlugin = require('pwa-manifest-webpack-plugin')
@@ -48,6 +49,10 @@ module.exports = merge(baseWebpackConfig, {
                 'gcm',
             ],
             gcm_sender_id: '479994576468'
+        }),
+
+        new ServiceWorkerWebpackPlugin({
+          entry: path.resolve('src/serviceWorker/sw.js'),
         }),
     ]
 })

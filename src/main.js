@@ -10,7 +10,9 @@ import VueProgressBar from 'vue-progressbar'
 import 'bulma/css/bulma.css'
 import 'font-awesome/css/font-awesome.css'
 import SocialSharing from 'vue-social-sharing'
+import subscribeNotification from './serviceWorker/register'
 
+subscribeNotification.subscribeNotification()
 let optionsProgress = {
   color: '#00d1b2',
   failedColor: '#874b4b',

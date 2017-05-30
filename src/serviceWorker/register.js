@@ -1,24 +1,33 @@
 
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-  // W1HAZf9KEso6B9PgCM0xqF_d4KBFe88qKGu-KtAkuvA
-  const serverKey = urlB64ToUint8Array('BLScgOU8V52zWJDoRKwIrrq4E56goGdMtpVVbDv3Nx0eVQhLgvSDFVRdfXIfPN1vSEB1m56Z47K5c8PoyxrihLk')
-  navigator.serviceWorker.register('sw.js').then(
-    function (serviceWorkerRegistration) {
-      var options = {
-        userVisibleOnly: true,
-        applicationServerKey: serverKey
-      }
-      serviceWorkerRegistration.pushManager.subscribe(options).then(
-        function (pushSubscription) {
-          console.log('OK', JSON.stringify(pushSubscription, pushSubscription))
-          // The push subscription details needed by the application
-          // server are now available, and can be sent to it using,
-          // for example, an XMLHttpRequest.
-        }, function (error) {
-        console.log('ERROR', error)
-      }
-    )
+import {http} from './../axios'
+
+const subscribeNotification = () => {
+  if ('serviceWorker' in navigator && 'PushManager' in window && Notification && Notification.permission === 'granted') {
+    // W1HAZf9KEso6B9PgCM0xqF_d4KBFe88qKGu-KtAkuvA
+    const serverKey = urlB64ToUint8Array('BLScgOU8V52zWJDoRKwIrrq4E56goGdMtpVVbDv3Nx0eVQhLgvSDFVRdfXIfPN1vSEB1m56Z47K5c8PoyxrihLk')
+    let options = {
+      userVisibleOnly: true,
+      applicationServerKey: serverKey
+    }
+    navigator.serviceWorker.register('sw.js').then(() => {
+      navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
+        serviceWorkerRegistration.pushManager.permissionState(options).then(state => {
+          if (state === 'granted') {
+            return
+          }
+          serviceWorkerRegistration.pushManager.subscribe(options).then(pushSubscription => {
+            http.post('http://127.0.0.1:5015/notificacao/adicionar', pushSubscription).catch(err => {
+              console.log('request das chaves', err)
+            })
+          }).catch(error => {
+            console.log('error on subscribe', error)
+          })
+        })
+      }).catch(err => {
+        console.log(err)
+      })
     })
+  }
 }
 
 function urlB64ToUint8Array (base64String) {
@@ -35,3 +44,5 @@ function urlB64ToUint8Array (base64String) {
   }
   return outputArray
 }
+
+export default {subscribeNotification}

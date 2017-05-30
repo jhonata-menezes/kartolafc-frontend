@@ -1,43 +1,32 @@
 
 'use strict'
 
-/* eslint-disable max-len */
-
 self.addEventListener('push', function (event) {
-  console.log('[Service Worker] Push Received.')
-  console.log(`[Service Worker] Push had this data: "${event.data.text()}"`)
+  let n = event.data.json()
+  if (Notification.permission === 'granted') {
+    return
+  }
 
-  const title = 'Push Codelab'
+  if (!n.title && !n.body) {
+    console.log('titulo e corpo vazio, impossivel notificar')
+  }
+
+  const title = n.title
   const options = {
-    body: 'Yay it works.',
-    icon: 'static/img/icon.png',
-    badge: 'images/badge.png'
+    body: n.body,
+    icon: n.icon || '/static/img/icon.png',
+    badge: n.badge || '/static/img/icon.png',
+    dir: 'auto',
+    requireInteraction: false,
+    data: n
   }
 
   event.waitUntil(self.registration.showNotification(title, options))
 })
 
 self.addEventListener('notificationclick', function (event) {
-  console.log('[Service Worker] Notification click Received.')
-
   event.notification.close()
-
   event.waitUntil(
-    clients.openWindow('https://developers.google.com/web/')
-  )
-})
-
-self.addEventListener('pushsubscriptionchange', function (event) {
-  console.log('[Service Worker]: \'pushsubscriptionchange\' event fired.')
-  const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey)
-  event.waitUntil(
-    self.registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: applicationServerKey
-    })
-    .then(function (newSubscription) {
-      // TODO: Send to application server
-      console.log('[Service Worker] New subscription: ', newSubscription)
-    })
+    clients.openWindow(event.notification.data.link)
   )
 })
