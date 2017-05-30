@@ -173,7 +173,6 @@ export default {
         http.get('/times/' + this.pesquisaTimes).then(function (r) {
           if (r.data.times) {
             self.retornoTimes = r.data.times
-            // console.log(r.data)
           } else {
             self.retornoTimes = []
           }
