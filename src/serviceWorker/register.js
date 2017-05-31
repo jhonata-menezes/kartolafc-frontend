@@ -3,8 +3,7 @@ import {http} from './../axios'
 
 const subscribeNotification = () => {
   if ('serviceWorker' in navigator && 'PushManager' in window && Notification && Notification.permission === 'granted') {
-    // W1HAZf9KEso6B9PgCM0xqF_d4KBFe88qKGu-KtAkuvA
-    const serverKey = urlB64ToUint8Array('BLScgOU8V52zWJDoRKwIrrq4E56goGdMtpVVbDv3Nx0eVQhLgvSDFVRdfXIfPN1vSEB1m56Z47K5c8PoyxrihLk')
+    const serverKey = urlB64ToUint8Array('BJ9RwyNNNAEdhA6D0fSNs1a9lLxXoQC32gxIz6MH1eNqfFimIlTaHfLz2Z1wYYkOCzXM9UFQrZwqKktEefajy0E')
     let options = {
       userVisibleOnly: true,
       applicationServerKey: serverKey
@@ -16,7 +15,7 @@ const subscribeNotification = () => {
             return
           }
           serviceWorkerRegistration.pushManager.subscribe(options).then(pushSubscription => {
-            http.post('http://127.0.0.1:5015/notificacao/adicionar', pushSubscription).catch(err => {
+            http.post('/notificacao/adicionar', pushSubscription).catch(err => {
               console.log('request das chaves', err)
             })
           }).catch(error => {
