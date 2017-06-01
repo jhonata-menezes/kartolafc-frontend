@@ -3,12 +3,13 @@
 
 self.addEventListener('push', function (event) {
   let n = event.data.json()
-  if (Notification.permission === 'granted') {
+  if (Notification.permission !== 'granted') {
     return
   }
 
   if (!n.title && !n.body) {
     console.log('titulo e corpo vazio, impossivel notificar')
+    return
   }
 
   const title = n.title
@@ -18,6 +19,7 @@ self.addEventListener('push', function (event) {
     badge: n.badge || '/static/img/icon.png',
     dir: 'auto',
     requireInteraction: false,
+    vibrate: [200, 100, 200],
     data: n
   }
 

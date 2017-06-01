@@ -101,6 +101,9 @@ var webpackConfig = merge(baseWebpackConfig, {
             name: 'KartolaFC',
             description: 'KartolaFC - Veja pontuação do seu time e colegas.',
             display: 'fullscreen',
+            short_name: 'Kartolafc',
+            start_url: '.',
+            background_color: '#fff',
             icon: {
                 src: path.resolve('src/assets/logo.png'),
                 sizes: [800]

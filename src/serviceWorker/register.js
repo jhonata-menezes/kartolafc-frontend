@@ -11,7 +11,7 @@ const subscribeNotification = () => {
     navigator.serviceWorker.register('sw.js').then(() => {
       navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
         serviceWorkerRegistration.pushManager.permissionState(options).then(state => {
-          if (state === 'granted') {
+          if (state !== 'granted') {
             return
           }
           serviceWorkerRegistration.pushManager.subscribe(options).then(pushSubscription => {

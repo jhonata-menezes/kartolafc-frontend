@@ -39,16 +39,15 @@ module.exports = merge(baseWebpackConfig, {
 
         new manifestPlugin({
             name: 'KartolaFC',
-            description: 'KartolaFC - Veja pontuação do seu time e de seus colegas.',
+            description: 'KartolaFC - Veja pontuação do seu time e colegas.',
             display: 'fullscreen',
+            short_name: 'Kartolafc',
+            start_url: '.',
+            background_color: '#fff',
             icon: {
                 src: path.resolve('src/assets/logo.png'),
                 sizes: [800]
-            },
-            permissions: [
-                'gcm',
-            ],
-            gcm_sender_id: '479994576468'
+            }
         }),
 
         new ServiceWorkerWebpackPlugin({
