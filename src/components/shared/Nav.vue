@@ -85,7 +85,20 @@ export default {
 </script>
 
 <style scoped>
-    .nav-left-overflow {
-      overflow: visible; 
-    }
+.nav-left-overflow {
+  overflow: visible; 
+}
+
+@keyframes menu_transition {
+from {opacity:0;}
+to {opacity:1;}
+}
+.nav-menu.nav-right {
+  opacity:0; 
+}
+.is-active{
+  animation-name: menu_transition;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
 </style>
