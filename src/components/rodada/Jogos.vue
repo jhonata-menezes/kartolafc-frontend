@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="section">
+    <section class="section" :class="loader ? 'clareamento': ''">
       <div class="container">
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
@@ -56,6 +56,9 @@
         </div>
       </div>
     </section>
+    <div v-show="loader">
+      <div class="loader-request"></div>
+    </div>
   </div>
 </template>
 
@@ -80,12 +83,14 @@ export default {
       partida: {},
       rodadaAtual: 0,
       alerta: false,
-      mensagem: ''
+      mensagem: '',
+      loader: false
     }
   },
 
   methods: {
     getPartida: function (rodada = 0) {
+      this.loader = true
       this.$Progress.start()
       this.$Progress.increase(50)
       this.setMensagem()
@@ -99,11 +104,13 @@ export default {
           this.partida = {}
         }
         this.$Progress.finish()
+        this.loader = false
       }).catch(err => {
         console.log(err)
         this.$Progress.fail()
         this.alerta = true
         this.partida = {}
+        this.loader = false
       })
     },
 

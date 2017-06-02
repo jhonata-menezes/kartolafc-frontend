@@ -28,4 +28,32 @@ export default {
 </script>
 
 <style>
+.loader-request {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #3498db;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin .6s linear infinite;
+  animation: spin .6s linear infinite;
+  margin: auto;
+  padding: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 15;
+  opacity: 1;
+}
+
+.clareamento {
+  opacity: 0.5;
+}
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>

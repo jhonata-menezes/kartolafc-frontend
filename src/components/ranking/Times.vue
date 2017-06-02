@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="section">
+    <section class="section" :class="loader ? 'clareamento': ''">
       <div class="container">
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
@@ -43,6 +43,9 @@
         </div>
       </div>
       <escalacao-time :timemodal="modal.time" :active="modal.active" @update:active="val => modal.active = val"></escalacao-time>
+      <div v-show="loader">
+        <div class="loader-request"></div>
+      </div>
     </section>
   </div>
 </template>
@@ -65,7 +68,8 @@ export default {
       modal: {
         active: false,
         time: {}
-      }
+      },
+      loader: false
     }
   },
 
@@ -81,12 +85,14 @@ export default {
     },
 
     getRankingMelhores: function () {
+      this.loader = true
       http.get('/ranking/melhores').then(r => {
         if (r.data.length >= 1) {
           this.melhoresTimes = r.data
           this.getTimeCompleto()
+          this.loader = false
         }
-      })
+      }).catch(() => { this.loader = false })
     },
 
     getTimeCompleto: function () {

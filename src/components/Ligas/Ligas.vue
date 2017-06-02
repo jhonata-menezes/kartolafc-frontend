@@ -1,6 +1,6 @@
 <template>
   <div>
-     <section class="section">
+     <section class="section" :class="loader ? 'clareamento': ''">
       <div class="container">
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
@@ -71,6 +71,9 @@
       </div>
       </div>
       <notificacao :ativar="modal.ativar" :mensagem="modal.mensagem" @update:ativar="v => modal.ativar=v"></notificacao>
+      <div v-show="loader">
+        <div class="loader-request"></div>
+      </div>
     </section>
   </div>
 </template>
@@ -94,12 +97,14 @@ export default {
       pesquisaLigas: '',
       ligas: [],
       ligasASeremGravadas: {},
-      minhasLigas: []
+      minhasLigas: [],
+      loader: false
     }
   },
   methods: {
     searchLigas: function () {
       this.$Progress.start()
+      this.loader = true
       http.get('/ligas/' + this.pesquisaLigas).then(r => {
         this.$Progress.finish()
         if (r.data) {
@@ -107,7 +112,8 @@ export default {
         } else {
           this.ligas = []
         }
-      })
+        this.loader = false
+      }).catch(() => { this.loader = false })
     },
 
     salvarLiga: function (liga) {

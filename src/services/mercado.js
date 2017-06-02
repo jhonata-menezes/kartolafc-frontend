@@ -2,7 +2,7 @@ import { http } from './../axios'
 import db from './../dexie'
 import getStatus from './status'
 
-const getMercado = (callback) => {
+const requestMercado = (callback) => {
   db.mercado.toArray().then(result => {
     if (result.length >= 1) {
       let mercadoResult = result[0]
@@ -41,6 +41,16 @@ const getMercado = (callback) => {
       })
     }
   })
+}
+
+const getMercado = (callback, force = false) => {
+  if (force === true) {
+    db.mercado.clear().then(() => {
+      requestMercado(callback)
+    })
+  } else {
+    requestMercado(callback)
+  }
 }
 
 export default { getMercado }

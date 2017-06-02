@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="section">
+    <section class="section" :class="loader ? 'clareamento': ''">
       <div class="container">
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
@@ -102,6 +102,9 @@
       </div>
     </section>
     <escalacao-time :timemodal="modal.time" :active="modal.active" @update:active="val => modal.active = val" ></escalacao-time>
+    <div v-show="loader">
+      <div class="loader-request"></div>
+    </div>
   </div>
 </template>
 
@@ -121,7 +124,8 @@ export default {
       retornoTimes: [],
       pesquisaTimes: '',
       pontuados: {},
-      status: {}
+      status: {},
+      loader: false
     }
   },
   methods: {
@@ -229,6 +233,7 @@ export default {
     },
 
     searchTimes: function () {
+      this.loader = true
       if (this.pesquisaTimes) {
         http.get('/times/' + this.pesquisaTimes).then(r => {
           if (r.data.times) {
@@ -236,7 +241,8 @@ export default {
           } else {
             this.retornoTimes = []
           }
-        })
+          this.loader = false
+        }).catch(() => { this.loader = false })
       }
     },
 
