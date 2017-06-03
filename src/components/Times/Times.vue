@@ -9,7 +9,7 @@
               <div>
                 <div class="field">
                   <p class="control">
-                    <input type="text" class="input" v-model="pesquisaTimes" placeholder="Adicionar Times" autofocus @keyup.enter="searchTimes">
+                    <input type="text" class="input" v-model="pesquisaTimes" placeholder="Adicionar Times" @keyup.enter="searchTimes">
                   </p>
                 </div>
                 <div class="field">

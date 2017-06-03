@@ -8,6 +8,7 @@ import RankingTimes from '@/components/ranking/Times'
 import RodadaJogos from '@/components/rodada/Jogos'
 import Liga from '@/components/Ligas/Liga'
 import NotificationComponent from '@/components/configuracao/Notificacao'
+import MercadoAtletas from '@/components/atletas/Mercado'
 
 Vue.use(Router)
 
@@ -44,6 +45,10 @@ export default new Router({
     path: '/configuracao/notificacao',
     name: 'Notificacao',
     component: NotificationComponent
+  }, {
+    path: '/atletas/mercado',
+    name: 'AtletasMercado',
+    component: MercadoAtletas
   }]
   // mode: 'history'
 })

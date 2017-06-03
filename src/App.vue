@@ -31,7 +31,7 @@ export default {
 .loader-request {
   border: 3px solid #f3f3f3;
   border-radius: 50%;
-  border-top: 3px solid #3498db;
+  border-top: 3px solid #00d1b2;
   width: 50px;
   height: 50px;
   -webkit-animation: spin .6s linear infinite;
@@ -40,7 +40,7 @@ export default {
   padding: 10px;
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 45%;
   z-index: 15;
   opacity: 1;
 }
