@@ -1,9 +1,11 @@
 
 import {http} from './../axios'
+import c from './../services/configuracao'
 
 const subscribeNotification = () => {
   if ('serviceWorker' in navigator && 'PushManager' in window && Notification && Notification.permission === 'granted') {
-    const serverKey = urlB64ToUint8Array('BJ9RwyNNNAEdhA6D0fSNs1a9lLxXoQC32gxIz6MH1eNqfFimIlTaHfLz2Z1wYYkOCzXM9UFQrZwqKktEefajy0E')
+    let key = 'BJ9RwyNNNAEdhA6D0fSNs1a9lLxXoQC32gxIz6MH1eNqfFimIlTaHfLz2Z1wYYkOCzXM9UFQrZwqKktEefajy0E'
+    const serverKey = urlB64ToUint8Array(key)
     let options = {
       userVisibleOnly: true,
       applicationServerKey: serverKey
@@ -14,12 +16,24 @@ const subscribeNotification = () => {
           if (state !== 'granted') {
             return
           }
-          serviceWorkerRegistration.pushManager.subscribe(options).then(pushSubscription => {
-            http.post('/notificacao/adicionar', pushSubscription).catch(err => {
-              console.log('request das chaves', err)
-            })
-          }).catch(error => {
-            console.log('error on subscribe', error)
+          c.get(config => {
+            // nao realiza o subscribe se usuario não liberar a notificacao
+            // nao realiza a inscricao mais de uma vez
+            if (config.notificacao && config.notificacao.status === true && config.notificacao.inscrito !== true) {
+              serviceWorkerRegistration.pushManager.subscribe(options).then(pushSubscription => {
+                http.post('/notificacao/adicionar', pushSubscription).then(() => {
+                  // inscricao com sucesso, salvando na tabela para nao inscrever novamente
+                  c.update((v, next) => {
+                    v.notificacao.inscrito = true
+                    next(v)
+                  })
+                }).catch(err => {
+                  console.log('request das chaves', err)
+                })
+              }).catch(error => {
+                console.log('error on subscribe', error)
+              })
+            }
           })
         })
       }).catch(err => {

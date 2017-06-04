@@ -1,13 +1,21 @@
 <template>
   <div>
     <section class="section" :class="loader ? 'clareamento': ''">
-      <div class="container">
+      <div class="">
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
             <p class="title">Pontuação Geral
               <span class="tag is-warning">Em Testes</span>
             </p>              
             <div class="">
+              <div class="field is-grouped is-grouped-centered">
+                <p class="control">
+                  <label class="checkbox">
+                    <input type="checkbox" @click="apenasPro=!apenasPro" :checked="apenasPro">
+                    Apenas cartoleiros pró
+                  </label>
+                </p>
+              </div>
               <div class="" v-for="(time, k) of rankingGeralTimes">
                 <div class="">
                   <div class="media">
@@ -15,21 +23,20 @@
                       <figure class="image is-32x32">
                         <img :src="time.time.foto_perfil" alt="Image">
                       </figure>
-                    </div>
-                    <div class="media-left">
                       <figure class="image is-32x32">
                         <img :src="time.time.url_escudo_svg" alt="Image">
                       </figure>
                     </div>
                     <div class="media-content">
-                      <p class="title is-5">{{ time.time.nome }}</p>
-                      <div class="subtitle is-6">
-                        <p>{{ time.time.nome_cartola }}</p>
-                        <p>Posição: {{ time.posicao }}</p>
-                        <p>Pontuação: {{ time.pontuacao.toFixed(2) }}</p>
-                        <p>Pró: {{ time.time.assinante ? 'sim' : 'não' }}</p>
-                        <a class="button is-info is-small" @click="ativarModal(time)">Ver Time</a>
-                      </div>
+                      <div class="content">
+                        <p>
+                          <small class="title is-5">{{time.posicao}}º {{ time.time.nome }}</small></br>
+                          <small class="tag">{{ time.time.nome_cartola }}</small>
+                          <small class="tag">Pontuação: {{ time.pontuacao.toFixed(2) }}</small>
+                          <small class="tag">Pró: {{ time.time.assinante ? 'sim' : 'não' }}</small></br>
+                          <a class="button is-info is-small" @click="ativarModal(time)">Ver Time</a>
+                        </p>
+                      </div>                      
                     </div>
                   </div>
                 </div>
@@ -69,7 +76,8 @@ export default {
         active: false,
         time: {}
       },
-      loader: false
+      loader: false,
+      apenasPro: false
     }
   },
 
@@ -119,7 +127,12 @@ export default {
         }
         return 0
       })
-      return this.times
+      return this.times.filter(t => {
+        if (this.apenasPro) {
+          return t.time.assinante
+        }
+        return true
+      })
     }
   },
 

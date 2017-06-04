@@ -109,6 +109,7 @@ export default {
           this.notificacaoStatus = !this.notificacaoStatus
           this.$kartolafc.configuracao.update((old, next) => {
             old.notificacao.status = this.notificacaoStatus
+            old.notificacao.inscrito = false
             next(old)
           })
           console.log(this.notificacaoStatus)

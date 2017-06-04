@@ -4,30 +4,64 @@
       <div>
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
-            <div>
-              <h5 class="title is-6 has-text-centered">Mercado de Atletas</h5>
+            <div class="">
+              <h5 class="title is-4 has-text-centered">Mercado de Atletas</h5>
               <div>
-                <div class="has-text-centered">
-                  <span class="tag is-warning is-small">Pontos</span>
-                  <span class="tag is-info is-small">Média</span>
-                  <span class="tag is-dark is-small">Variação</span>
-                  <span class="tag is-success is-small">Jogos</span>
-                  <br/> <br/>
-                </div>
-                <div class="field is-grouped is-grouped-centered">
+                <div class="field has-addons-centered has-addons">
                   <p class="control">
-                    <input class="input is-small is-primary" type="text" v-model="pesquisaNomeAtleta" placeholder="Nome Atleta">
+                    <input class="input is-small is-primary" type="text" v-model="filtros.pesquisaNomeAtleta" placeholder="Nome Atleta">
                   </p>
                   <p class="control">
-                    <span class="select is-small is-primary">
-                      <select v-model="sort.coluna" >
+                    <span class="select is-primary is-small">
+                      <select class='is-small' v-model="sort.coluna" >
                         <option value='preco_num' checked='checked'>Preço</option>
-                        <option value='pontos_num'>Última pontuacao</option>
+                        <option value='pontos_num'>Última pontuação</option>
                         <option value='media_num'>Média de pontos</option>
                         <option value='variacao_num'>Variação</option>
                         <option value='jogos_num'>Participação em jogos</option>
                       </select>
                     </span>
+                  </p>
+                </div>
+                <div class="field is-grouped is-grouped-centered">
+                  <p class="control">
+                    <span class="select is-primary is-small">
+                      <select class='is-small' v-model.number="filtros.posicao_id" >
+                        <option value=0 disabled>Posição</option>
+                        <option value=0 checked='checked'>Todos</option>
+                        <option value=1>Goleiro</option>
+                        <option value=2>Lateral</option>
+                        <option value=3>Zagueiro</option>
+                        <option value=4>Meia</option>
+                        <option value=5>Atacante</option>
+                        <option value=6>Técnico</option>
+                      </select>
+                    </span>
+                  </p>
+                  <p class="control">
+                    <span class="select is-primary is-small">
+                      <select class='is-small' v-model.number="filtros.status_id" >
+                        <option value=7 checked='checked'>Provável</option>
+                        <option value=2>Dúvida</option>
+                        <option value=3>Suspenso</option>
+                        <option value=5>Contundido</option>
+                        <option value=6>Nulo</option>
+                      </select>
+                    </span>
+                  </p>
+                  <p class="control">
+                    <span class="icon is-small" @click="sort.tipo = sort.tipo * -1">
+                      <i class="fa fa-sort-amount-asc" aria-hidden="true" v-if="sort.tipo === 1"></i>
+                      <i class="fa fa-sort-amount-desc" aria-hidden="true" v-else></i>
+                    </span>
+                  </p>
+                </div>
+                <div class="field is-grouped is-grouped-centered">
+                  <p class="control">
+                    <span class="tag is-warning is-small tag-down">Última Pontuação</span>
+                    <span class="tag is-info is-small tag-down">Média</span>
+                    <span class="tag is-dark is-small tag-down">Variação</span>
+                    <span class="tag is-success is-small tag-down">Jogos</span>
                   </p>
                 </div>
               </div>
@@ -49,10 +83,10 @@
                         <span class="tag is-primary is-small">${{a.preco_num.toFixed(2)}}</span>
                       </small>
                       <br/>
-                      <span class="tag is-warning is-small">{{ a.pontos_num }}</span>
-                      <span class="tag is-info is-small">{{ a.media_num }}</span>
-                      <span class="tag is-dark is-small">{{ a.variacao_num }}</span>
-                      <span class="tag is-success is-small">{{ a.jogos_num }}</span>
+                      <span class="tag is-warning is-small tag-down">{{ a.pontos_num }}</span>
+                      <span class="tag is-info is-small tag-down">{{ a.media_num }}</span>
+                      <span class="tag is-dark is-small tag-down">{{ a.variacao_num }}</span>
+                      <span class="tag is-success is-small tag-down">{{ a.jogos_num }}</span>
                     </p>
                   </div>
                 </div>
@@ -80,12 +114,15 @@ export default {
         coluna: 'preco_num',
         tipo: 1
       },
-      status_id: 7,
-      pesquisaNomeAtleta: ''
+      filtros: {
+        status_id: 7,
+        posicao_id: 0,
+        pesquisaNomeAtleta: ''
+      }
     }
   },
 
-  mounted: function () {
+  created: function () {
     this.update()
   },
 
@@ -119,23 +156,34 @@ export default {
         return 0
       })
 
-      return this.atletas.atletas.filter(v => v.status_id === this.status_id)
-        .filter(v => v.apelido.toLowerCase().indexOf(this.pesquisaNomeAtleta.toLowerCase()) >= 0)
+      let atletasTemp = this.atletas.atletas.filter(v => v.status_id === this.filtros.status_id)
+        .filter(v => v.apelido.toLowerCase().indexOf(this.filtros.pesquisaNomeAtleta.toLowerCase()) >= 0)
+        .filter(v => {
+          if (this.filtros.posicao_id === 0) return true
+          return this.filtros.posicao_id === v.posicao_id
+        })
+      return atletasTemp.slice(0, 99)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 .hr {
   margin: 0.1rem 0.1rem
 }
 
 .fa-check {
-  color: #21a021
+  color: #21a021;
 }
 
-.new-line-p {
+.tag-down {
+  font-size: 0.8em;
+  height: 1.3em;
+}
 
+.tag-down-max {
+  font-size: 0.5em;
+  height: 1.2em;
 }
 </style>

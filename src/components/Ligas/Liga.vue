@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section v-if="liga.liga">
+    <section v-if="liga.liga" :class="loader ? 'clareamento': ''">
       <section class="hero is-success">
         <div class="hero-body">
           <div class="container">
@@ -51,6 +51,9 @@
           </div>
         </div>
         <escalacao-time :timemodal="modal.time" :active="modal.ativar" @update:active="val => modal.ativar = val" ></escalacao-time>
+        <div v-show="loader">
+          <div class="loader-request"></div>
+        </div>
       </section>
     </section>
   </div>
@@ -59,6 +62,7 @@
 
 <script>
 import db from './../../dexie'
+import {http} from './../../axios'
 import EscalacaoTime from './../shared/EscalacaoTime'
 
 export default {
@@ -78,7 +82,9 @@ export default {
       timesSort: [],
       timesCompleto: [],
       pontuados: {},
-      presidente: ''
+      presidente: '',
+      loader: false,
+      ligasASeremGravadas: {}
     }
   },
 
@@ -97,12 +103,54 @@ export default {
 
     getLigaRequest: function () {
       this.$Progress.start()
+      this.loader = true
       db.ligas.get(this.slug).then(r => {
         if (r) {
           this.liga = r
           this.getPontuados()
+        } else {
+          http.get('/liga/' + this.slug + '/' + 1).then(r => {
+            if (r.data) {
+              if (r.data.liga.total_times_liga > 100) {
+                this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel adicionar')
+                return
+              }
+              for (let i = 0; i <= parseInt(parseInt(r.data.liga.total_times_liga) / 20); i++) {
+                if (i === 6) {
+                  break
+                }
+                // salva os times na tabela de times
+                this.ligasASeremGravadas = {}
+                this.salvarTimesLigaPage(this.slug, (i + 1), l => {
+                  db.ligas.get(this.slug, item => {
+                    this.$Progress.increase(10)
+                    if (this.ligasASeremGravadas.times) {
+                      this.ligasASeremGravadas.times = this.ligasASeremGravadas.times.concat(l.times)
+                    } else {
+                      this.ligasASeremGravadas = l
+                    }
+                    if (this.ligasASeremGravadas.times.length >= parseInt(this.ligasASeremGravadas.liga.total_times_liga)) {
+                      this.liga = this.ligasASeremGravadas
+                      this.getPontuados()
+                      db.ligas.put(this.ligasASeremGravadas).catch(err => {
+                        console.log(err)
+                      })
+                    }
+                  })
+                })
+              }
+            }
+          })
         }
         this.$Progress.finish()
+      })
+    },
+
+    salvarTimesLigaPage: function (liga, page, callback) {
+      http.get('/liga/' + liga + '/' + page).then(r => {
+        if (r.data) {
+          callback(r.data)
+        }
       })
     },
 
@@ -136,7 +184,15 @@ export default {
             })
           }, this)
         }
+        this.loader = false
+        this.$Progress.finish()
       })
+    },
+
+    fimPesquisaComErro: function (msg) {
+      this.$Progress.finish()
+      this.loader = false
+      this.$kartolafc.toast.error(msg)
     }
   },
 

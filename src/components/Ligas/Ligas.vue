@@ -117,10 +117,16 @@ export default {
     },
 
     salvarLiga: function (liga) {
+      this.loader = true
       http.get('/liga/' + liga.slug + '/' + 1).then(r => {
         if (r.data) {
+          console.log(r.data.liga.total_times_liga)
+          if (r.data.liga.total_times_liga === 0) {
+            this.fimPesquisaComErro('Nenhum time nesta liga')
+            return
+          }
           if (r.data.liga.total_times_liga > 100) {
-            this.mensagemLigaCemTimes()
+            this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel adicionar')
             return
           }
           this.$Progress.start()
@@ -140,9 +146,10 @@ export default {
                 }
                 if (this.ligasASeremGravadas.times.length >= parseInt(this.ligasASeremGravadas.liga.total_times_liga)) {
                   db.ligas.put(this.ligasASeremGravadas).then(r => {
-                    this.$Progress.finish()
-                    this.mensagemLigaSalva()
+                    this.fimPesquisaComSucesso('Liga adicionada a lista')
+                    this.ligas = []
                   }).catch(err => {
+                    this.fimPesquisaComErro('Não foi possivel adicionar a liga, tente novamente')
                     console.log(err)
                   })
                 }
@@ -151,6 +158,20 @@ export default {
           }
         }
       })
+    },
+
+    fimPesquisaComSucesso: function (msg) {
+      this.$Progress.finish()
+      this.loader = false
+      this.getMinhasLigas()
+      this.$kartolafc.toast.success(msg)
+    },
+
+    fimPesquisaComErro: function (msg) {
+      this.$Progress.finish()
+      this.loader = false
+      this.getMinhasLigas()
+      this.$kartolafc.toast.error(msg)
     },
 
     salvarTimesLigaPage: function (liga, page, callback) {
@@ -168,18 +189,6 @@ export default {
       this.$kartolafc.time.getTime(timeId, t => {
         db.meusTimes.update(timeId, {favorito_liga: true}).catch(err => { console.log(err) })
       })
-    },
-
-    mensagemLigaCemTimes: function () {
-      this.modal.mensagem = 'Liga com mais de 100 times, não é possivel adicionar'
-      this.moda.ativar = true
-    },
-
-    mensagemLigaSalva: function () {
-      this.modal.mensagem = 'Liga salva'
-      this.modal.ativar = true
-      this.ligas = []
-      this.getMinhasLigas()
     },
 
     getMinhasLigas: function () {

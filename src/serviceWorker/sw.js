@@ -1,4 +1,4 @@
-
+import c from './../services/configuracao'
 'use strict'
 
 self.addEventListener('push', function (event) {
@@ -12,18 +12,25 @@ self.addEventListener('push', function (event) {
     return
   }
 
-  const title = n.title
-  const options = {
-    body: n.body,
-    icon: n.icon || '/static/img/icon.png',
-    badge: n.badge || '/static/img/icon.png',
-    dir: 'auto',
-    requireInteraction: false,
-    vibrate: [200, 100, 200],
-    data: n
-  }
+  // verifica a permissao de notificacao do cliente
+  c.get(v => {
+    if (v.notificacao && v.notificacao.status !== true) {
+      return
+    }
 
-  event.waitUntil(self.registration.showNotification(title, options))
+    const title = n.title
+    const options = {
+      body: n.body,
+      icon: n.icon || '/static/img/icon.png',
+      badge: n.badge || '/static/img/icon.png',
+      dir: 'auto',
+      requireInteraction: false,
+      vibrate: [200, 100, 200],
+      data: n
+    }
+
+    event.waitUntil(self.registration.showNotification(title, options))
+  })
 })
 
 self.addEventListener('notificationclick', function (event) {
