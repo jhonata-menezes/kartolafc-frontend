@@ -13,7 +13,7 @@
                   <p class="subtitle is-6">
                     <div class="media-left">
                       <picture class="image is-64x64 is-pulled-right">
-                        <img :src="liga.liga.url_flamula_svg">
+                        <img :src="liga.liga.url_flamula_svg" @error="liga.liga.url_flamula_svg='/static/img/icon.png'">
                       </picture>
                     </div>
                     <div class="">
@@ -37,7 +37,7 @@
                 <div v-for="time of timesComputed" class="">
                   <p>
                     <picture class="image is-24x24 is-pulled-left">
-                      <img :src="time.url_escudo_svg">
+                      <img :src="time.url_escudo_svg" @error="time.url_escudo_svg='/static/img/icon.png'">
                     </picture>
                     <span class="i">{{time.nome}}</span>
                     <a class="button is-info is-small is-pulled-right" @click="verTime(time)">Time</a>

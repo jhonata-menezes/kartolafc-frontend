@@ -120,7 +120,6 @@ export default {
       this.loader = true
       http.get('/liga/' + liga.slug + '/' + 1).then(r => {
         if (r.data) {
-          console.log(r.data.liga.total_times_liga)
           if (r.data.liga.total_times_liga === 0) {
             this.fimPesquisaComErro('Nenhum time nesta liga')
             return

@@ -7,7 +7,7 @@
           KartolaFC
         </h1>
         <h2 class="subtitle">
-          Visualise seu time, ligas e jogos de uma outra forma
+          Visualise seu time, ligas e jogos com o KartolaFC
         </h2>
       </div>
     </div>
@@ -32,7 +32,7 @@
                   <p>{{ meuTime.time.nome }}</br>
                     <small>{{ meuTime.time.nome_cartola }}</small></br>
                     <small v-if="status.status_mercado === 2">
-                    Posicao Geral: {{ meuTime.posicao }}</br>
+                    Posicao: {{ meuTime.posicao }}</br>
                     </small>
                     Pontos: {{ calculaPontos(meuTime) }}
                   </p>
@@ -215,6 +215,7 @@ export default {
         if (time.length === 1) {
           this.$kartolafc.time.getTime(time[0].time.time_id, t => {
             this.meuTime = t
+            this.getRankingGeral()
           })
         }
       }).catch(function (err) {
@@ -236,9 +237,8 @@ export default {
     },
 
     getRankingGeral: function () {
-      let self = this
-      http.get('/ranking/time/id/' + this.meuTime.time.time_id).then(function (r) {
-        self.$set(self.meuTime, 'posicao', r.data.posicao)
+      http.get('/ranking/time/id/' + this.meuTime.time.time_id).then(r => {
+        this.$set(this.meuTime, 'posicao', r.data.posicao)
       })
     },
 
@@ -300,7 +300,7 @@ export default {
           }
           return 0
         })
-        return matches
+        return matches.slice(0, 20)
       }
       return []
     }

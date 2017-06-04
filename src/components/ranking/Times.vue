@@ -21,10 +21,10 @@
                   <div class="media">
                     <div class="media-left">
                       <figure class="image is-32x32">
-                        <img :src="time.time.foto_perfil" alt="Image">
+                        <img :src="time.time.foto_perfil" alt="Image" @error="time.time.foto_perfil='/static/img/icon.png'">
                       </figure>
                       <figure class="image is-32x32">
-                        <img :src="time.time.url_escudo_svg" alt="Image">
+                        <img :src="time.time.url_escudo_svg" alt="Image" @error="time.time.url_escudo_svg='/static/img/icon.png'">
                       </figure>
                     </div>
                     <div class="media-content">
@@ -32,7 +32,7 @@
                         <p>
                           <small class="title is-5">{{time.posicao}}º {{ time.time.nome }}</small></br>
                           <small class="tag">{{ time.time.nome_cartola }}</small>
-                          <small class="tag">Pontuação: {{ time.pontuacao.toFixed(2) }}</small>
+                          <small class="tag">pts: {{ time.pontuacao.toFixed(2) }}</small>
                           <small class="tag">Pró: {{ time.time.assinante ? 'sim' : 'não' }}</small></br>
                           <a class="button is-info is-small" @click="ativarModal(time)">Ver Time</a>
                         </p>
@@ -110,6 +110,7 @@ export default {
           let timeCompleto = t
           timeCompleto.posicao = (posicao + 1 + inicio)
           timeCompleto.pontuacao = time.pontuacao
+          timeCompleto.assinante = time.assinante
           this.times.push(timeCompleto)
         })
       }, this)
@@ -129,7 +130,7 @@ export default {
       })
       return this.times.filter(t => {
         if (this.apenasPro) {
-          return t.time.assinante
+          return t.assinante
         }
         return true
       })
