@@ -11,7 +11,7 @@
               <div class="field is-grouped is-grouped-centered">
                 <p class="control">
                   <label class="checkbox">
-                    <input type="checkbox" @click="apenasPro=!apenasPro" :checked="apenasPro">
+                    <input type="checkbox" @click="apenasTimesPro()" :checked="apenasPro">
                     Apenas cartoleiros pró
                   </label>
                 </p>
@@ -72,6 +72,7 @@ export default {
       limit: 10,
       times: [],
       melhoresTimes: [],
+      melhoresTimesBackup: [],
       modal: {
         active: false,
         time: {}
@@ -103,6 +104,17 @@ export default {
       }).catch(() => { this.loader = false })
     },
 
+    getRankingMelhoresPro: function () {
+      this.loader = true
+      http.get('/ranking/melhores/pro').then(r => {
+        if (r.data.length >= 1) {
+          this.melhoresTimes = r.data
+          this.getTimeCompleto()
+          this.loader = false
+        }
+      }).catch(() => { this.loader = false })
+    },
+
     getTimeCompleto: function () {
       let inicio = (this.limit - 10)
       this.melhoresTimes.slice(inicio, this.limit).forEach((time, posicao) => {
@@ -110,10 +122,20 @@ export default {
           let timeCompleto = t
           timeCompleto.posicao = (posicao + 1 + inicio)
           timeCompleto.pontuacao = time.pontuacao
-          timeCompleto.assinante = time.assinante
+          this.$set(timeCompleto, 'assinante', time.assinante)
           this.times.push(timeCompleto)
         })
       }, this)
+    },
+
+    apenasTimesPro: function () {
+      this.apenasPro = !this.apenasPro
+      this.times = []
+      if (this.apenasPro === true) {
+        this.getRankingMelhoresPro()
+      } else {
+        this.getRankingMelhores()
+      }
     }
   },
 
@@ -128,12 +150,7 @@ export default {
         }
         return 0
       })
-      return this.times.filter(t => {
-        if (this.apenasPro) {
-          return t.assinante
-        }
-        return true
-      })
+      return this.times
     }
   },
 
