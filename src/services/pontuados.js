@@ -14,7 +14,7 @@ const getPontuados = (callback) => {
       }).catch(err => { console.log(err) })
     }
     runnable = true
-    setTimeout(() => {
+    setInterval(() => {
       http.get('/atletas/pontuados').then(r => {
         pontuados = r.data
         callback(r.data)

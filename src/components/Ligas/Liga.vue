@@ -17,9 +17,9 @@
                       </picture>
                     </div>
                     <div class="">
-                      <small>Descrição: {{liga.liga.descricao}}</small><p></p>
-                      <small>Tipo: {{liga.liga.tipo === 'F' ? 'Fechada' : liga.liga.tipo}}</small><p></p>
-                      <small>Total de Times: {{liga.liga.total_times_liga}}</small><p></p>
+                      <small>Descrição: {{liga.liga.descricao}}</small>
+                      <small>Tipo: {{liga.liga.tipo === 'F' ? 'Fechada' : liga.liga.tipo}}</small></br>
+                      <small>Total de Times: {{liga.liga.total_times_liga}}</small></br>
                       <small v-if="presidente">Presidente: {{presidente}}</small>
                     </div>
                   </p>
@@ -29,9 +29,14 @@
           </div>
         </div>
       </section>
-      <section class="section">
+      <section class="section section-min">
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
+            <div class="field is-grouped is-grouped-centered">
+              <p class="control">
+                <button class="tag button is-warning is-small" @click="getLiga()">Atualizar Pontuação</button>
+              </p>
+            </div>
             <div class="media">
               <div class="media-content">
                 <div v-for="time of timesComputed" class="">
@@ -220,5 +225,8 @@ export default {
   margin: 0.4rem 0.4rem
 }
 
+.section-min {
+  padding: 0rem 1.5rem
+}
 </style>
 
