@@ -9,7 +9,7 @@
               <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/ranking/times' ? 'is-active' : ''" to="/ranking/times">Melhores Times da Rodada</router-link>
               <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/rodada/jogos' ? 'is-active' : ''" to="/rodada/jogos">Jogos da Rodada</router-link>
               <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/atletas/mercado' ? 'is-active' : ''" to="/atletas/mercado">Atletas</router-link>
-              <!--<router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/configuracao/notificacao' ? 'is-active' : ''" to="/configuracao/notificacao">Notificações</router-link>-->
+              <router-link class="nav-item is-tab is-hidden-mobile" :class="this.$route.path === '/configuracao/notificacao' ? 'is-active' : ''" to="/configuracao/notificacao">Notificações</router-link>
             </div>
 
             <span class="nav-toggle " :class="menuIsActive ? 'is-active' : ''" @click="menuIsActive = !menuIsActive">
@@ -25,7 +25,7 @@
               <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/ranking/times' ? 'is-active': ''"to="/ranking/times"><span class="icon"><i class="fa fa-sort-numeric-asc"></i></span>Melhores Times da Rodada</router-link>
               <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/rodada/jogos' ? 'is-active': ''"to="/rodada/jogos"><span class="icon"><i class="fa fa-play"></i></span>Jogos da Rodada</router-link>
               <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/atletas/mercado' ? 'is-active': ''"to="/atletas/mercado"><span class="icon"><i class="fa fa-shopping-cart"></i></span>Atletas</router-link>
-              <!--<router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/configuracao/notificacao' ? 'is-active': ''"to="/configuracao/notificacao"><span class="icon"><i class="fa fa-bell-o"></i></span>Notificacões</router-link>-->
+              <router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/configuracao/notificacao' ? 'is-active': ''"to="/configuracao/notificacao"><span class="icon"><i class="fa fa-bell-o"></i></span>Notificacões</router-link>
               <!--<a class="nav-item">
                 <span>Times Escalados: {{ status.times_escalados }}</span>
               </a>

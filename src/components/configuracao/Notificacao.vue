@@ -16,9 +16,12 @@
             </div>
             <div class="section">
               <div class="content">
+                <h5 class="subtitle is-6">
+                  Configure os tipos notificações que deseja receber pelo KartolaFC.
+                </h5>
                 <p class="control">
                   <label class="checkbox">
-                    <input type="checkbox" :checked="opcoes.times" @click="opcoes.times = !opcoes.times">
+                    <input type="checkbox" disabled :checked="opcoes.times" @click="opcoes.times = !opcoes.times">
                       <b>Apenas jogadores dos meus times</b>
                   </label>
                 </p>
@@ -72,7 +75,7 @@
           <div v-else>
             <div>
               <div class="notification is-danger">
-                Browser não tem suporte para notificação
+                Desculpe, mas este browser não tem suporte para notificação.
               </div>
             </div>
           </div>

@@ -18,6 +18,11 @@ self.addEventListener('push', function (event) {
       return
     }
 
+    // verifica se o cliente permitiu a notificações deste scout
+    if (v.notificacao.opcoes && !v.notificacao.opcoes[n.scout.toLowerCase()]) {
+      return
+    }
+
     const title = n.title
     const options = {
       body: n.body,
