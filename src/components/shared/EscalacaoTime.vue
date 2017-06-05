@@ -4,16 +4,27 @@
       <div class="modal-background"></div>
       <div class="modal-card" @click.stop>
         <header class="modal-card-head">
-          <p class="modal-card-title">
-            <picture class="image is-24x24 is-pulled-right">
-              <img :src="time.time.url_escudo_svg">
-            </picture>
-            <strong class="title is-5">{{time.time.nome}}</strong></br>
-            <small class="subtitle is-small is-6">{{time.time.nome_cartola}}</small>
-            <picture class="image is-24x24 is-pulled-right">
-              <img :src="time.time.foto_perfil" @error="defaultImage(time)">
-            </picture>
+          <p class="">
+            <div class="media">
+              <div class="media-left">
+                <picture class="image is-32x32">
+                  <img :src="time.time.url_escudo_svg">
+                </picture>
+                <picture class="image is-32x32">
+                  <img :src="time.time.foto_perfil" @error="defaultImage(time)">
+                </picture>
+              </div>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong class="title is-6">{{time.time.nome}}</strong></br>
+                    <small class="subtitle is-small is-6">{{time.time.nome_cartola}}</small>
+                  </p>
+                </div>
+              </div>
+            </div>
           </p>
+          <p class="modal-card-title"></p>
           <button class="delete" @click="closeModal()"></button>
         </header>
         <section class="modal-card-body" v-if="time.atletas">
