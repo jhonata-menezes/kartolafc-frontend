@@ -33,6 +33,18 @@
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
             <div class="field is-grouped is-grouped-centered">
+               <p class="control">
+                <span class="select is-small">
+                  <select v-model="timesPontuacao.nome">
+                    <option value="padrao" selected>Padrão</option>
+                    <option value="rodada">Rodada</option>
+                    <option value="mes">Mes</option>
+                    <option value="turno">Turno</option>
+                    <option value="campeonato">Campeonato</option>
+                    <option value="patrimonio">Patrimônio</option>
+                  </select>
+                </span>
+              </p>
               <p class="control">
                 <button class="tag button is-warning is-small" @click="getLiga()">Atualizar Pontuação</button>
               </p>
@@ -89,7 +101,11 @@ export default {
       pontuados: {},
       presidente: '',
       loader: false,
-      ligasASeremGravadas: {}
+      ligasASeremGravadas: {},
+      timesPontuacao: {
+        nome: 'padrao'
+      },
+      timesLigaPorAtletaId: []
     }
   },
 
@@ -210,10 +226,19 @@ export default {
       this.timesSort.sort((time1, time2) => {
         let p1 = parseFloat(time1.pontuacao)
         let p2 = parseFloat(time2.pontuacao)
-        if (p1 < p2) return 1
-        if (p1 > p2) return -1
-        return 0
+        if (this.timesPontuacao.nome === 'padrao') {
+          if (p1 < p2) return 1
+          if (p1 > p2) return -1
+          return 0
+        } else {
+          console.log(time1)
+          if (time1.ranking[this.timesPontuacao.nome] ===
+          time2.ranking[this.timesPontuacao.nome]) return 0
+          return time1.ranking[this.timesPontuacao.nome] <
+          time2.ranking[this.timesPontuacao.nome] ? 1 : -1
+        }
       })
+
       return this.timesSort
     }
   }
