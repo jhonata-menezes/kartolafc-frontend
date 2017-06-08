@@ -35,8 +35,8 @@
             <div class="field is-grouped is-grouped-centered">
                <p class="control">
                 <span class="select is-small">
-                  <select v-model="timesPontuacao.nome">
-                    <option value="padrao" selected>Padrão</option>
+                  <select v-model="timesPontuacao.nome" @change="timesPontuacao.somarPontuacao = false">
+                    <option value="padrao" selected>Atual</option>
                     <option value="rodada">Rodada</option>
                     <option value="mes">Mes</option>
                     <option value="turno">Turno</option>
@@ -44,6 +44,13 @@
                     <option value="patrimonio">Patrimônio</option>
                   </select>
                 </span>
+              </p>
+              <p class="control">
+                <label class="checkbox" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'">
+                  <input type="checkbox" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'"
+                  v-model="timesPontuacao.somarPontuacao" :checked="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">
+                  Somar
+                </label>
               </p>
               <p class="control">
                 <button class="tag button is-warning is-small" @click="getLiga()">Atualizar Pontuação</button>
@@ -58,7 +65,10 @@
                     </picture>
                     <span class="i">{{time.nome}}</span>
                     <a class="button is-info is-small is-pulled-right" @click="verTime(time)">Time</a>
-                    <b><small v-if="time.pontuacao !== undefined" class="is-6 is-pulled-right">{{ time.pontuacao.toFixed(2) }} &nbsp</small></b>
+                    <b><small v-if="!timesPontuacao.somarPontuacao && time.pontuacao !== undefined" class="is-6 is-pulled-right">{{ time.pontuacao.toFixed(2) }} &nbsp</small></b>
+                    <small class="is-6 is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{time.pontos[timesPontuacao.nome].toFixed(2)}} &nbsp</small>
+                    <b><small class="is-6 is-pulled-right" v-if="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{ (time.pontos[timesPontuacao.nome] + time.pontuacao).toFixed(2) }} &nbsp</small></b>
+                    <small class="is-6 is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome === 'patrimonio'">$ {{time.patrimonio.toFixed(2)}} &nbsp</small>
                   </p>
 
                   <hr class="hr">
@@ -103,7 +113,8 @@ export default {
       loader: false,
       ligasASeremGravadas: {},
       timesPontuacao: {
-        nome: 'padrao'
+        nome: 'padrao',
+        somarPontuacao: false
       },
       timesLigaPorAtletaId: []
     }
@@ -230,11 +241,17 @@ export default {
           if (p1 < p2) return 1
           if (p1 > p2) return -1
           return 0
+        } if (this.timesPontuacao.somarPontuacao === true && this.timesPontuacao.nome !== 'padrao' && this.timesPontuacao.nome !== 'patrimonio') {
+          if ((p1 + time1.pontos[this.timesPontuacao.nome]) < (p2 + time2.pontos[this.timesPontuacao.nome])) return 1
+          if ((p1 + time1.pontos[this.timesPontuacao.nome]) > (p2 + time2.pontos[this.timesPontuacao.nome])) return -1
+          return 0
+        } if (this.timesPontuacao.nome === 'patrimonio') {
+          if (time1.patrimonio === time2.patrimonio) return 0
+          return time1.patrimonio < time2.patrimonio ? 1 : -1
         } else {
-          console.log(time1)
           if (time1.ranking[this.timesPontuacao.nome] ===
           time2.ranking[this.timesPontuacao.nome]) return 0
-          return time1.ranking[this.timesPontuacao.nome] <
+          return time1.ranking[this.timesPontuacao.nome] >
           time2.ranking[this.timesPontuacao.nome] ? 1 : -1
         }
       })
