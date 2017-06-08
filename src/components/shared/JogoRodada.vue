@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div v-if="ativar" class="modal" :class="ativar != false ? 'is-active' : ''">
+    <div v-if="ativar" class="modal" :class="ativar != false ? 'is-active' : ''" @click="closeModal()">
       <div class="modal-background"></div>
-      <div class="modal-card">
+      <div class="modal-card" @click.stop>
         <header class="modal-card-head">
           <p class="modal-card-title has-text-centered">
             <picture class="">
               <img :src="pontuados.clubes[jogoRodada.clube_casa_id].Escudos['30x30']" alt="escudo">
             </picture>
-            <strong class="subtitle is-3">{{pontuados.clubes[jogoRodada.clube_casa_id].abreviacao}} {{jogoRodada.placar_oficial_mandante}}
+            <strong class="subtitle is-4">{{pontuados.clubes[jogoRodada.clube_casa_id].abreviacao}} {{jogoRodada.placar_oficial_mandante}}
               X {{jogoRodada.placar_oficial_visitante}} {{pontuados.clubes[jogoRodada.clube_visitante_id].abreviacao}}</strong>
             <picture class="">
               <img :src="pontuados.clubes[jogoRodada.clube_visitante_id].Escudos['30x30']">

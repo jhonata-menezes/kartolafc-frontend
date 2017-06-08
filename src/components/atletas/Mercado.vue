@@ -170,7 +170,10 @@ export default {
 
 <style scoped>
 .hr {
-  margin: 0.1rem 0.1rem
+  margin: 0.1rem 0.1rem;
+  clear: both;
+  padding-top: 1px;
+  margin-bottom: 1px;
 }
 
 .fa-check {
