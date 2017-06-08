@@ -13,7 +13,7 @@
                   </p>
                   <p class="control">
                     <span class="select is-primary is-small">
-                      <select class='is-small' v-model="sort.coluna" >
+                      <select class='' v-model="sort.coluna" >
                         <option value='preco_num' checked='checked'>Preço</option>
                         <option value='pontos_num'>Última pontuação</option>
                         <option value='media_num'>Média de pontos</option>
