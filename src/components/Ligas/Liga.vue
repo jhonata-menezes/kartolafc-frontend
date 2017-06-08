@@ -46,8 +46,8 @@
                 </span>
               </p>
               <p class="control">
-                <label class="checkbox" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'">
-                  <input type="checkbox" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'"
+                <label class="checkbox is-small" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'">
+                  <input class="is-small" type="checkbox" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'"
                   v-model="timesPontuacao.somarPontuacao" :checked="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">
                   Somar
                 </label>
@@ -63,7 +63,7 @@
                     <picture class="image is-24x24 is-pulled-left">
                       <img :src="time.url_escudo_svg" @error="time.url_escudo_svg='/static/img/icon.png'">
                     </picture>
-                    <span class="i">{{time.nome}}</span>
+                    <span class="i">{{time.nome.substring(0,15)}}</span>
                     <a class="button is-info is-small is-pulled-right" @click="verTime(time)">Time</a>
                     <b><small v-if="!timesPontuacao.somarPontuacao && time.pontuacao !== undefined" class="is-6 is-pulled-right">{{ time.pontuacao.toFixed(2) }} &nbsp</small></b>
                     <small class="is-6 is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{time.pontos[timesPontuacao.nome].toFixed(2)}} &nbsp</small>
