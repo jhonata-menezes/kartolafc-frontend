@@ -20,11 +20,11 @@
               <div class="content">
                 <div class="subtitle is-6">
                   ${{atletaMercado.preco_num}} Jogos: {{atletaMercado.jogos_num}}<br/>
-                  <small v-if="atletaMercado.scout['G']">Gols: {{atletaMercado.scout['G']}}</small>
+                  <small v-if="atletaMercado.scout && atletaMercado.scout['G'] > 0">Gols: {{atletaMercado.scout['G']}}</small>
                 </div>
               </div>
               <div>
-                
+                <grafico-atleta :data="dataGrafico" :option="option"></grafico-atleta>
               </div>
             </div>
           </div>
@@ -38,20 +38,47 @@
 
 <script>
 import {http} from './../../axios'
+import Chart from './DefaultChart'
 
 export default {
   props: ['ativo', 'atletaId'],
+
+  components: {
+    'grafico-atleta': Chart
+  },
 
   data () {
     return {
       atletaHistorico: [],
       atletaMercado: {},
-      status: {}
+      status: {},
+      option: {
+        elements: {
+          line: {
+            tension: 0
+          }
+        }
+      },
+      dataGrafico: {
+        labels: [1, 2, 3, 4, 5, 6, 7],
+        datasets: [
+          {
+            label: 'Gols',
+            data: [1, 0, 2]
+          },
+          {
+            label: 'Cartão Amarelo',
+            borderColor: '##00d1b2',
+            data: [1, 1, 1]
+          }
+        ]
+      }
     }
   },
 
   methods: {
     getAtleta: function () {
+      // Overwriting base render method with actual data.
       this.$kartolafc.mercado.getMercado(m => {
         http.get('/atletas/historico/' + this.atletaId).then(r => {
           this.$kartolafc.status.getStatus(s => {
@@ -75,7 +102,6 @@ export default {
   watch: {
     'atletaId': 'getAtleta'
   }
-
 }
 </script>
 
