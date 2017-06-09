@@ -50,8 +50,8 @@
                 </span>
               </p>
               <p class="control">
-                <label class="checkbox is-small" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'">
-                  <input class="is-small" type="checkbox" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'"
+                <label class="checkbox is-small" :disabled="status.status_mercado !== 2 || timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'">
+                  <input class="is-small" type="checkbox" :disabled="status.status_mercado !== 2 || timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'"
                   v-model="timesPontuacao.somarPontuacao" :checked="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">
                   Somar
                 </label>
@@ -123,7 +123,8 @@ export default {
         somarPontuacao: false
       },
       timesLigaPorAtletaId: [],
-      detalhesLiga: false
+      detalhesLiga: false,
+      status: {}
     }
   },
 
@@ -131,6 +132,9 @@ export default {
     getLiga: function () {
       this.slug = this.$route.params.slug
       this.getLigaRequest()
+      this.$kartolafc.status.getStatus(s => {
+        this.status = s
+      })
     },
 
     verTime: function (time) {
