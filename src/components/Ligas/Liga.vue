@@ -20,7 +20,7 @@
                     </p>
                     <p class="subtitle is-6">
                       <div class="" v-if="detalhesLiga">
-                        <small>Descrição: {{liga.liga.descricao}}</small>
+                        <small>Descrição: {{liga.liga.descricao}}</small></br>
                         <small>Tipo: {{liga.liga.tipo === 'F' ? 'Fechada' : liga.liga.tipo}}</small></br>
                         <small>Total de Times: {{liga.liga.total_times_liga}}</small></br>
                         <small v-if="presidente">Presidente: {{presidente}}</small>
