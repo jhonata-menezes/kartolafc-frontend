@@ -65,8 +65,9 @@
             </div>
             <div class="media">
               <div class="media-content">
-                <div v-for="time of timesComputed" class="">
+                <div v-for="(time, k) of timesComputed" class="">
                   <p @click="verTime(time)">
+                    <small class="is-pulled-left">{{ k+1 }}° </small>
                     <picture class="image is-24x24 is-pulled-left">
                       <img :src="time.url_escudo_svg" @error="time.url_escudo_svg='/static/img/icon.png'">
                     </picture>
@@ -94,8 +95,6 @@
 </template>
 
 <script>
-import db from './../../dexie'
-import {http} from './../../axios'
 import EscalacaoTime from './../shared/EscalacaoTime'
 
 export default {
@@ -117,12 +116,10 @@ export default {
       pontuados: {},
       presidente: '',
       loader: false,
-      ligasASeremGravadas: {},
       timesPontuacao: {
         nome: 'padrao',
         somarPontuacao: false
       },
-      timesLigaPorAtletaId: [],
       detalhesLiga: false,
       status: {}
     }
@@ -147,53 +144,14 @@ export default {
     getLigaRequest: function () {
       this.$Progress.start()
       this.loader = true
-      db.ligas.get(this.slug).then(r => {
-        if (r) {
-          this.liga = r
-          this.getPontuados()
-        } else {
-          http.get('/liga/' + this.slug + '/' + 1).then(r => {
-            if (r.data) {
-              if (r.data.liga.total_times_liga > 100) {
-                this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel adicionar')
-                return
-              }
-              for (let i = 0; i <= parseInt(parseInt(r.data.liga.total_times_liga) / 20); i++) {
-                if (i === 6) {
-                  break
-                }
-                // salva os times na tabela de times
-                this.ligasASeremGravadas = {}
-                this.salvarTimesLigaPage(this.slug, (i + 1), l => {
-                  db.ligas.get(this.slug, item => {
-                    this.$Progress.increase(10)
-                    if (this.ligasASeremGravadas.times) {
-                      this.ligasASeremGravadas.times = this.ligasASeremGravadas.times.concat(l.times)
-                    } else {
-                      this.ligasASeremGravadas = l
-                    }
-                    if (this.ligasASeremGravadas.times.length >= parseInt(this.ligasASeremGravadas.liga.total_times_liga)) {
-                      this.liga = this.ligasASeremGravadas
-                      this.getPontuados()
-                      db.ligas.put(this.ligasASeremGravadas).catch(err => {
-                        console.log(err)
-                      })
-                    }
-                  })
-                })
-              }
-            }
-          })
+      this.$kartolafc.liga.getLiga(this.slug, l => {
+        if (l.total_times_liga > 100) {
+          this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel exibir')
+          return
         }
+        this.getPontuados()
+        this.liga = l
         this.$Progress.finish()
-      })
-    },
-
-    salvarTimesLigaPage: function (liga, page, callback) {
-      http.get('/liga/' + liga + '/' + page).then(r => {
-        if (r.data) {
-          callback(r.data)
-        }
       })
     },
 
