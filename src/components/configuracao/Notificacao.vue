@@ -4,7 +4,7 @@
       <div class="columns">
         <div class="column is-half is-offset-one-quarter">
           <h3 class="title is-3">
-            Notificação
+            Notificações
           </h3>
           <div v-if="isNotificabled()">
             <div class="onoffswitch" @click="alteraNotificacao()">
@@ -17,7 +17,7 @@
             <div class="section">
               <div class="content">
                 <h5 class="subtitle is-6">
-                  Configure os tipos notificações que deseja receber pelo KartolaFC.
+                  Configure os tipos de notificações que deseja receber pelo KartolaFC.
                 </h5>
                 <p class="control">
                   <label class="checkbox">
@@ -75,7 +75,7 @@
           <div v-else>
             <div>
               <div class="notification is-danger">
-                Desculpe, mas este browser não tem suporte para notificação.
+                Desculpe, mas este browser não tem suporte para notificações.
               </div>
             </div>
           </div>

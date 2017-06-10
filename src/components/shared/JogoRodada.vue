@@ -1,15 +1,16 @@
 <template>
   <div>
-    <div v-if="ativar" class="modal" :class="ativar != false ? 'is-active' : ''">
+    <div v-if="ativar" class="modal" :class="ativar != false ? 'is-active' : ''" @click="closeModal()">
       <div class="modal-background"></div>
-      <div class="modal-card">
+      <div class="modal-card" @click.stop>
         <header class="modal-card-head">
           <p class="modal-card-title has-text-centered">
             <picture class="">
               <img :src="pontuados.clubes[jogoRodada.clube_casa_id].Escudos['30x30']" alt="escudo">
             </picture>
-            <strong class="subtitle is-3">{{pontuados.clubes[jogoRodada.clube_casa_id].abreviacao}} {{jogoRodada.placar_oficial_mandante}}
-              X {{jogoRodada.placar_oficial_visitante}} {{pontuados.clubes[jogoRodada.clube_visitante_id].abreviacao}}</strong>
+            <strong class="subtitle is-5">{{pontuados.clubes[jogoRodada.clube_casa_id].abreviacao}} {{jogoRodada.placar_oficial_mandante}}
+              X {{jogoRodada.placar_oficial_visitante}} {{pontuados.clubes[jogoRodada.clube_visitante_id].abreviacao}}
+            </strong>
             <picture class="">
               <img :src="pontuados.clubes[jogoRodada.clube_visitante_id].Escudos['30x30']">
             </picture>
@@ -22,8 +23,8 @@
         </header>
         <section class="modal-card-body">
           <div class="has-text-centered">
-            Pontos:  <b>{{pontuados.clubes[jogoRodada.clube_casa_id].abreviacao}}</b>: {{ somaPontuacao(jogoRodada.clube_casa_id) }}
-            <b>  {{pontuados.clubes[jogoRodada.clube_visitante_id].abreviacao}}</b>: {{ somaPontuacao(jogoRodada.clube_visitante_id) }}
+            <b class="subtitle is-6">{{pontuados.clubes[jogoRodada.clube_casa_id].abreviacao}}</b>: {{ somaPontuacao(jogoRodada.clube_casa_id) }}
+            <b class="subtitle is-6">{{pontuados.clubes[jogoRodada.clube_visitante_id].abreviacao}}</b>: {{ somaPontuacao(jogoRodada.clube_visitante_id) }}
             <span class="icon is-pulled-right" @click="ordenarPor='pontuacao'; ordenarAsc=(ordenarAsc * -1)">
               <i class="fa" :class="ordenarAsc === 1 ? 'fa-sort-asc' : 'fa-sort-desc'" alt='ordenar' title="Ordenar por pontuação"></i>
             </span>
@@ -35,8 +36,34 @@
                 <div class="media-content">
                   <div class="content">
                     <p>
-                      <small class="is-pulled-left" v-if="timesPorClubeId[jogoRodada.clube_casa_id][k]">{{timesPorClubeId[jogoRodada.clube_casa_id][k].pontuacao}} <strong> {{timesPorClubeId[jogoRodada.clube_casa_id][k].apelido}}</strong></small>
-                      <small class="is-pulled-right" v-if="timesPorClubeId[jogoRodada.clube_visitante_id][k]"><strong>{{timesPorClubeId[jogoRodada.clube_visitante_id][k].apelido}} </strong> {{timesPorClubeId[jogoRodada.clube_visitante_id][k].pontuacao}}</small>
+                      <small class="is-pulled-left" v-if="timesPorClubeId[jogoRodada.clube_casa_id][k]">
+                        {{timesPorClubeId[jogoRodada.clube_casa_id][k].pontuacao}}
+                        <strong> 
+                          {{padraoNomeAtleta(timesPorClubeId[jogoRodada.clube_casa_id][k].apelido)}}
+                          <i class="fa fa-futbol-o" aria-hidden="true" v-if="timesPorClubeId[jogoRodada.clube_casa_id][k].scout['G'] >= 1"></i>
+                          <i class="fa fa-futbol-o fa-futbol-o-red" aria-hidden="true" v-if="timesPorClubeId[jogoRodada.clube_casa_id][k].scout['GC'] >= 1"></i>
+                          <i class="" v-if="timesPorClubeId[jogoRodada.clube_casa_id][k].scout['CA'] >= 1">
+                            <img class="icon-image-card" src="/static/img/cartao-amarelo.png">
+                          </i>
+                          <i class="" v-if="timesPorClubeId[jogoRodada.clube_casa_id][k].scout['CV'] >= 1">
+                            <img class="icon-image-card" src="/static/img/cartao-vermelho.png">
+                          </i>
+                        </strong>
+                      </small>
+                      <small class="is-pulled-right" v-if="timesPorClubeId[jogoRodada.clube_visitante_id][k]">
+                        <strong>
+                          <i class="fa fa-futbol-o" aria-hidden="true" v-if="timesPorClubeId[jogoRodada.clube_visitante_id][k].scout['G'] >= 1"></i>
+                          <i class="fa fa-futbol-o fa-futbol-o-red" aria-hidden="true" v-if="timesPorClubeId[jogoRodada.clube_visitante_id][k].scout['GC'] >= 1"></i>
+                          <i class="" v-if="timesPorClubeId[jogoRodada.clube_visitante_id][k].scout['CA'] >= 1">
+                            <img class="icon-image-card" src="/static/img/cartao-amarelo.png">
+                          </i>
+                          <i class="" v-if="timesPorClubeId[jogoRodada.clube_visitante_id][k].scout['CV'] >= 1">
+                            <img class="icon-image-card" src="/static/img/cartao-vermelho.png">
+                          </i>
+                          {{padraoNomeAtleta(timesPorClubeId[jogoRodada.clube_visitante_id][k].apelido)}}
+                        </strong>
+                        {{timesPorClubeId[jogoRodada.clube_visitante_id][k].pontuacao}}
+                      </small>
                     </p>
                   </div>
                 </div>
@@ -120,6 +147,15 @@ export default {
       if (this.pontuados.rodada !== this.rodada) {
         this.$emit('update:ativar', 'erro rodada')
       }
+    },
+
+    padraoNomeAtleta: function (nome) {
+      if (nome.trim().indexOf(' ') >= 0) {
+        let primeiro = nome.split(' ').slice(0)[0].substring(0, 1).toUpperCase()
+        let segundo = nome.split(' ').slice(1)[0]
+        return primeiro + '. ' + segundo
+      }
+      return nome
     }
   },
 
@@ -157,6 +193,18 @@ export default {
 }
 
 .hr-atleta {
-  margin: 0.1rem 0.1rem
+  margin: 0.2rem 0.2rem;
+  clear: both;
+  padding-top: 1px;
+  margin-bottom: 1px;
+}
+
+.icon-image-card {
+  height: 10px;
+  width: 10px;
+}
+
+.fa-futbol-o-red {
+  color: rgba(208, 31, 35, 1);
 }
 </style>

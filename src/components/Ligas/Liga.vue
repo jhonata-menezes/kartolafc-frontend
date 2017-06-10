@@ -6,23 +6,27 @@
           <div class="container">
             <div class="columns">
               <div class="column is-half is-offset-one-quarter">
-                <div>
-                  <p class="title is-5">
-                    {{liga.liga.nome}}
-                  </p>
-                  <p class="subtitle is-6">
-                    <div class="media-left">
-                      <picture class="image is-64x64 is-pulled-right">
-                        <img :src="liga.liga.url_flamula_svg" @error="liga.liga.url_flamula_svg='/static/img/icon.png'">
-                      </picture>
-                    </div>
-                    <div class="">
-                      <small>Descrição: {{liga.liga.descricao}}</small>
-                      <small>Tipo: {{liga.liga.tipo === 'F' ? 'Fechada' : liga.liga.tipo}}</small></br>
-                      <small>Total de Times: {{liga.liga.total_times_liga}}</small></br>
-                      <small v-if="presidente">Presidente: {{presidente}}</small>
-                    </div>
-                  </p>
+                <div class="media">
+                  <div class="media-right">
+                    <picture class="image is-32x32">
+                      <img :src="liga.liga.url_flamula_svg" @error="liga.liga.url_flamula_svg='/static/img/icon.png'">
+                    </picture>
+                  </div>
+                  <div class="media-content">
+                    <p class="title is-5">
+                      {{liga.liga.nome}}
+                      <a class="button is-small is-success" v-if="!detalhesLiga" @click="detalhesLiga = !detalhesLiga">+ Detalhes</a>
+                      <a class="button is-small is-success" v-else @click="detalhesLiga = !detalhesLiga">- Detalhes</a>
+                    </p>
+                    <p class="subtitle is-6">
+                      <div class="" v-if="detalhesLiga">
+                        <small>Descrição: {{liga.liga.descricao}}</small></br>
+                        <small>Tipo: {{liga.liga.tipo === 'F' ? 'Fechada' : liga.liga.tipo}}</small></br>
+                        <small>Total de Times: {{liga.liga.total_times_liga}}</small></br>
+                        <small v-if="presidente">Presidente: {{presidente}}</small>
+                      </div>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -46,25 +50,28 @@
                 </span>
               </p>
               <p class="control">
-                <label class="checkbox is-small" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'">
-                  <input class="is-small" type="checkbox" :disabled="timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'"
+                <label class="checkbox is-small" :disabled="status.status_mercado !== 2 || timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'">
+                  <input class="is-small" type="checkbox" :disabled="status.status_mercado !== 2 || timesPontuacao.nome === 'padrao' || timesPontuacao.nome === 'patrimonio'"
                   v-model="timesPontuacao.somarPontuacao" :checked="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">
                   Somar
                 </label>
               </p>
               <p class="control">
-                <button class="tag button is-warning is-small" @click="getLiga()">Atualizar Pontuação</button>
+                <button class="tag button is-warning is-small" @click="getLiga()">Atualizar</button>
               </p>
+            </div>
+            <div class="content has-text-centered">
+              <small class="is-6 subtitle">Clique no time para ver a escalação</small>
             </div>
             <div class="media">
               <div class="media-content">
-                <div v-for="time of timesComputed" class="">
-                  <p>
+                <div v-for="(time, k) of timesComputed" class="">
+                  <p @click="verTime(time)">
+                    <small class="is-pulled-left">{{ k+1 }}° </small>
                     <picture class="image is-24x24 is-pulled-left">
                       <img :src="time.url_escudo_svg" @error="time.url_escudo_svg='/static/img/icon.png'">
                     </picture>
                     <span class="i">{{time.nome.substring(0,15)}}</span>
-                    <a class="button is-info is-small is-pulled-right" @click="verTime(time)">Time</a>
                     <b><small v-if="!timesPontuacao.somarPontuacao && time.pontuacao !== undefined" class="is-6 is-pulled-right">{{ time.pontuacao.toFixed(2) }} &nbsp</small></b>
                     <small class="is-6 is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{time.pontos[timesPontuacao.nome].toFixed(2)}} &nbsp</small>
                     <b><small class="is-6 is-pulled-right" v-if="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{ (time.pontos[timesPontuacao.nome] + time.pontuacao).toFixed(2) }} &nbsp</small></b>
@@ -88,8 +95,6 @@
 </template>
 
 <script>
-import db from './../../dexie'
-import {http} from './../../axios'
 import EscalacaoTime from './../shared/EscalacaoTime'
 
 export default {
@@ -111,12 +116,12 @@ export default {
       pontuados: {},
       presidente: '',
       loader: false,
-      ligasASeremGravadas: {},
       timesPontuacao: {
         nome: 'padrao',
         somarPontuacao: false
       },
-      timesLigaPorAtletaId: []
+      detalhesLiga: false,
+      status: {}
     }
   },
 
@@ -124,6 +129,9 @@ export default {
     getLiga: function () {
       this.slug = this.$route.params.slug
       this.getLigaRequest()
+      this.$kartolafc.status.getStatus(s => {
+        this.status = s
+      })
     },
 
     verTime: function (time) {
@@ -136,53 +144,14 @@ export default {
     getLigaRequest: function () {
       this.$Progress.start()
       this.loader = true
-      db.ligas.get(this.slug).then(r => {
-        if (r) {
-          this.liga = r
-          this.getPontuados()
-        } else {
-          http.get('/liga/' + this.slug + '/' + 1).then(r => {
-            if (r.data) {
-              if (r.data.liga.total_times_liga > 100) {
-                this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel adicionar')
-                return
-              }
-              for (let i = 0; i <= parseInt(parseInt(r.data.liga.total_times_liga) / 20); i++) {
-                if (i === 6) {
-                  break
-                }
-                // salva os times na tabela de times
-                this.ligasASeremGravadas = {}
-                this.salvarTimesLigaPage(this.slug, (i + 1), l => {
-                  db.ligas.get(this.slug, item => {
-                    this.$Progress.increase(10)
-                    if (this.ligasASeremGravadas.times) {
-                      this.ligasASeremGravadas.times = this.ligasASeremGravadas.times.concat(l.times)
-                    } else {
-                      this.ligasASeremGravadas = l
-                    }
-                    if (this.ligasASeremGravadas.times.length >= parseInt(this.ligasASeremGravadas.liga.total_times_liga)) {
-                      this.liga = this.ligasASeremGravadas
-                      this.getPontuados()
-                      db.ligas.put(this.ligasASeremGravadas).catch(err => {
-                        console.log(err)
-                      })
-                    }
-                  })
-                })
-              }
-            }
-          })
+      this.$kartolafc.liga.getLiga(this.slug, l => {
+        if (l.total_times_liga > 100) {
+          this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel exibir')
+          return
         }
+        this.getPontuados()
+        this.liga = l
         this.$Progress.finish()
-      })
-    },
-
-    salvarTimesLigaPage: function (liga, page, callback) {
-      http.get('/liga/' + liga + '/' + page).then(r => {
-        if (r.data) {
-          callback(r.data)
-        }
       })
     },
 
@@ -264,11 +233,14 @@ export default {
 
 <style scoped>
 .hr {
-  margin: 0.4rem 0.4rem
+  margin: 0.4rem 0.4rem;
+  clear: both;
+  padding-top: 1px;
+  margin-bottom: 1px;
 }
 
 .section-min {
-  padding: 0rem 1.5rem
+  padding: 0rem 1.5rem;
 }
 </style>
 

@@ -4,6 +4,7 @@ import getMercado from './services/mercado'
 import getPontuados from './services/pontuados'
 import configuracao from './services/configuracao'
 import toast from './services/toast'
+import liga from './services/liga'
 
 let instaled = false
 
@@ -14,6 +15,7 @@ kartolafc.mercado = getMercado
 kartolafc.pontuados = getPontuados
 kartolafc.configuracao = configuracao
 kartolafc.toast = toast
+kartolafc.liga = liga.liga
 
 // plugin install
 const install = Vue => {
