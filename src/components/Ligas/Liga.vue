@@ -57,7 +57,7 @@
                 </label>
               </p>
               <p class="control">
-                <button class="tag button is-warning is-small" @click="getLiga()">Atualizar</button>
+                <button class="tag button is-warning is-small" @click="loader = true; getPontuados(true)">Atualizar</button>
               </p>
             </div>
             <div class="content has-text-centered">
@@ -149,13 +149,13 @@ export default {
           this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel exibir')
           return
         }
-        this.getPontuados()
         this.liga = l
+        this.getPontuados()
         this.$Progress.finish()
       })
     },
 
-    getPontuados: function () {
+    getPontuados: function (force = false) {
       this.$kartolafc.pontuados.getPontuados(p => {
         this.pontuados = p
         if (this.liga.times) {
@@ -187,7 +187,7 @@ export default {
         }
         this.loader = false
         this.$Progress.finish()
-      })
+      }, force)
     },
 
     fimPesquisaComErro: function (msg) {
