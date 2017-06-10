@@ -1,14 +1,14 @@
 <template>
-  <div>
+  <div :class="loader ? 'clareamento': ''">
     <div class="modal" :class="ativo != false ? 'is-active' : ''" @click="closeModal()">
-      <div class="modal-background"></div>
+      <div class="modal-background" v-if="!loader"></div>
       <div class="modal-card" @click.stop>
         <header class="modal-card-head">
           <p class="modal-card-title">
             <span class="subtitle is-5">
-              {{atletaMercado.apelido}}
+              &nbsp {{atletaMercado.apelido}}
             </span>
-            <picture class="image is-32x32 is-pulled-left">
+            <picture class="image is-48x48 is-pulled-left">
               <img :src="atletaMercado.foto">
             </picture>
           </p>
@@ -17,14 +17,14 @@
         <section class="modal-card-body">
           <div class="media">
             <div class="media-content">
-              <div class="content">
+              <!--<div class="content">
                 <div class="subtitle is-6">
-                  ${{atletaMercado.preco_num}} Jogos: {{atletaMercado.jogos_num}}<br/>
-                  <small v-if="atletaMercado.scout && atletaMercado.scout['G'] > 0">Gols: {{atletaMercado.scout['G']}}</small>
+                  <span class="has-text-black">Preço: ${{atletaMercado.preco_num}} Jogos: {{atletaMercado.jogos_num}}</span>
+                  <p class="has-text-black" v-if="atletaMercado.scout && atletaMercado.scout['G'] > 0"><span>Gols:</span> {{atletaMercado.scout['G']}}</p>
                 </div>
-              </div>
-              <div>
-                <grafico-atleta :data="dataGrafico" :option="option"></grafico-atleta>
+              </div>-->
+              <div v-if="ativarGrafico" class="">
+                <grafico-atleta :chartData="dataGrafico" :options="options" :height="200"></grafico-atleta>
               </div>
             </div>
           </div>
@@ -32,6 +32,9 @@
         <!--<footer class="modal-card-foot">
         </footer>-->
       </div>
+    </div>
+    <div v-show="loader">
+      <div class="loader-request"></div>
     </div>
   </div>  
 </template>
@@ -52,43 +55,88 @@ export default {
       atletaHistorico: [],
       atletaMercado: {},
       status: {},
-      option: {
+      ativarGrafico: false,
+      historico: {
+        pontos: [],
+        preco: [],
+        variacao: [],
+        media: []
+      },
+      options: {
         elements: {
           line: {
             tension: 0
           }
+        },
+        responsive: true,
+        title: {
+          display: true,
+          text: 'Pontuação por Rodada'
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Rodada'
+            }
+          }]
         }
       },
       dataGrafico: {
-        labels: [1, 2, 3, 4, 5, 6, 7],
+        labels: [],
         datasets: [
           {
-            label: 'Gols',
-            data: [1, 0, 2]
+            label: 'Pontos',
+            borderColor: 'rgba(182, 28, 0, 0.6)',
+            backgroundColor: 'rgba(182, 28, 0, 0.6)',
+            data: [],
+            fill: false
           },
           {
-            label: 'Cartão Amarelo',
-            borderColor: '##00d1b2',
-            data: [1, 1, 1]
+            label: 'Preço',
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgb(54, 162, 235)',
+            data: [],
+            fill: false
+          },
+          {
+            label: 'Variação',
+            borderColor: 'rgb(255, 205, 86)',
+            backgroundColor: 'rgb(255, 205, 86)',
+            data: [],
+            fill: false
+          },
+          {
+            label: 'Média',
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgb(75, 192, 192)',
+            data: [],
+            fill: false
           }
         ]
-      }
+      },
+      loader: false
     }
   },
 
   methods: {
     getAtleta: function () {
+      if (this.atletaId === 0) return
+      this.loader = true
       // Overwriting base render method with actual data.
       this.$kartolafc.mercado.getMercado(m => {
         http.get('/atletas/historico/' + this.atletaId).then(r => {
           this.$kartolafc.status.getStatus(s => {
             this.status = s
             this.atletaHistorico = r.data
+            this.transformaHistoricoGrafico()
             m.atletas.forEach(e => {
               if (e.atleta_id === this.atletaId) {
                 this.atletaMercado = e
               }
             }, this)
+            this.loader = false
           })
         }).catch(err => { console.log(err) })
       })
@@ -96,15 +144,52 @@ export default {
 
     closeModal: function () {
       this.$emit('update:ativo', false)
+      this.ativarGrafico = false
+    },
+
+    transformaHistoricoGrafico: function () {
+      this.historico.pontos = []
+      this.historico.preco = []
+      this.historico.variacao = []
+      this.historico.media = []
+      for (let a of this.atletaHistorico) {
+        this.historico.pontos.push(a.pontos)
+        this.historico.preco.push(a.preco)
+        this.historico.variacao.push(a.variacao)
+        this.historico.media.push(a.media)
+      }
+      this.dataGrafico.datasets[0].data = this.historico.pontos
+      this.dataGrafico.datasets[1].data = this.historico.preco
+      this.dataGrafico.datasets[2].data = this.historico.variacao
+      this.dataGrafico.datasets[3].data = this.historico.media
+
+      this.dataGrafico.labels = []
+      for (let i = 1; i < this.status.rodada_atual; i++) {
+        this.dataGrafico.labels.push(i)
+      }
+
+      this.ativarGrafico = true
     }
   },
 
   watch: {
     'atletaId': 'getAtleta'
+  },
+
+  created: function () {
+    document.addEventListener('keydown', (e) => {
+      if (this.ativo === true && e.keyCode === 27) {
+        this.closeModal()
+      }
+    })
   }
 }
 </script>
 
 <style>
-
+.container-scroll-horizontal {
+    width: 30em;
+    overflow-x: auto;
+    white-space: nowrap;
+}
 </style>

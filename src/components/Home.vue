@@ -73,33 +73,41 @@
                 </div>
               </div>
             </div>
-            <div class="media" v-if="status.status_mercado == 2">
-              <div class="media-content">
-                <div class="">
+            <div class="" v-if="status.status_mercado == 2">
+              <div class="">
+                <div class=""><br/>
                   <p class="title">Pontuação</p>
                   <div>
                     <input type="text" class="input" placeholder="Nome" v-model="pesquisaNomeAtletaPontuacao">
                   </div>
-                  <div class="scrollabed">
+                  <div class=""><br/>
                     <div class="" v-for="(atleta, k) of atletasPontuados">
                       <div class="">
                         <div class="media">
                           <div class="media-left">
-                            <figure class="image is-48x48">
+                            <figure class="image is-32x32">
                               <img :src="atleta.foto" alt="Image">
                             </figure>
                           </div>
                           <div class="media-content">
-                            <p class="title is-4">{{ atleta.apelido }}</p>
-                            <div class="subtitle is-6">
-                              <p>Pontuação: {{ atleta.pontuacao }}</p>
-                              <p>
-                                Preço: ${{ getPrecoAtleta(atleta.atleta_id) }}
-                              </p>
+                            <div class="content">
+                               <p class="title is-6">
+                                 {{ atleta.apelido }}</br>
+                                 <small>PTS: {{ atleta.pontuacao }} &nbsp ${{ getPrecoAtleta(atleta.atleta_id) }}</small>
+                                 <span class="tag is-info is-small is-pulled-right" @click="ativarDetalhes(atleta.atleta_id)">
+                                   + Detalhes
+                                 </span>
+                               </p>
                             </div>
                           </div>
                         </div>
                       </div>
+                      <hr class="hr">
+                    </div>
+                    <div class="field is-grouped is-grouped-centered">
+                      <p class="control">
+                        <button @click="limitPontuados+=6" :disabled="pontuados.atletas && limitPontuados >= Object.keys(pontuados.atletas).length" class="button is-success">Mostrar mais</button>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -109,25 +117,37 @@
               <div class="">
                 <div class="">
                   <p class="title">Mais Escalados</p>
-                  <div class="scrollabed">
-                    <div class="card" v-for="destaque of destaques">
-                      <div class="card-content">
+                  <div>
+                    <div class="" v-for="destaque of destaques.slice(0, limitDestaques)">
+                      <div class="">
                         <div class="media">
                           <div class="media-left">
-                            <figure class="image is-64x64">
+                            <figure class="image is-32x32">
                               <img :src="destaque.Atleta.foto" alt="Image">
                             </figure>
                           </div>
                           <div class="media-content">
-                            <p class="title is-4">{{ destaque.Atleta.apelido }}</p>
-                            <div class="subtitle is-6">
-                              <p>Escalações: {{ destaque.escalacoes }}</p>
-                              <p>Posição: {{ destaque.posicao }}</p>
-                              <p>Preço: ${{ getPrecoAtleta(destaque.Atleta.atleta_id) }}</p>
+                            <div class="content">
+                              <p class="title is-6">
+                                {{ destaque.Atleta.apelido }}</br>
+                                <small class="has-text-black">
+                                  Escalações: {{ destaque.escalacoes }}</br>
+                                  {{ destaque.posicao }} ${{ getPrecoAtleta(destaque.Atleta.atleta_id) }}
+                                  <span class="tag is-info is-small is-pulled-right" @click="ativarDetalhes(destaque.Atleta.atleta_id)">
+                                    + Detalhes
+                                  </span>
+                                </small>
+                                </p>
                             </div>
                           </div>
                         </div>
                       </div>
+                      <hr class="hr">
+                    </div>
+                    <div class="field is-grouped is-grouped-centered">
+                      <p class="control">
+                        <button @click="limitDestaques+=6" class="button is-success" :disabled="limitDestaques >= destaques.length">Mostrar mais</button>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -137,6 +157,7 @@
         </div>
       </div>
     </div>
+    <detalhes-atleta :ativo="detalhes.ativo" :atletaId="detalhes.atletaId" @update:ativo="v => { detalhes.ativo = v; detalhes.atletaId = 0 }"></detalhes-atleta>
     <escalacao-time :timemodal="modal.time" :active="modal.active" @update:active="val => modal.active = val"></escalacao-time>
   </section>
 </div>
@@ -146,14 +167,20 @@
 import {http} from './../axios'
 import db from './../dexie'
 import EscalacaoTime from './shared/EscalacaoTime'
+import DetalhesAleta from './shared/DetalhesAtleta'
 
 export default {
   components: {
-    'escalacao-time': EscalacaoTime
+    'escalacao-time': EscalacaoTime,
+    'detalhes-atleta': DetalhesAleta
   },
 
   data () {
     return {
+      detalhes: {
+        ativo: false,
+        atletaId: 0
+      },
       modal: {
         active: false,
         time: {}
@@ -167,7 +194,11 @@ export default {
       pesquisaNomeAtletaPontuacao: '',
       status: {},
       mercado: {},
-      mercadoAtletas: {}
+      mercadoAtletas: {},
+      scrollEscalados: false,
+      scrollPontuados: false,
+      limitPontuados: 6,
+      limitDestaques: 6
     }
   },
   methods: {
@@ -266,6 +297,12 @@ export default {
       if (atletaId && this.mercadoAtletas[atletaId]) {
         return this.mercadoAtletas[parseInt(atletaId)].preco_num
       }
+    },
+
+    ativarDetalhes: function (atletaId) {
+      atletaId = parseInt(atletaId)
+      this.detalhes.atletaId = atletaId
+      this.detalhes.ativo = true
     }
   },
   created: function () {
@@ -291,7 +328,7 @@ export default {
           }
         }
         // ordenando por pontuacao
-        matches.sort(function (a, b) {
+        matches.sort((a, b) => {
           if ((typeof b.pontuacao === 'undefined' && typeof a.pontuacao !== 'undefined') || a.pontuacao < b.pontuacao) {
             return 1
           }
@@ -300,7 +337,7 @@ export default {
           }
           return 0
         })
-        return matches.slice(0, 20)
+        return matches.slice(0, this.limitPontuados)
       }
       return []
     }
@@ -314,5 +351,11 @@ export default {
   overflow: auto;
   max-height: 350px;
 }
+.hr {
+  margin: 0.4rem 0.4rem
+}
 
+.is-primary {
+  background-color: '#780a25'
+}
 </style>

@@ -5,7 +5,7 @@
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
             <div class="">
-              <h5 class="title is-4 has-text-centered">Mercado de Atletas</h5>
+              <h5 class="title is-4 has-text-centered">Atletas</h5>
               <div>
                 <div class="field has-addons-centered has-addons">
                   <p class="control">
@@ -97,7 +97,7 @@
         </div>
       </div>
     </div>
-    <detalhes-atleta :ativo="detalhes.ativo" :atletaId="detalhes.atletaId" @update:ativo="v => detalhes.ativo = v"></detalhes-atleta>
+    <detalhes-atleta :ativo="detalhes.ativo" :atletaId="detalhes.atletaId" @update:ativo="v => { detalhes.ativo = v; detalhes.atletaId = 0 }"></detalhes-atleta>
     <div v-show="loader">
       <div class="loader-request"></div>
     </div>
