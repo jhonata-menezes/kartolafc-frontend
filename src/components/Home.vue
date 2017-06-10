@@ -17,6 +17,11 @@
       <div>
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
+            <div class="has-text-centered">
+              <div class="fb-like" data-href="https://www.facebook.com/kartolafc/" data-layout="button_count" 
+              data-action="like" data-size="small" data-show-faces="true" data-share="true">
+              </div>
+            </div><br/>
             <p class="title has-text-left">Meu Time</p>
             <div class="media">
               <div class="media-left" v-if="meuTime.time">
