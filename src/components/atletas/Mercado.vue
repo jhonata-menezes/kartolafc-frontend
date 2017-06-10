@@ -5,7 +5,7 @@
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
             <div class="">
-              <h5 class="title is-4 has-text-centered">Mercado de Atletas</h5>
+              <h5 class="title is-4 has-text-centered">Atletas</h5>
               <div>
                 <div class="field has-addons-centered has-addons">
                   <p class="control">
@@ -68,7 +68,7 @@
             </div>
             <hr class="hr">
             <div class="" v-for="a of atletasComputed">
-              <div class="media">
+              <div class="media" @click="exibirDetalhes(a.atleta_id)">
                 <div class="media-left">
                   <picture class="image is-48x48">
                     <img :src="a.foto">
@@ -97,6 +97,7 @@
         </div>
       </div>
     </div>
+    <detalhes-atleta :ativo="detalhes.ativo" :atletaId="detalhes.atletaId" @update:ativo="v => { detalhes.ativo = v; detalhes.atletaId = 0 }"></detalhes-atleta>
     <div v-show="loader">
       <div class="loader-request"></div>
     </div>
@@ -104,9 +105,18 @@
 </template>
 
 <script>
+import DetalhesAleta from './../shared/DetalhesAtleta'
+
 export default {
+  components: {
+    'detalhes-atleta': DetalhesAleta
+  },
   data () {
     return {
+      detalhes: {
+        ativo: false,
+        atletaId: 0
+      },
       atletas: [],
       pontuados: {},
       loader: false,
@@ -136,6 +146,11 @@ export default {
           this.loader = false
         })
       })
+    },
+
+    exibirDetalhes: function (t) {
+      this.detalhes.ativo = true
+      this.detalhes.atletaId = t
     }
   },
 
