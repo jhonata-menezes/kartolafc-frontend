@@ -29,7 +29,7 @@
         </header>
         <section class="modal-card-body" v-if="time.atletas">
           <div class="has-text-centered">
-            <b>Rodada</b>: {{ time.rodada_atual }} <b> Pontuação</b>: {{ somaPontuacao(time) }}
+            <b> Pts</b>: {{ somaPontuacao(time) }}
             <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
             <span v-if="posicaoGeral"> <b>Posição</b>: {{posicaoGeral}}</span>
           </div>
@@ -49,9 +49,13 @@
                     <strong class="is-pulled-right is-success" v-else="">0</strong>
                   </p>
                 </div>
+
               </div>
             </article>
             <hr class="hr-atleta">
+          </div>
+          <div>
+            <time-historico :timeId="timemodal.time.time_id"></time-historico>
           </div>
         </section>
         <section class="modal-card-body" v-else>
@@ -78,8 +82,15 @@
 
 <script>
 import {http} from './../../axios'
+import TimeHistorico from './TimeHistorico'
 
 export default {
+  components: {
+    'time-historico': TimeHistorico
+  },
+
+  props: ['timemodal', 'active'],
+
   data () {
     return {
       atletasPontuados: {},
@@ -127,8 +138,6 @@ export default {
     }
   },
 
-  props: ['timemodal', 'active'],
-
   computed: {
     time () {
       if (this.timemodal.atletas) {
@@ -164,4 +173,5 @@ export default {
 .hr-atleta {
   margin: 0.1rem 0.1rem
 }
+
 </style>
