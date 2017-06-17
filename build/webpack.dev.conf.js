@@ -40,7 +40,7 @@ module.exports = merge(baseWebpackConfig, {
         new manifestPlugin({
             name: 'KartolaFC',
             description: 'KartolaFC - Veja pontuação do seu time e colegas.',
-            display: 'fullscreen',
+            display: 'standalone',
             short_name: 'Kartolafc',
             start_url: '.',
             background_color: '#fff',

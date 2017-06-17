@@ -5,102 +5,104 @@
         <div v-if="loader">
           <div class="loader-request-time"></div>
         </div>
-        <div v-if="ativarGrafico">
-          <chart :chartData="datasets" :options="options" :height="300" :width="600"></chart>
-        </div>
-        <hr class="hr">
-        <div>
-          <strong class="is-bold is-5">Mais escalado</strong><br>
-          <div v-if="atletas.maisEscalado.escalado >= 0" class="media">
-            <figure class="media-left">
-              <p class="image is-48x48">
-                <img :src="atletas.maisEscalado.atleta.foto">
-              </p>
-            </figure>
-            <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong class="title is-6">{{atletas.maisEscalado.atleta.apelido}}</strong><br>
-                  <strong class="subtitle is-6">{{atletas.maisEscalado.pontuacaoMais.toFixed(2)}} Pts - Escalado {{atletas.maisEscalado.escalado}}X</strong>
-                </p>
-              </div>
-            </div>
+        <div v-else>
+          <div v-if="ativarGrafico">
+            <chart :chartData="datasets" :options="options" :height="300"></chart>
           </div>
-        </div>
-        <hr class="hr">
-        <div>
-          <strong class="is-bold is-5">Rendeu mais pontos</strong><br>
-          <div v-if="atletas.maisPontos.escalado >= 0" class="media">
-            <figure class="media-left">
-              <p class="image is-48x48">
-                <img :src="atletas.maisPontos.atleta.foto">
-              </p>
-            </figure>
-            <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong class="title is-6">{{atletas.maisPontos.atleta.apelido}}</strong><br>
-                  <strong class="subtitle is-6">{{atletas.maisPontos.pontuacaoMais.toFixed(2)}} Pts - Escalado {{atletas.maisPontos.escalado}}X</strong>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr class="hr">
-        <div>
-          <strong class="is-bold is-5">Rendeu menos pontos</strong><br>
-          <div v-if="atletas.menosPontos.escalado >= 0" class="media">
-            <figure class="media-left">
-              <p class="image is-48x48">
-                <img :src="atletas.menosPontos.atleta.foto">
-              </p>
-            </figure>
-            <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong class="title is-6">{{atletas.menosPontos.atleta.apelido}}</strong><br>
-                  <strong class="subtitle is-6">{{atletas.menosPontos.pontuacaoMais.toFixed(2)}} Pts - Escalado {{atletas.menosPontos.escalado}}X</strong>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr class="hr">
-        <div>
+          <hr class="hr">
           <div>
-            <p class="has-text-centered">Reveja escalações passadas</p>
-            <div class="field is-grouped is-grouped-centered">
-              <p class="control">
-                <span class="select is-small">
-                  <select v-model="rodadaSelecionada">
-                    <option v-if="rodada > 0" v-for="(time, rodada) of historico" :value="rodada">Rodada {{rodada}}</option>
-                  </select>
-                </span>
-              </p>
+            <strong class="is-bold is-5">Mais escalado</strong><br>
+            <div v-if="atletas.maisEscalado.escalado >= 0" class="media">
+              <figure class="media-left">
+                <p class="image is-48x48">
+                  <img :src="atletas.maisEscalado.atleta.foto">
+                </p>
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong class="title is-6">{{atletas.maisEscalado.atleta.apelido}}</strong><br>
+                    <strong class="subtitle is-6">{{atletas.maisEscalado.pontuacaoMais.toFixed(2)}} Pts - Escalado {{atletas.maisEscalado.escalado}}X</strong>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-          <div v-if="historico[rodadaSelecionada] && historico[rodadaSelecionada].atletas">
-            <p class="has-text-centered">
-              Pontuação Total: {{historico[rodadaSelecionada].pontos.toFixed(2)}}
-            </p>
-            <hr class="hr-atleta">
-            <div v-for="t of historico[rodadaSelecionada].atletas">
-              <article class="media">
-                <figure class="media-left">
-                  <p class="image is-16x16">
-                    <img :src="pontuados.clubes[t.clube_id].Escudos['30x30']">
+          <hr class="hr">
+          <div>
+            <strong class="is-bold is-5">Rendeu mais pontos</strong><br>
+            <div v-if="atletas.maisPontos.escalado >= 0" class="media">
+              <figure class="media-left">
+                <p class="image is-48x48">
+                  <img :src="atletas.maisPontos.atleta.foto">
+                </p>
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong class="title is-6">{{atletas.maisPontos.atleta.apelido}}</strong><br>
+                    <strong class="subtitle is-6">{{atletas.maisPontos.pontuacaoMais.toFixed(2)}} Pts - Escalado {{atletas.maisPontos.escalado}}X</strong>
                   </p>
-                </figure>
-                <div class="media-content">
-                  <div class="content">
-                    <p>
-                      <strong>{{ t.apelido }}</strong><small> {{ pontuados.posicoes[t.posicao_id].abreviacao.charAt(0).toUpperCase() + pontuados.posicoes[t.posicao_id].abreviacao.slice(1) }}</small>
-                      <strong class="is-pulled-right is-success" >{{ t.pontos_num }}</strong>
-                    </p>
-                  </div>
                 </div>
-              </article>
+              </div>
+            </div>
+          </div>
+          <hr class="hr">
+          <div>
+            <strong class="is-bold is-5">Rendeu menos pontos</strong><br>
+            <div v-if="atletas.menosPontos.escalado >= 0" class="media">
+              <figure class="media-left">
+                <p class="image is-48x48">
+                  <img :src="atletas.menosPontos.atleta.foto">
+                </p>
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong class="title is-6">{{atletas.menosPontos.atleta.apelido}}</strong><br>
+                    <strong class="subtitle is-6">{{atletas.menosPontos.pontuacaoMais.toFixed(2)}} Pts - Escalado {{atletas.menosPontos.escalado}}X</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr class="hr">
+          <div>
+            <div>
+              <p class="has-text-centered">Reveja escalações passadas</p>
+              <div class="field is-grouped is-grouped-centered">
+                <p class="control">
+                  <span class="select is-small">
+                    <select v-model="rodadaSelecionada">
+                      <option v-if="rodada > 0" v-for="(time, rodada) of historico" :value="rodada">Rodada {{rodada}}</option>
+                    </select>
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div v-if="historico[rodadaSelecionada] && historico[rodadaSelecionada].atletas">
+              <p class="has-text-centered">
+                Pontuação Total: {{historico[rodadaSelecionada].pontos.toFixed(2)}}
+              </p>
               <hr class="hr-atleta">
+              <div v-for="t of historico[rodadaSelecionada].atletas">
+                <article class="media">
+                  <figure class="media-left">
+                    <p class="image is-16x16">
+                      <img :src="pontuados.clubes[t.clube_id].Escudos['30x30']">
+                    </p>
+                  </figure>
+                  <div class="media-content">
+                    <div class="content">
+                      <p>
+                        <strong>{{ t.apelido }}</strong><small> {{ pontuados.posicoes[t.posicao_id].abreviacao.charAt(0).toUpperCase() + pontuados.posicoes[t.posicao_id].abreviacao.slice(1) }}</small>
+                        <strong class="is-pulled-right is-success" >{{ t.pontos_num }}</strong>
+                      </p>
+                    </div>
+                  </div>
+                </article>
+                <hr class="hr-atleta">
+              </div>
             </div>
           </div>
         </div>
