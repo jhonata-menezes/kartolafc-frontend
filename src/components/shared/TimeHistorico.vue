@@ -71,7 +71,7 @@
             <div>
               <p class="has-text-centered">Reveja escalações passadas</p>
               <div class="field is-grouped is-grouped-centered">
-                <p class="control">
+                <p class="control has-icons-right">
                   <span class="select is-small">
                     <select v-model="rodadaSelecionada">
                       <option v-if="rodada > 0" v-for="(time, rodada) of historico" :value="rodada">Rodada {{rodada}}</option>

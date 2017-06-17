@@ -37,7 +37,7 @@
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
             <div class="field is-grouped is-grouped-centered">
-               <p class="control">
+               <p class="control has-icons-right">
                 <span class="select is-small">
                   <select v-model="timesPontuacao.nome" @change="timesPontuacao.somarPontuacao = false">
                     <option value="padrao" selected>Atual</option>
