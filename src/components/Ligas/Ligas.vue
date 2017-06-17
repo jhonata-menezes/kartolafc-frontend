@@ -128,6 +128,10 @@ export default {
             this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel adicionar')
             return
           }
+          if (r.data.liga.mata_mata) {
+            this.fimPesquisaComErro('No momento não temos suporte para liga mata a mata')
+            return
+          }
           this.$Progress.start()
           for (let i = 0; i <= parseInt(parseInt(r.data.liga.total_times_liga) / 20); i++) {
             if (i === 6) {
