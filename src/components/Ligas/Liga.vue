@@ -61,7 +61,7 @@
               </p>
             </div>
             <div class="content has-text-centered">
-              <small class="is-6 subtitle">Clique no time para ver a escalação</small>
+              <p class="is-6 is-bold">Clique no time para ver a escalação</p>
             </div>
             <div class="media">
               <div class="media-content">
