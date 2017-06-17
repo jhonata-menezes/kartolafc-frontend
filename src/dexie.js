@@ -33,6 +33,15 @@ db.version(6).stores({
   configuracao: `id`
 })
 
+db.version(7).stores({
+  meuTime: `time.time_id`,
+  meusTimes: `time.time_id`,
+  timesHistorico: `[time.time_id+rodada_atual]`,
+  mercado: `rodada_atual`,
+  ligas: `liga.slug`,
+  configuracao: `id`
+})
+
 db.open().catch(err => {
   console.log('open', err)
   let req = indexedDB.deleteDatabase('kartolafc')

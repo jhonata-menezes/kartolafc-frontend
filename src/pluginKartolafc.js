@@ -5,12 +5,14 @@ import getPontuados from './services/pontuados'
 import configuracao from './services/configuracao'
 import toast from './services/toast'
 import liga from './services/liga'
+import timeHistorico from './services/time_historico'
 
 let instaled = false
 
 let kartolafc = {}
 kartolafc.status = getStatus
 kartolafc.time = getTime
+kartolafc.timeHistorico = timeHistorico
 kartolafc.mercado = getMercado
 kartolafc.pontuados = getPontuados
 kartolafc.configuracao = configuracao
