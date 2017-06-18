@@ -125,8 +125,7 @@ export default {
             return
           }
           if (r.data.liga.total_times_liga > 100) {
-            this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel adicionar')
-            return
+            this.$kartolafc.toast.info('Liga com mais de 100 times, apenas os 100 primeiros serão adicionados')
           }
           if (r.data.liga.mata_mata) {
             this.fimPesquisaComErro('No momento não temos suporte para liga mata a mata')
@@ -147,9 +146,9 @@ export default {
                 } else {
                   this.ligasASeremGravadas = l
                 }
-                if (this.ligasASeremGravadas.times.length >= parseInt(this.ligasASeremGravadas.liga.total_times_liga)) {
+                if (this.ligasASeremGravadas.times.length >= parseInt(this.ligasASeremGravadas.liga.total_times_liga) || (i + 1) >= 5) {
                   db.ligas.put(this.ligasASeremGravadas).then(r => {
-                    this.fimPesquisaComSucesso('Liga adicionada a lista')
+                    this.fimPesquisaComSucesso('Liga adicionada')
                     this.ligas = []
                   }).catch(err => {
                     this.fimPesquisaComErro('Não foi possivel adicionar a liga, tente novamente')

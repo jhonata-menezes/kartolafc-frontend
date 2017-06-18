@@ -146,8 +146,7 @@ export default {
       this.loader = true
       this.$kartolafc.liga.getLiga(this.slug, l => {
         if (l.total_times_liga > 100) {
-          this.fimPesquisaComErro('Liga com mais de 100 times, não é possivel exibir')
-          return
+          this.fimPesquisaComErro('Liga com mais de 100 times, apenas os 100 primeiros serão visualizados')
         }
         this.liga = l
         this.getPontuados()
