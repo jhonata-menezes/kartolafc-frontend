@@ -3,7 +3,7 @@
     <div v-if="time.time" class="modal" :class="active != false ? 'is-active' : ''" @click="closeModal()">
       <div class="modal-background"></div>
       <div class="modal-card" @click.stop>
-        <header class="modal-card-head">
+        <header class="modal-card-head color-header">
           <p class="">
             <div class="media">
               <div class="media-left">
@@ -63,15 +63,21 @@
             <p>Time não escalado</p>
           </div>
         </section>
-        <footer class="modal-card-foot" v-if="time.time">
-          <social-sharing :url="'https://kartolafc.com.br/#/time/id/' + time.time.time_id"  :title="time.time.nome" :description="'Veja minha pontuação e time no KartolaFC ' + somaPontuacao(time)" inline-template>
-            <div class="title is-5"> Compartilhar 
-                <network network="facebook">&nbsp 
-                  <i class="fa fa-facebook"></i>
-                </network>&nbsp &nbsp
-                <network network="whatsapp">
-                  <i class="fa fa-whatsapp"></i>
-                </network>
+        <footer class="modal-card-foot color-footer" v-if="time.time">
+          <social-sharing hashtags="KartolaFC" :url="'https://kartolafc.com.br/#/time/id/' + time.time.time_id"  :title="time.time.nome" :description="'Veja minha pontuação e time no KartolaFC ' + somaPontuacao(time)" inline-template >
+            <div class="title is-6"> Compartilhar 
+              <network network="facebook">&nbsp 
+                <i class="fa fa-facebook"></i>
+              </network>&nbsp &nbsp
+              <network network="whatsapp">
+                <i class="fa fa-whatsapp"></i>
+              </network>&nbsp &nbsp
+              <network network="twitter">
+                <i class="fa fa-twitter"></i>
+              </network>&nbsp &nbsp
+              <network network="telegram">
+                <i class="fa fa-telegram"></i>
+              </network>
             </div>
           </social-sharing>
         </footer>
@@ -173,5 +179,11 @@ export default {
 .hr-atleta {
   margin: 0.1rem 0.1rem
 }
+.color-header {
+  background-color: rgb(148, 239, 133);
+}
 
+.color-footer {
+  background-color: rgb(255, 252, 113);
+}
 </style>
