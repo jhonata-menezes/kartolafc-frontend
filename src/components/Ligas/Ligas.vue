@@ -146,7 +146,7 @@ export default {
                 } else {
                   this.ligasASeremGravadas = l
                 }
-                if (this.ligasASeremGravadas.times.length >= parseInt(this.ligasASeremGravadas.liga.total_times_liga) || (i + 1) >= 5) {
+                if ((i + 1) >= 5 || (parseInt(l.liga.total_times_liga) / (20 * (i + 1))) < 1) {
                   db.ligas.put(this.ligasASeremGravadas).then(r => {
                     this.fimPesquisaComSucesso('Liga adicionada')
                     this.ligas = []
