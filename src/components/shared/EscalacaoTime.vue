@@ -89,7 +89,6 @@
 <script>
 import {http} from './../../axios'
 import TimeHistorico from './TimeHistorico'
-import Clipboard from 'clipboard/lib/clipboard-action'
 
 export default {
   components: {
@@ -108,11 +107,6 @@ export default {
   methods: {
     closeModal: function () {
       this.$emit('update:active', false)
-    },
-
-    copyCLip: function () {
-      let clipboard = new Clipboard('.clipboard-copy')
-      clipboard.destroy()
     },
 
     somaPontuacao: function (time) {
