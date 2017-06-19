@@ -21,7 +21,7 @@
                 </h5>
                 <p class="control">
                   <label class="checkbox">
-                    <input type="checkbox" disabled :checked="opcoes.times" @click="opcoes.times = !opcoes.times">
+                    <input type="checkbox" :checked="opcoes.times" @click="opcoes.times = !opcoes.times">
                       <b>Apenas jogadores dos meus times</b>
                   </label>
                 </p>

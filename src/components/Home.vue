@@ -22,59 +22,62 @@
               data-action="like" data-size="small" data-show-faces="true" data-share="true">
               </div>
             </div><br/>
-            <p class="title has-text-left">Meu Time</p>
-            <div class="media">
-              <div class="media-left" v-if="meuTime.time">
-                <figure class="image is-48x48">
-                  <img :src="meuTime.time.url_escudo_svg" alt="Escudo">
-                </figure>
-                <figure class="image is-48x48">
-                  <img :src="meuTime.time.foto_perfil" alt="Perfil Facebook">
-                </figure>
+            <p class="title has-text-left" @click="iconeAdicionarTimes = !iconeAdicionarTimes">Meus Times
+              <span class="icon is-medium">
+                <i v-if="!iconeAdicionarTimes" class="fa fa-plus" aria-hidden="true"></i>
+                <i v-else class="fa fa-minus" aria-hidden="true"></i>
+              </span>
+            </p>
+            <div v-if="iconeAdicionarTimes">
+              <div class="field is-grouped">
+                <input type="text" class="input is-4" v-model="pesquisaTimes" placeholder="Time ou cartoleiro" @keyup.enter="searchTimes"><button @click="searchTimes" class="button is-light control">Pesquisar</button>
               </div>
-              <div class="media-content" v-if="meuTime.time">
-                <div class="content">
-                  <p>{{ meuTime.time.nome }}</br>
-                    <small>{{ meuTime.time.nome_cartola }}</small></br>
-                    <small v-if="status.status_mercado === 2">
-                    Posicao: {{ meuTime.posicao }}</br>
-                    </small>
-                    Pontos: {{ calculaPontos(meuTime) }}
-                  </p>
-                  <a class="button is-info is-small" @click="modal.active=true; modal.time=meuTime">Ver Time</a>
-                  <a class="button is-danger is-small" @click="limparMeuTime">Remover</a>
-                </div>
-              </div>
-              <div v-else>
-                <div class="field is-grouped">
-                  <input type="text" class="input is-4" v-model="pesquisaTimes" placeholder="Time ou cartoleiro" @keyup.enter="searchTimes"><button @click="searchTimes" class="button is-light control">Pesquisar</button>
-                </div>
-                <div v-for="time of retornoTimes">
-                  <div class="box">
-                    <div class="media">
-                      <div class="media-left">
-                        <figure class="image is-48x48">
-                          <img :src="time.url_escudo_svg" alt="Escudo">
-                        </figure>
-                      </div>
-                      <div class="media-left">
-                        <figure class="image is-48x48">
-                          <img :src="time.foto_perfil" alt="Escudo">
-                        </figure>
-                      </div>
-                      <div class="media-content">
-                        <div class="content">
-                          <p>
-                            <strong>{{ time.nome }}</strong><br/>
-                            <small>Cartoleiro: </small> <small>{{ time.nome_cartola }}</small><br/>
-                            <a class="is-link" @click="setMeuTime(time)">Salvar</a>
-                          </p>
-                        </div>
-                      </div>
+              <div v-for="time of retornoTimes">
+                <div class="box">
+                  <div class="media">
+                    <div class="media-left">
+                      <figure class="image is-32x32">
+                        <img :src="time.url_escudo_svg" alt="Escudo">
+                      </figure>
                     </div>
-                    <div>
+                    <div class="media-left">
+                      <figure class="image is-32x32">
+                        <img :src="time.foto_perfil" alt="Escudo">
+                      </figure>
+                    </div>
+                    <div class="media-content">
+                      <div class="content">
+                        <p>
+                          <strong>{{ time.nome }}</strong><br/>
+                          <small>Cartoleiro: </small> <small>{{ time.nome_cartola }}</small><br/>
+                          <a class="is-link" @click="addMeuTime(time)">Adicionar</a>
+                        </p>
+                      </div>
                     </div>
                   </div>
+                </div>
+              </div><br>
+            </div>
+            <div class="media" v-for="time of meusTimes">
+              <div class="media-left">
+                <figure class="image is-32x32">
+                  <img :src="time.time.url_escudo_svg" alt="Escudo">
+                </figure>
+                <figure class="image is-32x32">
+                  <img :src="time.time.foto_perfil" alt="Perfil Facebook">
+                </figure>
+              </div>
+              <div class="media-content">
+                <div class="content">
+                  <p>{{ time.time.nome }}</br>
+                    <small>{{ time.time.nome_cartola }}</small></br>
+                    <small>Pts: {{ calculaPontos(time) }}</small>
+                    <small v-if="status.status_mercado === 2">
+                    Posicao: {{ time.posicao }}</br>
+                    </small>
+                    <a class="button is-info is-small" @click="modal.active=true; modal.time=time">Ver Time</a>
+                    <a class="button is-danger is-small" @click="removerTime(time)">Remover</a>
+                  </p>
                 </div>
               </div>
             </div>
@@ -182,6 +185,7 @@ export default {
 
   data () {
     return {
+      iconeAdicionarTimes: false,
       detalhes: {
         ativo: false,
         atletaId: 0
@@ -193,7 +197,7 @@ export default {
       retornoTimes: [],
       pesquisaTimes: '',
       destaques: [],
-      meuTime: {},
+      meusTimes: [],
       mercadoAberto: true,
       pontuados: {},
       pesquisaNomeAtletaPontuacao: '',
@@ -248,9 +252,9 @@ export default {
 
     getMeuTime: function () {
       db.meuTime.toArray().then(time => {
-        if (time.length === 1) {
-          this.$kartolafc.time.getTime(time[0].time.time_id, t => {
-            this.meuTime = t
+        for (let mt of time) {
+          this.$kartolafc.time.getTime(mt.time.time_id, t => {
+            this.meusTimes.push(t)
             this.getRankingGeral()
           })
         }
@@ -259,28 +263,38 @@ export default {
       })
     },
 
-    setMeuTime: function (time) {
-      this.limparMeuTime()
+    addMeuTime: function (time) {
       this.$kartolafc.time.getTime(time.time_id, t => {
-        this.meuTime = t
+        this.meusTimes.push(t)
+        this.getRankingGeral()
         // precisa salva meu time em uma tabela separada, apenas para nao criar coluna ou alguma flag
         db.meuTime.put(t).then(() => {
           console.log('time salvo ou atualizado')
         }).catch(err => {
           console.log('erro ao salvar meu time', err)
         }).catch(err => { console.log('endpoint nao respondeu', err) })
+        this.retornoTimes = []
       })
     },
 
     getRankingGeral: function () {
-      http.get('/ranking/time/id/' + this.meuTime.time.time_id).then(r => {
-        this.$set(this.meuTime, 'posicao', r.data.posicao)
-      })
+      for (let i in this.meusTimes) {
+        if (this.meusTimes[i].posicao >= 0) continue
+        http.get('/ranking/time/id/' + this.meusTimes[i].time.time_id).then(r => {
+          if (this.meusTimes[i].posicao) return
+          this.$set(this.meusTimes[i], 'posicao', r.data.posicao)
+        })
+      }
     },
 
-    limparMeuTime: function () {
-      db.meuTime.clear()
-      this.meuTime = {}
+    removerTime: function (time) {
+      db.meuTime.delete(time.time.time_id)
+      for (let i in this.meusTimes) {
+        if (this.meusTimes[i].time.time_id === time.time.time_id) {
+          this.meusTimes.splice(i, 1)
+          break
+        }
+      }
     },
 
     getMercado: function () {
@@ -362,5 +376,13 @@ export default {
 
 .is-primary {
   background-color: '#780a25'
+}
+
+.fa-plus {
+  color: #23d160;
+}
+
+.fa-minus {
+  color: #ff3860;
 }
 </style>

@@ -16,7 +16,7 @@ const requestLigaRecursive = (slug, end, qtd = -100, page = 1, liga = {}) => {
       if (page !== 1) {
         liga.times = liga.times.concat(r.data.times)
       }
-      if (qtd <= 0 || liga.total_times_liga > 100 || page === 5) {
+      if (qtd <= 0 || page === 5) {
         end(liga)
       } else {
         requestLigaRecursive(slug, end, qtd, ++page, liga)
