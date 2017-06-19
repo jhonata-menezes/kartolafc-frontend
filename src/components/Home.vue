@@ -86,7 +86,7 @@
                 <div class=""><br/>
                   <p class="title">Pontuação</p>
                   <div>
-                    <input type="text" class="input" placeholder="Nome" v-model="pesquisaNomeAtletaPontuacao">
+                    <input type="text" class="input" placeholder="Nome do atleta, clube ou posição" v-model="pesquisaNomeAtletaPontuacao">
                   </div>
                   <div class=""><br/>
                     <div class="" v-for="(atleta, k) of atletasPontuados">
@@ -99,8 +99,8 @@
                           </div>
                           <div class="media-content">
                             <div class="content">
-                               <p class="title is-6">
-                                 {{ atleta.apelido }}</br>
+                               <p class="title is-6 is-bold">
+                                 {{ atleta.apelido }} <small>{{pontuados.posicoes[atleta.posicao_id].abreviacao.charAt(0).toUpperCase() + pontuados.posicoes[atleta.posicao_id].abreviacao.slice(1)}}</small></br>
                                  <small>PTS: {{ atleta.pontuacao }} &nbsp ${{ getPrecoAtleta(atleta.atleta_id) }}</small>
                                  <span class="tag is-info is-small is-pulled-right" @click="ativarDetalhes(atleta.atleta_id)">
                                    + Detalhes
@@ -340,7 +340,10 @@ export default {
         let atletas = this.pontuados.atletas
         for (let k in atletas) {
           if (atletas.hasOwnProperty(k)) {
-            if (atletas[k].apelido.toLowerCase().indexOf(searchLowerCase) >= 0) {
+            // pesquisa nome do atleta, clube ou posicao
+            if (atletas[k].apelido.toLowerCase().indexOf(searchLowerCase) >= 0 ||
+                this.pontuados.clubes[atletas[k].clube_id].nome.toLowerCase().indexOf(searchLowerCase) >= 0 ||
+                this.pontuados.posicoes[atletas[k].posicao_id].nome.toLowerCase().indexOf(searchLowerCase) >= 0) {
               atletas[k].atleta_id = k
               matches.push(atletas[k])
             }
