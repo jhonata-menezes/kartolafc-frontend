@@ -8,7 +8,7 @@ self.addEventListener('push', function (event) {
     const options = {
       body: n.body,
       icon: n.icon || '/static/img/icon.png',
-      badge: '/static/img/icon.png',
+      badge: 'https://kartolafc.com.br/static/img/icon.png',
       dir: 'auto',
       requireInteraction: false,
       vibrate: [200, 100, 200],
