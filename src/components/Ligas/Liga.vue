@@ -15,8 +15,27 @@
                   <div class="media-content">
                     <p class="title is-5">
                       {{liga.liga.nome}}
+                      <span class="icon is-6 is-small" title="Copiar link" v-clipboard="clipboard()" @success="clipboardSuccess">
+                        <i class="fa fa-clipboard" aria-hidden="true"></i>
+                      </span><br><br>
                       <a class="button is-small is-success" v-if="!detalhesLiga" @click="detalhesLiga = !detalhesLiga">+ Detalhes</a>
                       <a class="button is-small is-success" v-else @click="detalhesLiga = !detalhesLiga">- Detalhes</a>
+                      <social-sharing class="" hashtags="KartolaFC" :url="'https://kartolafc.com.br/#/liga/' + slug" :title="liga.liga.nome" :description="liga.liga.descricao" inline-template>
+                        <span class="title is-5">
+                          <network network="facebook">
+                            <i class="fa fa-facebook"></i>
+                          </network>&nbsp &nbsp
+                          <network network="whatsapp">
+                            <i class="fa fa-whatsapp"></i>
+                          </network>&nbsp &nbsp
+                          <network network="twitter">
+                            <i class="fa fa-twitter"></i>
+                          </network>&nbsp &nbsp
+                          <network network="telegram">
+                            <i class="fa fa-telegram"></i>
+                          </network>
+                        </span>
+                      </social-sharing>
                     </p>
                     <p class="subtitle is-6">
                       <div class="" v-if="detalhesLiga">
@@ -193,6 +212,14 @@ export default {
       this.$Progress.finish()
       this.loader = false
       this.$kartolafc.toast.error(msg)
+    },
+
+    clipboard: function () {
+      return 'https://kartolafc.com.br/#/liga/' + this.slug
+    },
+
+    clipboardSuccess: function () {
+      this.$kartolafc.toast.info('Link copiado')
     }
   },
 
