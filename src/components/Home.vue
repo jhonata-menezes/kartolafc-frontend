@@ -71,7 +71,7 @@
                 <div class="content">
                   <p>{{ time.time.nome }}</br>
                     <small>{{ time.time.nome_cartola }}</small></br>
-                    <small>Pts: {{ calculaPontos(time) }}</small>
+                    <small>Pts: {{ calculaPontos(time) }}</small></br>
                     <small v-if="status.status_mercado === 2">
                     Posicao: {{ time.posicao }}</br>
                     </small>

@@ -86,11 +86,11 @@
               <div class="media-content">
                 <div v-for="(time, k) of timesComputed" class="">
                   <p @click="verTime(time)">
-                    <small class="is-pulled-left">{{ k+1 }}° </small>
+                    <small class="is-pulled-left">{{ k+1 }}°&nbsp</small>
                     <picture class="image is-24x24 is-pulled-left">
                       <img :src="time.url_escudo_svg" @error="time.url_escudo_svg='/static/img/icon.png'">
                     </picture>
-                    <span class="i">{{time.nome.substring(0,15)}}</span>
+                    <span class="">{{time.nome.substring(0,15)}}</span>
                     <b><small v-if="!timesPontuacao.somarPontuacao && time.pontuacao !== undefined" class="is-6 is-pulled-right">{{ time.pontuacao.toFixed(2) }} &nbsp</small></b>
                     <small class="is-6 is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{time.pontos[timesPontuacao.nome].toFixed(2)}} &nbsp</small>
                     <b><small class="is-6 is-pulled-right" v-if="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{ (time.pontos[timesPontuacao.nome] + time.pontuacao).toFixed(2) }} &nbsp</small></b>

@@ -3,7 +3,7 @@
     <div v-if="ativar" class="modal" :class="ativar != false ? 'is-active' : ''" @click="closeModal()">
       <div class="modal-background"></div>
       <div class="modal-card" @click.stop>
-        <header class="modal-card-head">
+        <header class="modal-card-head color-header">
           <p class="modal-card-title has-text-centered">
             <picture class="">
               <img :src="pontuados.clubes[jogoRodada.clube_casa_id].Escudos['30x30']" alt="escudo">
@@ -74,7 +74,23 @@
           <div>
           </div>
         </section>
-        <footer class="modal-card-foot">
+        <footer class="modal-card-foot color-footer">
+          <social-sharing class="" hashtags="KartolaFC" :url="'https://kartolafc.com.br/#/rodada/jogos/' + rodada" :title="rodada + '° Rodada: '+ pontuados.clubes[jogoRodada.clube_casa_id].nome+ ' ' + jogoRodada.placar_oficial_mandante +' X ' + jogoRodada.placar_oficial_visitante + ' ' + pontuados.clubes[jogoRodada.clube_visitante_id].nome" :description="'Acompanhe a rodada no KartolaFC'" inline-template>
+            <span class="title is-6"> Compartilhar
+              <network network="facebook">&nbsp 
+                <i class="fa fa-facebook"></i>
+              </network>&nbsp &nbsp
+              <network network="whatsapp">
+                <i class="fa fa-whatsapp"></i>
+              </network>&nbsp &nbsp
+              <network network="twitter">
+                <i class="fa fa-twitter"></i>
+              </network>&nbsp &nbsp
+              <network network="telegram">
+                <i class="fa fa-telegram"></i>
+              </network>
+            </span>
+          </social-sharing>
         </footer>
       </div>
     </div>
@@ -187,7 +203,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .hr {
   margin: 0.2rem 0.2rem
 }
@@ -206,5 +222,12 @@ export default {
 
 .fa-futbol-o-red {
   color: rgba(208, 31, 35, 1);
+}
+.color-header {
+  background-color: rgb(148, 239, 133);
+}
+
+.color-footer {
+  background-color: rgb(255, 252, 113);
 }
 </style>
