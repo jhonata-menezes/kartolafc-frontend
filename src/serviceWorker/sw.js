@@ -12,7 +12,17 @@ self.addEventListener('push', function (event) {
       dir: 'auto',
       requireInteraction: false,
       vibrate: [200, 100, 200],
-      data: n
+      data: n,
+      actions: [
+        {
+          action: '/',
+          title: '🏠 Meus Times'
+        },
+        {
+          action: '/ligas',
+          title: '🛡 Ligas'
+        }
+      ]
     }
     event.waitUntil(self.registration.showNotification(title, options))
   }
@@ -68,7 +78,13 @@ self.addEventListener('push', function (event) {
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close()
+  let link = ''
+  if (event.action === '') {
+    link = event.notification.data.link
+  } else {
+    link = 'https://kartolafc.com.br/#' + event.action
+  }
   event.waitUntil(
-    clients.openWindow(event.notification.data.link)
+    clients.openWindow(link)
   )
 })
