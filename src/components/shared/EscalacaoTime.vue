@@ -68,7 +68,7 @@
           </div>
         </section>
         <footer class="modal-card-foot color-footer" v-if="time.time">
-          <social-sharing hashtags="KartolaFC" :url="'https://kartolafc.com.br/#/time/id/' + time.time.time_id"  :title="time.time.nome" :description="'Veja minha pontuação e time no KartolaFC ' + somaPontuacao(time)" inline-template >
+          <social-sharing hashtags="KartolaFC" :url="'https://kartolafc.com.br/#/time/id/' + time.time.time_id"  :title="time.time.nome" :description="'Veja a pontuação do '+ time.time.nome +' no KartolaFC ' + somaPontuacao(time)" inline-template >
             <div class="title is-6"> Compartilhar 
               <network network="facebook">&nbsp 
                 <i class="fa fa-facebook"></i>
@@ -86,6 +86,9 @@
           </social-sharing>
         </footer>
       </div>
+      <div v-if="verScouts">
+        <scouts :atletaId=""></scouts>
+      </div>
     </div>
   </div>
 </template>
@@ -93,10 +96,12 @@
 <script>
 import {http} from './../../axios'
 import TimeHistorico from './TimeHistorico'
+import ScoutsRodada from './scouts/ScoutsRodada'
 
 export default {
   components: {
-    'time-historico': TimeHistorico
+    'time-historico': TimeHistorico,
+    'scouts': ScoutsRodada
   },
 
   props: ['timemodal', 'active'],
@@ -104,7 +109,12 @@ export default {
   data () {
     return {
       atletasPontuados: {},
-      posicaoGeral: 0
+      posicaoGeral: 0,
+      scout: {
+        atletaId: 0,
+        verScouts: false
+      }
+
     }
   },
 
@@ -197,5 +207,9 @@ export default {
 
 .color-footer {
   background-color: rgb(255, 252, 113);
+}
+
+.clareamento {
+  opacity: 0.5;
 }
 </style>
