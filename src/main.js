@@ -11,7 +11,9 @@ import 'bulma/css/bulma.css'
 import 'font-awesome/css/font-awesome.css'
 import SocialSharing from 'vue-social-sharing'
 import subscribeNotification from './serviceWorker/register'
+import VueClipboards from 'vue-clipboards'
 
+Vue.use(VueClipboards)
 subscribeNotification.subscribeNotification()
 let optionsProgress = {
   color: '#00d1b2',

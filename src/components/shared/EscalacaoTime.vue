@@ -17,7 +17,11 @@
               <div class="media-content">
                 <div class="content">
                   <p>
-                    <strong class="title is-6">{{time.time.nome}}</strong></br>
+                    <strong class="title is-6">{{time.time.nome}}</strong>
+                    <span class="icon is-small" title="Copiar link" v-clipboard="clipboard()" @success="clipboardSuccess">
+                      <i class="fa fa-clipboard" aria-hidden="true"></i>
+                    </span>
+                    </br>
                     <small class="subtitle is-small is-6">{{time.time.nome_cartola}}</small>
                   </p>
                 </div>
@@ -141,6 +145,14 @@ export default {
     defaultImage: function (src) {
       src.time.foto_perfil = '/static/img/icon.png'
       return true
+    },
+
+    clipboard: function () {
+      return 'https://kartolafc.com.br/#/time/id/' + this.time.time.time_id
+    },
+
+    clipboardSuccess: function () {
+      this.$kartolafc.toast.info('Link copiado')
     }
   },
 
