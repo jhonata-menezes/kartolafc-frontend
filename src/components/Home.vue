@@ -24,7 +24,7 @@
             </div><br/>
             <p class="title has-text-left" @click="iconeAdicionarTimes = !iconeAdicionarTimes">Meus Times
               <span class="icon is-medium">
-                <i v-if="!iconeAdicionarTimes" class="fa fa-plus" aria-hidden="true"></i>
+                <i v-if="!iconeAdicionarTimes" class="fa fa-plus fa-plus-add" aria-hidden="true"></i>
                 <i v-else class="fa fa-minus" aria-hidden="true"></i>
               </span>
             </p>
@@ -81,7 +81,7 @@
                 </div>
               </div>
             </div>
-            <div class="" v-if="status.status_mercado == 2">
+            <div class="" v-if="status.status_mercado == 1">
               <div class="">
                 <div class=""><br/>
                   <p class="title">Pontuação</p>
@@ -93,18 +93,18 @@
                       <div class="">
                         <div class="media">
                           <div class="media-left">
-                            <figure class="image is-32x32">
+                            <figure class="image is-48x48">
                               <img :src="atleta.foto" alt="Image">
                             </figure>
                           </div>
                           <div class="media-content">
                             <div class="content">
                                <p class="title is-6 is-bold">
-                                 {{ atleta.apelido }} <small>{{pontuados.posicoes[atleta.posicao_id].abreviacao.charAt(0).toUpperCase() + pontuados.posicoes[atleta.posicao_id].abreviacao.slice(1)}}</small></br>
-                                 <small>PTS: {{ atleta.pontuacao }} &nbsp ${{ getPrecoAtleta(atleta.atleta_id) }}</small>
-                                 <span class="tag is-info is-small is-pulled-right" @click="ativarDetalhes(atleta.atleta_id)">
-                                   + Detalhes
-                                 </span>
+                                 <b>{{ atleta.apelido }}</b> <small>{{pontuados.posicoes[atleta.posicao_id].abreviacao.charAt(0).toUpperCase() + pontuados.posicoes[atleta.posicao_id].abreviacao.slice(1)}}</small>
+                                 <span class="icon is-small" @click="ativarDetalhes(atleta.atleta_id)">
+                                   <i class="fa fa-plus fa-plus-info"></i>
+                                 </span></br>
+                                 <small>PTS: <span :class="atleta.pontuacao < 0 ?'has-text-danger': 'has-text-success'">{{ atleta.pontuacao }}</span> &nbsp <span class="has-text-black">${{ getPrecoAtleta(atleta.atleta_id) }}</span></small>
                                </p>
                             </div>
                           </div>
@@ -137,13 +137,15 @@
                           <div class="media-content">
                             <div class="content">
                               <p class="title is-6">
-                                <b>{{ destaque.Atleta.apelido }}</b> <small>{{ destaque.posicao }}</small></br>
+                                <b>{{ destaque.Atleta.apelido }}</b> <small>{{ destaque.posicao }}</small>
+                                <span class="icon is-small" @click="ativarDetalhes(destaque.Atleta.atleta_id)"><i class="fa fa-plus fa-plus-info"></i>
+                                </span></br>
                                 <small class="has-text-black">
-                                  {{ destaque.escalacoes }} -
-                                   ${{ getPrecoAtleta(destaque.Atleta.atleta_id) }}<br>
-                                  Ultima Pontuação: {{mercadoAtletas[destaque.Atleta.atleta_id].pontos_num}}<br>
-                                  Var: {{mercadoAtletas[destaque.Atleta.atleta_id].variacao_num}}
-                                  Média: {{mercadoAtletas[destaque.Atleta.atleta_id].media_num}}
+                                  <span class="has-text-black">{{ destaque.escalacoes }} -
+                                   ${{ getPrecoAtleta(destaque.Atleta.atleta_id) }}</span><br>
+                                  Ult: <span v-if="mercadoAtletas[destaque.Atleta.atleta_id] !== undefined" :class="mercadoAtletas[destaque.Atleta.atleta_id].pontos_num < 0 ?'has-text-danger': 'has-text-success'">{{mercadoAtletas[destaque.Atleta.atleta_id].pontos_num.toFixed(1)}}</span>
+                                  Var: <span v-if="mercadoAtletas[destaque.Atleta.atleta_id] !== undefined" :class="mercadoAtletas[destaque.Atleta.atleta_id].variacao_num < 0 ?'has-text-danger': 'has-text-success'">{{mercadoAtletas[destaque.Atleta.atleta_id].variacao_num.toFixed(2)}}</span>
+                                  Md: <span v-if="mercadoAtletas[destaque.Atleta.atleta_id] !== undefined"  :class="mercadoAtletas[destaque.Atleta.atleta_id].media_num < 0 ?'has-text-danger': 'has-text-success'">{{mercadoAtletas[destaque.Atleta.atleta_id].media_num.toFixed(2)}}</span>
                                 </small>
                                 </p>
                             </div>
@@ -381,8 +383,12 @@ export default {
   background-color: '#780a25'
 }
 
-.fa-plus {
+.fa-plus-add {
   color: #23d160;
+}
+
+.fa-plus-info {
+  color: #587ad2;
 }
 
 .fa-minus {
