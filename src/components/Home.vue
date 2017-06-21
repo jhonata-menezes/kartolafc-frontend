@@ -130,20 +130,20 @@
                       <div class="">
                         <div class="media">
                           <div class="media-left">
-                            <figure class="image is-32x32">
+                            <figure class="image is-48x48">
                               <img :src="destaque.Atleta.foto" alt="Image">
                             </figure>
                           </div>
                           <div class="media-content">
                             <div class="content">
                               <p class="title is-6">
-                                {{ destaque.Atleta.apelido }}</br>
+                                <b>{{ destaque.Atleta.apelido }}</b> <small>{{ destaque.posicao }}</small></br>
                                 <small class="has-text-black">
-                                  Escalações: {{ destaque.escalacoes }}</br>
-                                  {{ destaque.posicao }} ${{ getPrecoAtleta(destaque.Atleta.atleta_id) }}
-                                  <span class="tag is-info is-small is-pulled-right" @click="ativarDetalhes(destaque.Atleta.atleta_id)">
-                                    + Detalhes
-                                  </span>
+                                  {{ destaque.escalacoes }} -
+                                   ${{ getPrecoAtleta(destaque.Atleta.atleta_id) }}<br>
+                                  Ultima Pontuação: {{mercadoAtletas[destaque.Atleta.atleta_id].pontos_num}}<br>
+                                  Var: {{mercadoAtletas[destaque.Atleta.atleta_id].variacao_num}}
+                                  Média: {{mercadoAtletas[destaque.Atleta.atleta_id].media_num}}
                                 </small>
                                 </p>
                             </div>
