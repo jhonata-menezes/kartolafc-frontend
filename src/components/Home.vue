@@ -81,7 +81,7 @@
                 </div>
               </div>
             </div>
-            <div class="" v-if="status.status_mercado == 1">
+            <div class="" v-if="status.status_mercado == 2">
               <div class="">
                 <div class=""><br/>
                   <p class="title">Pontuação</p>
