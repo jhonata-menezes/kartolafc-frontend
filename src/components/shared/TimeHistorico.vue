@@ -261,7 +261,7 @@ export default {
 
         this.datasets.labels[rodada - 1] = rodada
       }
-
+      this.$emit('update:patrimonio', this.grafico.patrimonio.slice(-1)[0])
       let atletasTemp = this.atletasOcorrencia
       this.atletasOcorrencia = []
       for (let a of atletasTemp) {

@@ -6,6 +6,7 @@ import configuracao from './services/configuracao'
 import toast from './services/toast'
 import liga from './services/liga'
 import timeHistorico from './services/time_historico'
+import Scouts from './services/scouts'
 
 let instaled = false
 
@@ -18,6 +19,7 @@ kartolafc.pontuados = getPontuados
 kartolafc.configuracao = configuracao
 kartolafc.toast = toast
 kartolafc.liga = liga.liga
+kartolafc.scouts = Scouts
 
 // plugin install
 const install = Vue => {

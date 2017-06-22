@@ -31,35 +31,43 @@
           <p class="modal-card-title"></p>
           <button class="delete" @click="closeModal()"></button>
         </header>
+        <section>
+        </section>
         <section class="modal-card-body" v-if="time.atletas">
-          <div class="has-text-centered">
-            <b> Pts</b>: {{ somaPontuacao(time) }}
-            <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
-            <span v-if="posicaoGeral"> <b>Posição</b>: {{posicaoGeral}}</span>
+          <div class="" v-if="scout.verScouts">
+            <scouts :atletaId="scout.atletaId" @update:ativo="v => scout.verScouts=v"></scouts>
           </div>
-          <hr class="hr">
-          <div v-for="t of time.atletas">
-            <article class="media">
-              <figure class="media-left">
-                <p class="image is-16x16">
-                  <img :src="atletasPontuados.clubes[t.clube_id].Escudos['30x30']">
-                </p>
-              </figure>
-              <div class="media-content">
-                <div class="content">
-                  <p>
-                    <strong>{{ t.apelido }}</strong><small> {{ posicao(t) }}</small>
-                    <strong class="is-pulled-right is-success" v-if="atletasPontuados.atletas[t.atleta_id]">{{ atletasPontuados.atletas[t.atleta_id].pontuacao }}</strong>
-                    <strong class="is-pulled-right is-success" v-else="">0</strong>
+          <div v-else :class="{clareamento: scout.verScouts }">
+            <div class="has-text-centered">
+              <b> Pts</b>: {{ somaPontuacao(time) }}
+              <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
+              <span v-if="posicaoGeral"> <b>Posição</b>: {{posicaoGeral}}</span>
+              <span v-if="patrimonio !== 0"><b>Patrimônio:</b> ${{patrimonio}}</span>
+            </div>
+            <hr class="hr">
+            <div v-for="t of time.atletas">
+              <article class="media" @click="scout.atletaId=t.atleta_id; scout.verScouts=true">
+                <figure class="media-left">
+                  <p class="image is-16x16">
+                    <img :src="atletasPontuados.clubes[t.clube_id].Escudos['30x30']">
                   </p>
-                </div>
+                </figure>
+                <div class="media-content">
+                  <div class="content">
+                    <p>
+                      <strong>{{ t.apelido }}</strong><small> {{ posicao(t) }}</small>
+                      <strong class="is-pulled-right is-success" v-if="atletasPontuados.atletas[t.atleta_id]">{{ atletasPontuados.atletas[t.atleta_id].pontuacao }}</strong>
+                      <strong class="is-pulled-right is-success" v-else="">0</strong>
+                    </p>
+                  </div>
 
-              </div>
-            </article>
-            <hr class="hr-atleta">
-          </div>
-          <div>
-            <time-historico :timeId="timemodal.time.time_id"></time-historico>
+                </div>
+              </article>
+              <hr class="hr-atleta">
+            </div>
+            <div>
+              <time-historico :timeId="timemodal.time.time_id" @update:patrimonio="p => patrimonio = p"></time-historico>
+            </div>
           </div>
         </section>
         <section class="modal-card-body" v-else>
@@ -86,9 +94,6 @@
           </social-sharing>
         </footer>
       </div>
-      <div v-if="verScouts">
-        <scouts :atletaId=""></scouts>
-      </div>
     </div>
   </div>
 </template>
@@ -113,13 +118,14 @@ export default {
       scout: {
         atletaId: 0,
         verScouts: false
-      }
-
+      },
+      patrimonio: 0
     }
   },
 
   methods: {
     closeModal: function () {
+      this.patrimonio = 0
       this.$emit('update:active', false)
     },
 
