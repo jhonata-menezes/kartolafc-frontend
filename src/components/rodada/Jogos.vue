@@ -116,7 +116,7 @@ export default {
 
     getDateFormat: function (dt) {
       let d = moment(dt)
-      return d.format('DD/MM HH:mm')
+      return d.format('DD/MM ') + 'às ' + d.format('HH:mm')
     },
 
     createdComponent: function () {
