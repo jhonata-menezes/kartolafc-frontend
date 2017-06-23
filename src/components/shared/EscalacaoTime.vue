@@ -11,13 +11,13 @@
                   <img :src="time.time.url_escudo_svg">
                 </picture>
                 <picture class="image is-32x32">
-                  <img :src="time.time.foto_perfil" @error="defaultImage(time)">
+                  <img class="image-circle" :src="time.time.foto_perfil" @error="defaultImage(time)">
                 </picture>
               </div>
               <div class="media-content">
                 <div class="content">
                   <p>
-                    <strong class="title is-6">{{time.time.nome}}</strong>
+                    <b class="">{{time.time.nome}}</b>
                     <span class="icon is-small" title="Copiar link" v-clipboard="clipboard()" @success="clipboardSuccess">
                       <i class="fa fa-clipboard" aria-hidden="true"></i>
                     </span>
@@ -34,10 +34,12 @@
         <section>
         </section>
         <section class="modal-card-body" v-if="time.atletas">
-          <div class="" v-if="scout.verScouts">
-            <scouts :atletaId="scout.atletaId" @update:ativo="v => scout.verScouts=v"></scouts>
+          <div class="">
+            <div class="popup2" v-if="scout.verScouts">
+              <scouts :atletaId="scout.atletaId" @update:ativo="v => scout.verScouts=v"></scouts>
+            </div>
           </div>
-          <div v-else :class="{clareamento: scout.verScouts }">
+          <div :class="{clareamento: scout.verScouts }">
             <div class="has-text-centered">
               <b> Pts</b>: {{ somaPontuacao(time) }}
               <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
@@ -126,6 +128,7 @@ export default {
   methods: {
     closeModal: function () {
       this.patrimonio = 0
+      this.scout.verScouts = false
       this.$emit('update:active', false)
     },
 
@@ -217,5 +220,19 @@ export default {
 
 .clareamento {
   opacity: 0.5;
+}
+
+.popup2 {
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  width: 75%;
+  height: 40%;
+  padding: 16px;
+  border: 4px solid rgb(148, 239, 133);
+  background-color: white;
+  z-index: 1002;
+  overflow: auto;
+  transition: all 1s ease-in-out;
 }
 </style>
