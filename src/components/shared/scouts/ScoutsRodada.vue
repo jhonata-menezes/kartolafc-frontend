@@ -22,6 +22,7 @@
           </div>
           <div class="content" v-else>
           Sem scouts no momento
+          <button class="delete is-pulled-right" @click="close()"></button>
           </div>
         </div>
       </div>

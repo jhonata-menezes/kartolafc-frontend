@@ -33,14 +33,14 @@
         </header>
         <section>
         </section>
-        <section class="modal-card-body" v-if="time.atletas">
-          <div class="">
+        <div class="">
             <transition name="fade" key="scouts">
               <div class="popup2" v-if="scout.verScouts">
                  <scouts :atletaId="scout.atletaId" @update:ativo="v => scout.verScouts=v"></scouts>
               </div>
             </transition>
           </div>
+        <section class="modal-card-body up-margin" v-if="time.atletas">
           <div :class="{clareamento: scout.verScouts }">
             <div class="has-text-centered">
               <small>
@@ -247,5 +247,9 @@ export default {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
   opacity: 0
+}
+
+.up-margin {
+  margin-top: -17px
 }
 </style>
