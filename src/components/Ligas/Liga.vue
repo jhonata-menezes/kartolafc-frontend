@@ -103,7 +103,11 @@
             </div>
           </div>
         </div>
-        <escalacao-time :timemodal="modal.time" :active="modal.ativar" @update:active="val => modal.ativar = val" ></escalacao-time>
+        <transition name="component-fade" mode="out-in">
+          <div v-if="modal.ativar">
+            <component :is="escalacaoTime" :timemodal="modal.time" :active="modal.ativar" @update:active="val => modal.ativar = val" ></component>
+          </div>
+        </transition>
         <div v-show="loader">
           <div class="loader-request"></div>
         </div>
@@ -124,6 +128,7 @@ export default {
 
   data () {
     return {
+      escalacaoTime: 'escalacao-time',
       modal: {
         time: {},
         ativar: false
@@ -267,6 +272,13 @@ export default {
 
 .section-min {
   padding: 0rem 1.5rem;
+}
+.component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity .3s ease;
+}
+.component-fade-enter, .component-fade-leave-to
+/* .component-fade-leave-active for <2.1.8 */ {
+  opacity: 0;
 }
 </style>
 

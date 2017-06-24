@@ -16,12 +16,16 @@
                   </label>
                 </p>
               </div>
+              <div class="has-text-centered">
+                <em>Clique no time para ver a escalação</em>
+              </div>
+              <br>
               <div class="" v-for="(time, k) of rankingGeralTimes">
-                <div class="">
+                <div class="" @click="ativarModal(time)">
                   <div class="media">
                     <div class="media-left">
                       <figure class="image is-32x32">
-                        <img :src="time.time.foto_perfil" alt="Image" @error="time.time.foto_perfil='/static/img/icon.png'">
+                        <img class="image-circle" :src="time.time.foto_perfil" alt="Image" @error="time.time.foto_perfil='/static/img/icon.png'">
                       </figure>
                       <figure class="image is-32x32">
                         <img :src="time.time.url_escudo_svg" alt="Image" @error="time.time.url_escudo_svg='/static/img/icon.png'">
@@ -30,11 +34,10 @@
                     <div class="media-content">
                       <div class="content">
                         <p>
-                          <small class="title is-5">{{time.posicao}}º {{ time.time.nome }}</small></br>
+                          <b class="is-5">{{time.posicao}}º {{ time.time.nome }}</b></br>
                           <small class="tag">{{ time.time.nome_cartola }}</small>
                           <small class="tag">pts: {{ time.pontuacao.toFixed(2) }}</small>
                           <small class="tag">Pró: {{ time.time.assinante ? 'sim' : 'não' }}</small></br>
-                          <a class="button is-info is-small" @click="ativarModal(time)">Ver Time</a>
                         </p>
                       </div>                      
                     </div>

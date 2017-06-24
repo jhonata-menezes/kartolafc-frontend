@@ -22,29 +22,35 @@
                       <i class="fa fa-clipboard" aria-hidden="true"></i>
                     </span>
                     </br>
-                    <small class="subtitle is-small is-6">{{time.time.nome_cartola}}</small>
+                    <small class="subtitle is-small is-6">{{time.time.nome_cartola.charAt(0).toUpperCase() + time.time.nome_cartola.slice(1)}}</small>
                   </p>
                 </div>
               </div>
             </div>
           </p>
           <p class="modal-card-title"></p>
-          <button class="delete" @click="closeModal()"></button>
+          <button class="delete is-large" @click="closeModal()"></button>
         </header>
         <section>
         </section>
         <section class="modal-card-body" v-if="time.atletas">
           <div class="">
-            <div class="popup2" v-if="scout.verScouts">
-              <scouts :atletaId="scout.atletaId" @update:ativo="v => scout.verScouts=v"></scouts>
-            </div>
+            <transition name="fade" key="scouts">
+              <div class="popup2" v-if="scout.verScouts">
+                 <scouts :atletaId="scout.atletaId" @update:ativo="v => scout.verScouts=v"></scouts>
+              </div>
+            </transition>
           </div>
           <div :class="{clareamento: scout.verScouts }">
             <div class="has-text-centered">
-              <b> Pts</b>: {{ somaPontuacao(time) }}
-              <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
-              <span v-if="posicaoGeral"> <b>Posição</b>: {{posicaoGeral}}</span>
-              <span v-if="patrimonio !== 0"><b>Patrimônio:</b> ${{patrimonio}}</span>
+              <small>
+                <b> Pts</b>: {{ somaPontuacao(time) }}
+                <span v-if="patrimonio !== 0"><b>Patrimônio:</b> ${{patrimonio}}</span>
+                <br class="is-hidden-desktop">
+                <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
+                <span v-if="posicaoGeral"> <b>Posição</b>: {{posicaoGeral}}</span>
+              </small><br>
+              <em class="is-bold is-6 subtitle">Clique no atleta para ver os scouts</em>
             </div>
             <hr class="hr">
             <div v-for="t of time.atletas">
@@ -58,11 +64,11 @@
                   <div class="content">
                     <p>
                       <strong>{{ t.apelido }}</strong><small> {{ posicao(t) }}</small>
-                      <strong class="is-pulled-right is-success" v-if="atletasPontuados.atletas[t.atleta_id]">{{ atletasPontuados.atletas[t.atleta_id].pontuacao }}</strong>
+                      <strong class="is-pulled-right is-success" v-if="atletasPontuados.atletas[t.atleta_id]" :class="atletasPontuados.atletas[t.atleta_id].pontuacao < 0 ? 'has-text-danger': 'has-text-success'">
+                        {{ atletasPontuados.atletas[t.atleta_id].pontuacao }}</strong>
                       <strong class="is-pulled-right is-success" v-else="">0</strong>
                     </p>
                   </div>
-
                 </div>
               </article>
               <hr class="hr-atleta">
@@ -219,20 +225,27 @@ export default {
 }
 
 .clareamento {
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
 .popup2 {
   position: absolute;
-  top: 30%;
+  top: 25%;
   left: 10%;
   width: 75%;
-  height: 40%;
+  /*height: 40%;*/
   padding: 16px;
   border: 4px solid rgb(148, 239, 133);
   background-color: white;
   z-index: 1002;
   overflow: auto;
   transition: all 1s ease-in-out;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
 }
 </style>
