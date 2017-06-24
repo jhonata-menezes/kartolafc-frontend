@@ -42,7 +42,7 @@
                     </div>
                     <div class="media-left">
                       <figure class="image is-32x32">
-                        <img :src="time.foto_perfil" alt="Escudo">
+                        <img class="image-circle" :src="time.foto_perfil" alt="Escudo">
                       </figure>
                     </div>
                     <div class="media-content">
@@ -393,5 +393,12 @@ export default {
 
 .fa-minus {
   color: #ff3860;
+}
+
+.has-text-success {
+  font-weight: bold
+}
+.has-text-danger {
+  font-weight: bold
 }
 </style>

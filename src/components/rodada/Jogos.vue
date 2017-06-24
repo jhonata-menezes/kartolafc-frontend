@@ -11,7 +11,7 @@
                 </router-link>
               </div>
               <div class="pull-right">
-                <router-link class="button tag" :disabled="rodadaAtual>=20" :to="{ name: 'RodadaJogos', params: { rodada: (rodadaAtual + 1) }}">Próxima &nbsp
+                <router-link class="button tag" :disabled="rodadaAtual>=38" :to="{ name: 'RodadaJogos', params: { rodada: (rodadaAtual + 1) }}">Próxima &nbsp
                   <i class="fa fa-chevron-right" aria-hidden="true"></i>
                 </router-link>
               </div>
@@ -19,34 +19,64 @@
             <div class="content">
               <h4 class="title is-4 has-text-centered">Rodada Atual {{rodadaAtual}} </h4>
             </div>
-            <div v-if="partida.rodada >= 1" class="">
-              <article class="media" v-for="p of partidasOrdenadas">
-                <div class="media-content">
-                  <div class="content">
-                    <div class="nav-center is-small">
-                      <p>
-                        Local: {{p.local}} às {{ getDateFormat(p.partida_data)}}
-                      </p>
-                    </div>
-                    <div class="has-text-centered">
-                      <div class="is-medium has-text-black">
-                        <picture class="image is-24x24 is-pulled-left">
-                          <img :src="partida.clubes[p.clube_casa_id].Escudos['30x30']" alt="Escudo">
-                        </picture>
-                        {{ partida.clubes[p.clube_casa_id].abreviacao }}
-                        <span class="has-text-centered is-centered">
-                          {{ p.placar_oficial_mandante }} X {{ p.placar_oficial_visitante }}
-                        </span>
-                        {{ partida.clubes[p.clube_visitante_id].abreviacao }}
-                        <picture class="image is-24x24 is-pulled-right">
-                          <img :src="partida.clubes[p.clube_visitante_id].Escudos['30x30']" alt="Escudo">
-                        </picture>
+            <div v-if="partida.rodada >= 1 && partida.rodada <= 38" class="">
+              <div v-if="partida.rodada <= status.rodada_atual" >
+                <article class="media" v-for="p of partidasOrdenadas">
+                  <div class="media-content">
+                    <div class="content">
+                      <div class="nav-center is-small">
+                        <p>
+                          {{p.local}} {{ getDateFormat(p.partida_data)}}
+                        </p>
                       </div>
-                      <i class="button tag is-dark" @click="exibirdetalhes(p)">Detalhes</i>
+                      <div class="has-text-centered">
+                        <div class="is-medium has-text-black">
+                          <picture class="image is-24x24 is-pulled-left">
+                            <img :src="partida.clubes[p.clube_casa_id].Escudos['30x30']" alt="Escudo">
+                          </picture>
+                          {{ partida.clubes[p.clube_casa_id].abreviacao }}
+                          <span class="has-text-centered is-centered">
+                            {{ p.placar_oficial_mandante }} X {{ p.placar_oficial_visitante }}
+                          </span>
+                          {{ partida.clubes[p.clube_visitante_id].abreviacao }}
+                          <picture class="image is-24x24 is-pulled-right">
+                            <img :src="partida.clubes[p.clube_visitante_id].Escudos['30x30']" alt="Escudo">
+                          </picture>
+                        </div>
+                        <i class="button tag is-dark" @click="exibirdetalhes(p)">Detalhes</i>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </article>
+                </article>
+              </div>
+              <div v-else>
+                <article class="media" v-for="p of partida.partidas">
+                  <div class="media-content">
+                    <div class="content">
+                      <div class="nav-center is-small">
+                        <p>
+                          <small><span v-if="p.local != ''">{{p.local}}</span> {{ p.partida_data}}</small>
+                        </p>
+                      </div>
+                      <div class="has-text-centered">
+                        <div class="is-medium has-text-black">
+                          <picture class="image is-24x24 is-pulled-left">
+                            <img :src="partida.clubes[p.clube_casa_id].Escudos['30x30']" alt="Escudo">
+                          </picture>
+                          {{ partida.clubes[p.clube_casa_id].abreviacao }}
+                          <span class="has-text-centered is-centered">
+                            X
+                          </span>
+                          {{ partida.clubes[p.clube_visitante_id].abreviacao }}
+                          <picture class="image is-24x24 is-pulled-right">
+                            <img :src="partida.clubes[p.clube_visitante_id].Escudos['30x30']" alt="Escudo">
+                          </picture>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>              
             </div>
             <div>
               <notificacao :ativar="alerta" :mensagem="mensagem" @update:ativar="v => alerta=v"></notificacao>
@@ -84,7 +114,8 @@ export default {
       rodadaAtual: 0,
       alerta: false,
       mensagem: '',
-      loader: false
+      loader: false,
+      status: {}
     }
   },
 
@@ -143,6 +174,9 @@ export default {
 
   created: function () {
     this.createdComponent()
+    this.$kartolafc.status.getStatus(s => {
+      this.status = s
+    })
   },
 
   watch: {
