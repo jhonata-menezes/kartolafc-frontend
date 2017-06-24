@@ -6,8 +6,8 @@
           <div class="loader-request-time"></div>
         </div>
         <div v-else>
-          <div v-if="ativarGrafico">
-            <chart :chartData="datasets" :options="options" :height="300"></chart>
+          <div v-if="ativarGrafico" class="container-canvas">
+            <chart :chartData="datasets" :options="options" :height="300" :width="500"></chart>
           </div>
           <hr class="hr">
           <div>
@@ -176,7 +176,7 @@ export default {
             tension: 0
           }
         },
-        responsive: true,
+        responsive: false,
         title: {
           display: true,
           text: 'Histórico do Time'
@@ -261,7 +261,7 @@ export default {
 
         this.datasets.labels[rodada - 1] = rodada
       }
-
+      this.$emit('update:patrimonio', this.grafico.patrimonio.slice(-1)[0])
       let atletasTemp = this.atletasOcorrencia
       this.atletasOcorrencia = []
       for (let a of atletasTemp) {
@@ -355,5 +355,11 @@ export default {
 
 .hr-atleta {
   margin: 0.1rem 0.1rem
+}
+
+.container-canvas {
+  width: 100%;
+  overflow: auto;
+  border: 1px;
 }
 </style>

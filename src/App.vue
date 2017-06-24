@@ -48,6 +48,11 @@ export default {
 .clareamento {
   opacity: 0.5;
 }
+
+.image-circle {
+    border-radius: 50%;
+}
+
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); }

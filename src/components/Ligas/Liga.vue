@@ -15,8 +15,27 @@
                   <div class="media-content">
                     <p class="title is-5">
                       {{liga.liga.nome}}
+                      <span class="icon is-6 is-small" title="Copiar link" v-clipboard="clipboard()" @success="clipboardSuccess">
+                        <i class="fa fa-clipboard" aria-hidden="true"></i>
+                      </span><br><br>
                       <a class="button is-small is-success" v-if="!detalhesLiga" @click="detalhesLiga = !detalhesLiga">+ Detalhes</a>
                       <a class="button is-small is-success" v-else @click="detalhesLiga = !detalhesLiga">- Detalhes</a>
+                      <social-sharing class="" hashtags="KartolaFC" :url="'https://kartolafc.com.br/#/liga/' + slug" :title="liga.liga.nome" :description="liga.liga.descricao" inline-template>
+                        <span class="title is-5">
+                          <network network="facebook">
+                            <i class="fa fa-facebook"></i>
+                          </network>&nbsp &nbsp
+                          <network network="whatsapp">
+                            <i class="fa fa-whatsapp"></i>
+                          </network>&nbsp &nbsp
+                          <network network="twitter">
+                            <i class="fa fa-twitter"></i>
+                          </network>&nbsp &nbsp
+                          <network network="telegram">
+                            <i class="fa fa-telegram"></i>
+                          </network>
+                        </span>
+                      </social-sharing>
                     </p>
                     <p class="subtitle is-6">
                       <div class="" v-if="detalhesLiga">
@@ -67,11 +86,11 @@
               <div class="media-content">
                 <div v-for="(time, k) of timesComputed" class="">
                   <p @click="verTime(time)">
-                    <small class="is-pulled-left">{{ k+1 }}° </small>
+                    <small class="is-pulled-left">{{ k+1 }}°&nbsp</small>
                     <picture class="image is-24x24 is-pulled-left">
                       <img :src="time.url_escudo_svg" @error="time.url_escudo_svg='/static/img/icon.png'">
                     </picture>
-                    <span class="i">{{time.nome.substring(0,15)}}</span>
+                    <span class="">{{time.nome.substring(0,15)}}</span>
                     <b><small v-if="!timesPontuacao.somarPontuacao && time.pontuacao !== undefined" class="is-6 is-pulled-right">{{ time.pontuacao.toFixed(2) }} &nbsp</small></b>
                     <small class="is-6 is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{time.pontos[timesPontuacao.nome].toFixed(2)}} &nbsp</small>
                     <b><small class="is-6 is-pulled-right" v-if="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{ (time.pontos[timesPontuacao.nome] + time.pontuacao).toFixed(2) }} &nbsp</small></b>
@@ -84,7 +103,11 @@
             </div>
           </div>
         </div>
-        <escalacao-time :timemodal="modal.time" :active="modal.ativar" @update:active="val => modal.ativar = val" ></escalacao-time>
+        <transition name="component-fade" mode="out-in">
+          <div v-if="modal.ativar">
+            <component :is="escalacaoTime" :timemodal="modal.time" :active="modal.ativar" @update:active="val => modal.ativar = val" ></component>
+          </div>
+        </transition>
         <div v-show="loader">
           <div class="loader-request"></div>
         </div>
@@ -105,6 +128,7 @@ export default {
 
   data () {
     return {
+      escalacaoTime: 'escalacao-time',
       modal: {
         time: {},
         ativar: false
@@ -193,6 +217,14 @@ export default {
       this.$Progress.finish()
       this.loader = false
       this.$kartolafc.toast.error(msg)
+    },
+
+    clipboard: function () {
+      return 'https://kartolafc.com.br/#/liga/' + this.slug
+    },
+
+    clipboardSuccess: function () {
+      this.$kartolafc.toast.info('Link copiado')
     }
   },
 
@@ -240,6 +272,13 @@ export default {
 
 .section-min {
   padding: 0rem 1.5rem;
+}
+.component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity .3s ease;
+}
+.component-fade-enter, .component-fade-leave-to
+/* .component-fade-leave-active for <2.1.8 */ {
+  opacity: 0;
 }
 </style>
 

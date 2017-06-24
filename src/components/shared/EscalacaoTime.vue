@@ -11,51 +11,71 @@
                   <img :src="time.time.url_escudo_svg">
                 </picture>
                 <picture class="image is-32x32">
-                  <img :src="time.time.foto_perfil" @error="defaultImage(time)">
+                  <img class="image-circle" :src="time.time.foto_perfil" @error="defaultImage(time)">
                 </picture>
               </div>
               <div class="media-content">
                 <div class="content">
                   <p>
-                    <strong class="title is-6">{{time.time.nome}}</strong></br>
-                    <small class="subtitle is-small is-6">{{time.time.nome_cartola}}</small>
+                    <b class="">{{time.time.nome}}</b>
+                    <span class="icon is-small" title="Copiar link" v-clipboard="clipboard()" @success="clipboardSuccess">
+                      <i class="fa fa-clipboard" aria-hidden="true"></i>
+                    </span>
+                    </br>
+                    <small class="subtitle is-small is-6">{{time.time.nome_cartola.charAt(0).toUpperCase() + time.time.nome_cartola.slice(1)}}</small>
                   </p>
                 </div>
               </div>
             </div>
           </p>
           <p class="modal-card-title"></p>
-          <button class="delete" @click="closeModal()"></button>
+          <button class="delete is-large" @click="closeModal()"></button>
         </header>
-        <section class="modal-card-body" v-if="time.atletas">
-          <div class="has-text-centered">
-            <b> Pts</b>: {{ somaPontuacao(time) }}
-            <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
-            <span v-if="posicaoGeral"> <b>Posição</b>: {{posicaoGeral}}</span>
-          </div>
-          <hr class="hr">
-          <div v-for="t of time.atletas">
-            <article class="media">
-              <figure class="media-left">
-                <p class="image is-16x16">
-                  <img :src="atletasPontuados.clubes[t.clube_id].Escudos['30x30']">
-                </p>
-              </figure>
-              <div class="media-content">
-                <div class="content">
-                  <p>
-                    <strong>{{ t.apelido }}</strong><small> {{ posicao(t) }}</small>
-                    <strong class="is-pulled-right is-success" v-if="atletasPontuados.atletas[t.atleta_id]">{{ atletasPontuados.atletas[t.atleta_id].pontuacao }}</strong>
-                    <strong class="is-pulled-right is-success" v-else="">0</strong>
-                  </p>
-                </div>
-
+        <section>
+        </section>
+        <div class="">
+            <transition name="fade" key="scouts">
+              <div class="popup2" v-if="scout.verScouts">
+                 <scouts :atletaId="scout.atletaId" @update:ativo="v => scout.verScouts=v"></scouts>
               </div>
-            </article>
-            <hr class="hr-atleta">
+            </transition>
           </div>
-          <div>
-            <time-historico :timeId="timemodal.time.time_id"></time-historico>
+        <section class="modal-card-body up-margin" v-if="time.atletas">
+          <div :class="{clareamento: scout.verScouts }">
+            <div class="has-text-centered">
+              <small>
+                <b> Pts</b>: {{ somaPontuacao(time) }}
+                <span v-if="patrimonio !== 0"><b>Patrimônio:</b> ${{patrimonio}}</span>
+                <br class="is-hidden-desktop">
+                <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
+                <span v-if="posicaoGeral"> <b>Posição</b>: {{posicaoGeral}}</span>
+              </small><br>
+              <em class="is-bold is-6 subtitle">Clique no atleta para ver os scouts</em>
+            </div>
+            <hr class="hr">
+            <div v-for="t of time.atletas">
+              <article class="media" @click="scout.atletaId=t.atleta_id; scout.verScouts=true">
+                <figure class="media-left">
+                  <p class="image is-16x16">
+                    <img :src="atletasPontuados.clubes[t.clube_id].Escudos['30x30']">
+                  </p>
+                </figure>
+                <div class="media-content">
+                  <div class="content">
+                    <p>
+                      <strong>{{ t.apelido }}</strong><small> {{ posicao(t) }}</small>
+                      <strong class="is-pulled-right is-success" v-if="atletasPontuados.atletas[t.atleta_id]" :class="atletasPontuados.atletas[t.atleta_id].pontuacao < 0 ? 'has-text-danger': 'has-text-success'">
+                        {{ atletasPontuados.atletas[t.atleta_id].pontuacao }}</strong>
+                      <strong class="is-pulled-right is-success" v-else="">0</strong>
+                    </p>
+                  </div>
+                </div>
+              </article>
+              <hr class="hr-atleta">
+            </div>
+            <div>
+              <time-historico :timeId="timemodal.time.time_id" @update:patrimonio="p => patrimonio = p"></time-historico>
+            </div>
           </div>
         </section>
         <section class="modal-card-body" v-else>
@@ -64,7 +84,7 @@
           </div>
         </section>
         <footer class="modal-card-foot color-footer" v-if="time.time">
-          <social-sharing hashtags="KartolaFC" :url="'https://kartolafc.com.br/#/time/id/' + time.time.time_id"  :title="time.time.nome" :description="'Veja minha pontuação e time no KartolaFC ' + somaPontuacao(time)" inline-template >
+          <social-sharing hashtags="KartolaFC" :url="'https://kartolafc.com.br/#/time/id/' + time.time.time_id"  :title="time.time.nome" :description="'Veja a pontuação do '+ time.time.nome +' no KartolaFC ' + somaPontuacao(time)" inline-template >
             <div class="title is-6"> Compartilhar 
               <network network="facebook">&nbsp 
                 <i class="fa fa-facebook"></i>
@@ -89,10 +109,12 @@
 <script>
 import {http} from './../../axios'
 import TimeHistorico from './TimeHistorico'
+import ScoutsRodada from './scouts/ScoutsRodada'
 
 export default {
   components: {
-    'time-historico': TimeHistorico
+    'time-historico': TimeHistorico,
+    'scouts': ScoutsRodada
   },
 
   props: ['timemodal', 'active'],
@@ -100,12 +122,19 @@ export default {
   data () {
     return {
       atletasPontuados: {},
-      posicaoGeral: 0
+      posicaoGeral: 0,
+      scout: {
+        atletaId: 0,
+        verScouts: false
+      },
+      patrimonio: 0
     }
   },
 
   methods: {
     closeModal: function () {
+      this.patrimonio = 0
+      this.scout.verScouts = false
       this.$emit('update:active', false)
     },
 
@@ -141,6 +170,14 @@ export default {
     defaultImage: function (src) {
       src.time.foto_perfil = '/static/img/icon.png'
       return true
+    },
+
+    clipboard: function () {
+      return 'https://kartolafc.com.br/#/time/id/' + this.time.time.time_id
+    },
+
+    clipboardSuccess: function () {
+      this.$kartolafc.toast.info('Link copiado')
     }
   },
 
@@ -185,5 +222,34 @@ export default {
 
 .color-footer {
   background-color: rgb(255, 252, 113);
+}
+
+.clareamento {
+  opacity: 0.4;
+}
+
+.popup2 {
+  position: absolute;
+  top: 25%;
+  left: 10%;
+  width: 75%;
+  /*height: 40%;*/
+  padding: 16px;
+  border: 4px solid rgb(148, 239, 133);
+  background-color: white;
+  z-index: 1002;
+  overflow: auto;
+  transition: all 1s ease-in-out;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
+}
+
+.up-margin {
+  margin-top: -17px
 }
 </style>

@@ -1,5 +1,4 @@
 <template>
-  <div :class="loader ? 'clareamento': ''">
     <div class="modal" :class="ativo != false ? 'is-active' : ''" @click="closeModal()">
       <div class="modal-background" v-if="!loader"></div>
       <div class="modal-card" @click.stop>
@@ -15,7 +14,10 @@
           <button class="delete" @click="closeModal()"></button>
         </header>
         <section class="modal-card-body">
-          <div class="media">
+          <div v-if="loader">
+            <div class="loader-request-time"></div>
+          </div>
+          <div class="media" v-else>
             <div class="media-content">
               <!--<div class="content">
                 <div class="subtitle is-6">
@@ -32,9 +34,6 @@
         <!--<footer class="modal-card-foot">
         </footer>-->
       </div>
-    </div>
-    <div v-show="loader">
-      <div class="loader-request"></div>
     </div>
   </div>  
 </template>
@@ -186,10 +185,27 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container-scroll-horizontal {
     width: 30em;
     overflow-x: auto;
     white-space: nowrap;
+}
+
+.loader-request-time {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #00d1b2;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin .6s linear infinite;
+  animation: spin .6s linear infinite;
+  margin: auto;
+  padding: 10px;
+  /*position: absolute;*/
+  /*top: 50%;*/
+  left: 45%;
+  /*z-index: 15;*/
+  opacity: 40;
 }
 </style>
