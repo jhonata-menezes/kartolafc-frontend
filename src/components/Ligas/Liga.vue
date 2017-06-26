@@ -114,14 +114,38 @@
       </section>
       <section class="section section-min" v-else>
         <div class="columns">
-          <div class="column is-half is-offset-one-quarter">
-            <div v-for="chave of liga.chaves_mata_mata[status.rodada_atual]" class="box">
-              <span v-if="timesCompleto[chave.time_mandante_id]" class="title font-size-nome">
-                {{timesCompleto[chave.time_mandante_id].time.nome}} 
-                </span> X
-                <span v-if="timesCompleto[chave.time_visitante_id]" class="title font-size-nome">
-                  {{timesCompleto[chave.time_visitante_id].time.nome}}
-                </span>
+          <div class="column is-half is-10 is-offset-1 is-info">
+            <div v-for="rodadaChave of mataMataApenasRodadasExistentes">
+              <p class="title is-5 has-text-centered">{{mataMataStatus[liga.chaves_mata_mata[rodadaChave][0].tipo_fase]}} - Rodada {{rodadaChave}}</p>
+              <div class="box" v-for="chave of liga.chaves_mata_mata[rodadaChave]">
+                <div class="media center" v-if="timesCompleto[chave.time_mandante_id] && timesCompleto[chave.time_visitante_id]">
+                  <div class="media-right">
+                    <div class="content">
+                      <span v-if="timesCompleto[chave.time_mandante_id]" class="title font-size-nome">
+                      {{timesCompleto[chave.time_mandante_id].time.nome}} 
+                      </span>
+                    </div>
+                  </div>
+                  <div class="media-right">
+                    <picture class="image is-48x48">
+                      <img :src="timesCompleto[chave.time_mandante_id].time.url_escudo_svg">
+                    </picture>
+                  </div>
+                  <span class="has-text-centered subtitle is-3 is-bold">X</span>
+                  <div class="media-left">
+                    <picture class="image is-48x48">
+                      <img :src="timesCompleto[chave.time_visitante_id].time.url_escudo_svg">
+                    </picture>
+                  </div>
+                  <div class="media-content">
+                    <div class="content">
+                      <span v-if="timesCompleto[chave.time_visitante_id]" class="title font-size-nome">
+                        {{timesCompleto[chave.time_visitante_id].time.nome}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -159,7 +183,14 @@ export default {
         somarPontuacao: false
       },
       detalhesLiga: false,
-      status: {}
+      status: {},
+      mataMataStatus: {
+        'F': 'Final',
+        'S': 'Semifinal',
+        'Q': 'Quartas de Final',
+        'O': 'Oitavas de Final',
+        'P': 'Primeira Fase'
+      }
     }
   },
 
@@ -271,6 +302,17 @@ export default {
       })
 
       return this.timesSort
+    },
+    mataMataApenasRodadasExistentes: function () {
+      let rodada = []
+      if (this.liga.chaves_mata_mata) {
+        for (let a in this.liga.chaves_mata_mata) {
+          if (a > this.status.rodada_atual) continue
+          rodada.push(a)
+        }
+        return rodada
+      }
+      return []
     }
   }
 }
@@ -296,6 +338,17 @@ export default {
 }
 .font-size-nome {
   font-size: 2vw
+}
+.bloco-casa {
+  text-align: left;
+  position: relative;
+  /*float: left;*/
+}
+
+.bloco-visitante {
+  text-align: right;
+  position: relative;
+  /*float: right;*/
 }
 </style>
 
