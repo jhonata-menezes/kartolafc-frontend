@@ -46,7 +46,7 @@
                     <div class="media">
                       <div class="media-left">
                         <figure class="image is-48x48">
-                          <img :src="l.liga.url_flamula_svg" alt="Image">
+                          <img :src="l.liga.mata_mata ? l.liga.url_trofeu_svg : l.liga.url_flamula_svg" alt="Image">
                         </figure>
                       </div>
                       <div class="media-content">
@@ -126,10 +126,6 @@ export default {
           }
           if (r.data.liga.total_times_liga > 100) {
             this.$kartolafc.toast.info('Liga com mais de 100 times, apenas os 100 primeiros serão adicionados')
-          }
-          if (r.data.liga.mata_mata) {
-            this.fimPesquisaComErro('No momento não temos suporte para liga mata a mata')
-            return
           }
           this.$Progress.start()
           for (let i = 0; i <= parseInt(parseInt(r.data.liga.total_times_liga) / 20); i++) {

@@ -51,10 +51,12 @@ export default {
 
     somaPontuacao: function () {
       this.totalPontos = 0
-      for (let s in this.pontuados.atletas[this.atletaId].scout) {
-        let qtd = parseFloat(this.pontuados.atletas[this.atletaId].scout[s])
-        let p = this.$kartolafc.scouts[s].pontos * qtd
-        this.totalPontos += p
+      if (this.pontuados.atletas[this.atletaId]) {
+        for (let s in this.pontuados.atletas[this.atletaId].scout) {
+          let qtd = parseFloat(this.pontuados.atletas[this.atletaId].scout[s])
+          let p = this.$kartolafc.scouts[s].pontos * qtd
+          this.totalPontos += p
+        }
       }
     },
 

@@ -9,7 +9,7 @@
                 <div class="media">
                   <div class="media-right">
                     <picture class="image is-32x32">
-                      <img :src="liga.liga.url_flamula_svg" @error="liga.liga.url_flamula_svg='/static/img/icon.png'">
+                      <img :src="liga.liga.mata_mata ? liga.liga.url_trofeu_svg : liga.liga.url_flamula_svg" @error="liga.liga.url_flamula_svg='/static/img/icon.png'">
                     </picture>
                   </div>
                   <div class="media-content">
@@ -52,7 +52,7 @@
           </div>
         </div>
       </section>
-      <section class="section section-min">
+      <section class="section section-min" v-if="liga.liga.mata_mata != true">
         <div class="columns">
           <div class="column is-half is-offset-one-quarter">
             <div class="field is-grouped is-grouped-centered">
@@ -112,6 +112,20 @@
           <div class="loader-request"></div>
         </div>
       </section>
+      <section class="section section-min" v-else>
+        <div class="columns">
+          <div class="column is-half is-offset-one-quarter">
+            <div v-for="chave of liga.chaves_mata_mata[status.rodada_atual]" class="box">
+              <span v-if="timesCompleto[chave.time_mandante_id]" class="title font-size-nome">
+                {{timesCompleto[chave.time_mandante_id].time.nome}} 
+                </span> X
+                <span v-if="timesCompleto[chave.time_visitante_id]" class="title font-size-nome">
+                  {{timesCompleto[chave.time_visitante_id].time.nome}}
+                </span>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
   </div>
   
@@ -136,7 +150,7 @@ export default {
       slug: '',
       liga: {},
       timesSort: [],
-      timesCompleto: [],
+      timesCompleto: {},
       pontuados: {},
       presidente: '',
       loader: false,
@@ -279,6 +293,9 @@ export default {
 .component-fade-enter, .component-fade-leave-to
 /* .component-fade-leave-active for <2.1.8 */ {
   opacity: 0;
+}
+.font-size-nome {
+  font-size: 2vw
 }
 </style>
 

@@ -196,6 +196,7 @@ export default {
   },
 
   created: function () {
+    console.log('oi')
     this.$kartolafc.pontuados.getPontuados(p => {
       this.atletasPontuados = p
     })
