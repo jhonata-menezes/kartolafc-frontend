@@ -122,12 +122,13 @@
               <div class="box" v-for="chave of liga.chaves_mata_mata[rodadaChave]">
                 <div class="" v-if="timesCompleto[chave.time_mandante_id] && timesCompleto[chave.time_visitante_id]">
                   <div class="columns is-gapless">
-                    <div class="column is-5">
+                    <div class="column is-5 is-55">
                       <div class="media">
                         <div class="media-content">
                           <div class="content has-text-right is-clearfix">
-                            <span v-if="timesCompleto[chave.time_mandante_id]" class="nome-time">
-                            {{timesCompleto[chave.time_mandante_id].time.nome}} 
+                            <span v-if="timesCompleto[chave.time_mandante_id]" class="">
+                            <span class="nome-time is-clearfix">{{timesCompleto[chave.time_mandante_id].time.nome}}</span>
+                            <small>{{timesCompleto[chave.time_mandante_id].time.nome_cartola}}</small>
                             </span>
                           </div>
                         </div>
@@ -137,7 +138,8 @@
                           </picture>
                         </div>
                         <div class="placar-esquerdo">
-                          {{timesCompleto[chave.time_mandante_id].pontuacao.toFixed(2)}}
+                          <span v-if="chave.rodada_id < status.rodada_atual">{{timesCompleto[chave.time_mandante_id].pontuacao.toFixed(2)}}</span>
+                          <span v-else>{{chave.time_mandante_pontuacao.toFixed(2)}}</span>
                         </div>
                       </div>
                     </div>
@@ -149,7 +151,8 @@
                     <div class="column is-5">
                       <div class="media">
                         <div class="placar-direito">
-                          {{timesCompleto[chave.time_visitante_id].pontuacao.toFixed(2)}}
+                          <span v-if="chave.rodada_id < status.rodada_atual">{{timesCompleto[chave.time_visitante_id].pontuacao.toFixed(2)}}</span>
+                          <span v-else>{{chave.time_visitante_pontuacao.toFixed(2)}}</span>
                         </div>
                         <div class="">
                           <picture class="image is-48x48">
@@ -157,9 +160,10 @@
                           </picture>
                         </div>
                         <div class="media-content">
-                          <div class="content">
-                            <span v-if="timesCompleto[chave.time_visitante_id]" class="nome-time">
-                              {{timesCompleto[chave.time_visitante_id].time.nome}}
+                          <div class="content is-clearfix">
+                            <span v-if="timesCompleto[chave.time_visitante_id]" class="">
+                            <span class="nome-time is-clearfix">{{timesCompleto[chave.time_visitante_id].time.nome}}</span>
+                            <small>{{timesCompleto[chave.time_visitante_id].time.nome_cartola}}</small>
                             </span>
                           </div>
                         </div>
@@ -336,7 +340,7 @@ export default {
           if (a > this.status.rodada_atual) continue
           rodada.push(a)
         }
-        return rodada
+        return rodada.reverse()
       }
       return []
     }
@@ -398,9 +402,14 @@ export default {
 .nome-time {
   font-size: 1rem;
   box-sizing: initial;
+  font-weight: bold
 }
 
 .box22 {
   box-sizing: initial;
+}
+
+.is-55 {
+  width: 45% !important;
 }
 </style>
