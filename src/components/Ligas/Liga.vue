@@ -118,52 +118,59 @@
               </p>
             </div>
             <div v-for="rodadaChave of mataMataApenasRodadasExistentes">
-              <p class="title is-5 has-text-centered">{{mataMataStatus[liga.chaves_mata_mata[rodadaChave][0].tipo_fase]}} - Rodada {{rodadaChave}}</p>
+              <br>
+              <p class="title is-5 has-text-centered"><b>{{mataMataStatus[liga.chaves_mata_mata[rodadaChave][0].tipo_fase]}} - Rodada {{rodadaChave}}</b></p>
               <div class="box" v-for="chave of liga.chaves_mata_mata[rodadaChave]">
                 <div class="" v-if="timesCompleto[chave.time_mandante_id] && timesCompleto[chave.time_visitante_id]">
-                  <div class="columns is-gapless">
+                  <div class="columns is-mobile is-gapless">
                     <div class="column is-5 is-55">
                       <div class="media">
                         <div class="media-content">
                           <div class="content has-text-right is-clearfix">
                             <span v-if="timesCompleto[chave.time_mandante_id]" class="">
-                            <span class="nome-time is-clearfix">{{timesCompleto[chave.time_mandante_id].time.nome}}</span>
-                            <small>{{timesCompleto[chave.time_mandante_id].time.nome_cartola}}</small>
+                            <span class="nome-time has-text-right">{{timesCompleto[chave.time_mandante_id].time.nome}}</span>
+                            <small class="is-hidden-touch">{{timesCompleto[chave.time_mandante_id].time.nome_cartola}}</small>
                             </span>
                           </div>
                         </div>
                         <div class="">
-                          <picture class="image is-48x48">
+                          <picture class="image image-escudo-esquerda">
                             <img :src="timesCompleto[chave.time_mandante_id].time.url_escudo_svg">
                           </picture>
                         </div>
                         <div class="placar-esquerdo">
-                          <span v-if="chave.rodada_id < status.rodada_atual">{{timesCompleto[chave.time_mandante_id].pontuacao.toFixed(2)}}</span>
+                          <span v-if="chave.rodada_id == status.rodada_atual">
+                            <span v-if="status.status_mercado != 2">0</span>
+                            <span v-else>{{timesCompleto[chave.time_mandante_id].pontuacao.toFixed(2)}}</span>
+                          </span>
                           <span v-else>{{chave.time_mandante_pontuacao.toFixed(2)}}</span>
-                        </div>
+                        </div>                        
                       </div>
                     </div>
                     <div class="column is-1">
                       <div class="has-text-centered">
-                        <span class="subtitle is-3 is-bold">X</span>
+                        <span class="separador-placar">X</span>
                       </div>
                     </div>
                     <div class="column is-5">
                       <div class="media">
                         <div class="placar-direito">
-                          <span v-if="chave.rodada_id < status.rodada_atual">{{timesCompleto[chave.time_visitante_id].pontuacao.toFixed(2)}}</span>
+                          <span v-if="chave.rodada_id == status.rodada_atual">
+                            <span v-if="status.status_mercado != 2">0</span>
+                            <span v-else>{{timesCompleto[chave.time_visitante_id].pontuacao.toFixed(2)}}</span>
+                          </span>
                           <span v-else>{{chave.time_visitante_pontuacao.toFixed(2)}}</span>
                         </div>
                         <div class="">
-                          <picture class="image is-48x48">
+                          <picture class="image image-escudo-direita">
                             <img :src="timesCompleto[chave.time_visitante_id].time.url_escudo_svg">
                           </picture>
                         </div>
                         <div class="media-content">
                           <div class="content is-clearfix">
                             <span v-if="timesCompleto[chave.time_visitante_id]" class="">
-                            <span class="nome-time is-clearfix">{{timesCompleto[chave.time_visitante_id].time.nome}}</span>
-                            <small>{{timesCompleto[chave.time_visitante_id].time.nome_cartola}}</small>
+                            <span class="nome-time-direito is-clearfix">{{timesCompleto[chave.time_visitante_id].time.nome}}</span>
+                            <small class="is-hidden-touch">{{timesCompleto[chave.time_visitante_id].time.nome_cartola}}</small>
                             </span>
                           </div>
                         </div>
@@ -402,7 +409,17 @@ export default {
 .nome-time {
   font-size: 1rem;
   box-sizing: initial;
-  font-weight: bold
+  font-weight: bold;
+}
+
+.nome-time-direito {
+  font-size: 1rem;
+  box-sizing: initial;
+  font-weight: bold;
+}
+.separador-placar {
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .box22 {
@@ -411,5 +428,54 @@ export default {
 
 .is-55 {
   width: 45% !important;
+}
+
+.image-escudo-esquerda {
+  height: 48px;
+  width: 48px;
+}
+.image-escudo-direita {
+  height: 48px;
+  width: 48px;
+}
+
+@media screen and (max-width: 768px) {
+  .nome-time {
+    font-size: 0.65rem;
+    display: block;
+    position: absolute;
+    bottom: -49px;
+    right: -49px;
+  }
+  .nome-time-direito {
+    font-size: 0.65rem;
+    display: block;
+    position: absolute;
+    bottom: -49px;
+    left: -49px;
+  }
+  .separador-placar {
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+  .image-escudo-esquerda {
+    position: relative;
+    bottom: 9px;
+    right: 8px;
+    height: 32px;
+    width: 32px;
+  }
+
+  .image-escudo-direita {
+    position: relative;
+    bottom: 9px;
+    left: 8px;
+    height: 32px;
+    width: 32px;
+  }
+
+  .media-content {
+    position: relative;
+  }
 }
 </style>
