@@ -108,40 +108,62 @@
             <component :is="escalacaoTime" :timemodal="modal.time" :active="modal.ativar" @update:active="val => modal.ativar = val" ></component>
           </div>
         </transition>
-        <div v-show="loader">
-          <div class="loader-request"></div>
-        </div>
       </section>
       <section class="section section-min" v-else>
         <div class="columns">
           <div class="column is-half is-10 is-offset-1 is-info">
+            <div class="field is-grouped is-grouped-centered">
+              <p class="control">
+                <button class="tag button is-warning is-small" @click="loader = true; getPontuados(true)">Atualizar</button>
+              </p>
+            </div>
             <div v-for="rodadaChave of mataMataApenasRodadasExistentes">
               <p class="title is-5 has-text-centered">{{mataMataStatus[liga.chaves_mata_mata[rodadaChave][0].tipo_fase]}} - Rodada {{rodadaChave}}</p>
               <div class="box" v-for="chave of liga.chaves_mata_mata[rodadaChave]">
-                <div class="media center" v-if="timesCompleto[chave.time_mandante_id] && timesCompleto[chave.time_visitante_id]">
-                  <div class="media-right">
-                    <div class="content">
-                      <span v-if="timesCompleto[chave.time_mandante_id]" class="title font-size-nome">
-                      {{timesCompleto[chave.time_mandante_id].time.nome}} 
-                      </span>
+                <div class="" v-if="timesCompleto[chave.time_mandante_id] && timesCompleto[chave.time_visitante_id]">
+                  <div class="columns is-gapless">
+                    <div class="column is-5">
+                      <div class="media">
+                        <div class="media-content">
+                          <div class="content has-text-right is-clearfix">
+                            <span v-if="timesCompleto[chave.time_mandante_id]" class="nome-time">
+                            {{timesCompleto[chave.time_mandante_id].time.nome}} 
+                            </span>
+                          </div>
+                        </div>
+                        <div class="">
+                          <picture class="image is-48x48">
+                            <img :src="timesCompleto[chave.time_mandante_id].time.url_escudo_svg">
+                          </picture>
+                        </div>
+                        <div class="placar-esquerdo">
+                          {{timesCompleto[chave.time_mandante_id].pontuacao.toFixed(2)}}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="media-right">
-                    <picture class="image is-48x48">
-                      <img :src="timesCompleto[chave.time_mandante_id].time.url_escudo_svg">
-                    </picture>
-                  </div>
-                  <span class="has-text-centered subtitle is-3 is-bold">X</span>
-                  <div class="media-left">
-                    <picture class="image is-48x48">
-                      <img :src="timesCompleto[chave.time_visitante_id].time.url_escudo_svg">
-                    </picture>
-                  </div>
-                  <div class="media-content">
-                    <div class="content">
-                      <span v-if="timesCompleto[chave.time_visitante_id]" class="title font-size-nome">
-                        {{timesCompleto[chave.time_visitante_id].time.nome}}
-                      </span>
+                    <div class="column is-1">
+                      <div class="has-text-centered">
+                        <span class="subtitle is-3 is-bold">X</span>
+                      </div>
+                    </div>
+                    <div class="column is-5">
+                      <div class="media">
+                        <div class="placar-direito">
+                          {{timesCompleto[chave.time_visitante_id].pontuacao.toFixed(2)}}
+                        </div>
+                        <div class="">
+                          <picture class="image is-48x48">
+                            <img :src="timesCompleto[chave.time_visitante_id].time.url_escudo_svg">
+                          </picture>
+                        </div>
+                        <div class="media-content">
+                          <div class="content">
+                            <span v-if="timesCompleto[chave.time_visitante_id]" class="nome-time">
+                              {{timesCompleto[chave.time_visitante_id].time.nome}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -151,6 +173,9 @@
         </div>
       </section>
     </section>
+    <div v-show="loader">
+      <div class="loader-request"></div>
+    </div>
   </div>
   
 </template>
@@ -249,6 +274,7 @@ export default {
               } else {
                 this.$set(this.liga.times[k], 'pontuacao', soma)
               }
+              this.$set(this.timesCompleto[e.time_id], 'pontuacao', soma)
               this.timesSort.push(this.liga.times[k])
             })
           }, this)
@@ -350,5 +376,31 @@ export default {
   position: relative;
   /*float: right;*/
 }
-</style>
 
+.is-centered {
+  position: absolute;
+  left: 50%;
+}
+
+.placar-direito {
+  margin-top: 3%;
+  margin-right: 4%;
+  font-weight: bold;
+  
+}
+
+.placar-esquerdo {
+  margin-top: 3%;
+  margin-left: 4%;
+  font-weight: bold;
+}
+
+.nome-time {
+  font-size: 1rem;
+  box-sizing: initial;
+}
+
+.box22 {
+  box-sizing: initial;
+}
+</style>
