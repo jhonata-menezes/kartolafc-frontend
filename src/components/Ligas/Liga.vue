@@ -112,7 +112,7 @@
       <section class="section section-min" v-else>
         <div class="columns">
           <div class="column is-half is-10 is-offset-1 is-info">
-            <div class="field is-grouped is-grouped-centered">
+            <div class="field is-grouped is-grouped-centered" v-if="liga.liga && !liga.liga.podio">
               <p class="control">
                 <button class="tag button is-warning is-small" @click="loader = true; getPontuados(true)">Atualizar</button>
               </p>
