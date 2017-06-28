@@ -123,13 +123,13 @@
               <div class="box" v-for="chave of liga.chaves_mata_mata[rodadaChave]">
                 <div class="" v-if="timesCompleto[chave.time_mandante_id] && timesCompleto[chave.time_visitante_id]">
                   <div class="columns is-mobile is-gapless">
-                    <div class="column is-5 is-55">
-                      <div class="media">
+                    <div class="column is-5 is-55" :class="chave.rodada_id != status.rodada_atual && chave.time_mandante_id != chave.vencedor_id ? 'clareamento-time': ''">
+                      <div class="media media-mobile">
                         <div class="media-content">
                           <div class="content has-text-right is-clearfix">
                             <span v-if="timesCompleto[chave.time_mandante_id]" class="">
-                            <span class="nome-time has-text-right">{{timesCompleto[chave.time_mandante_id].time.nome}}</span>
-                            <small class="is-hidden-touch">{{timesCompleto[chave.time_mandante_id].time.nome_cartola}}</small>
+                            <span class="nome-time has-text-right is-clearfix">{{timesCompleto[chave.time_mandante_id].time.nome}}</span>
+                            <small class="is-hidden-mobile">{{timesCompleto[chave.time_mandante_id].time.nome_cartola}}</small>
                             </span>
                           </div>
                         </div>
@@ -152,8 +152,8 @@
                         <span class="separador-placar">X</span>
                       </div>
                     </div>
-                    <div class="column is-5">
-                      <div class="media">
+                    <div class="column is-5" :class="chave.rodada_id != status.rodada_atual && chave.time_visitante_id != chave.vencedor_id ? 'clareamento-time' : ''">
+                      <div class="media media-mobile">
                         <div class="placar-direito">
                           <span v-if="chave.rodada_id == status.rodada_atual">
                             <span v-if="status.status_mercado != 2">0</span>
@@ -170,7 +170,7 @@
                           <div class="content is-clearfix">
                             <span v-if="timesCompleto[chave.time_visitante_id]" class="">
                             <span class="nome-time-direito is-clearfix">{{timesCompleto[chave.time_visitante_id].time.nome}}</span>
-                            <small class="is-hidden-touch">{{timesCompleto[chave.time_visitante_id].time.nome_cartola}}</small>
+                            <small class="is-hidden-mobile">{{timesCompleto[chave.time_visitante_id].time.nome_cartola}}</small>
                             </span>
                           </div>
                         </div>
@@ -439,20 +439,25 @@ export default {
   width: 48px;
 }
 
+.clareamento-time {
+  opacity: .2;
+}
+
 @media screen and (max-width: 768px) {
   .nome-time {
     font-size: 0.65rem;
     display: block;
     position: absolute;
-    bottom: -49px;
-    right: -49px;
+    bottom: -19px;
+    right: 4px;
   }
+  
   .nome-time-direito {
     font-size: 0.65rem;
     display: block;
     position: absolute;
-    bottom: -49px;
-    left: -49px;
+    bottom: -19px;
+    left: 4px;
   }
   .separador-placar {
     font-size: 1.3rem;
@@ -474,7 +479,7 @@ export default {
     width: 32px;
   }
 
-  .media-content {
+  .media-mobile {
     position: relative;
   }
 }
