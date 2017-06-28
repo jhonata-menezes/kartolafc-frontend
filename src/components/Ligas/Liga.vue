@@ -117,7 +117,7 @@
                 <br>
                 <div class="columns">
                   <div class="column" v-for="(time, i) of  liga.liga.podio">
-                    <div class="media box ">
+                    <div class="media box">
                       <p class="title is-4 is-bold-2">{{(i+1)}}°</p>
                       <div class="media-left">
                         <picture class="image is-48x48">
@@ -145,7 +145,7 @@
                 </div>
                 <div class="" v-if="timesCompleto[chave.time_mandante_id] && timesCompleto[chave.time_visitante_id]">
                   <div class="columns is-mobile is-gapless">
-                    <div class="column is-5 is-55" @click="chave.time_id = chave.time_mandante_id; verTime(chave)" :class="chave.rodada_id != status.rodada_atual && chave.time_mandante_id != chave.vencedor_id ? 'clareamento-time': ''">
+                    <div class="column is-5 is-55 is-clicable" @click="chave.time_id = chave.time_mandante_id; verTime(chave)" :class="chave.rodada_id != status.rodada_atual && chave.time_mandante_id != chave.vencedor_id ? 'clareamento-time': ''">
                       <div class="media media-mobile">
                         <div class="media-content">
                           <div class="content has-text-right is-clearfix">
@@ -174,7 +174,7 @@
                         <span class="separador-placar">X</span>
                       </div>
                     </div>
-                    <div class="column is-5" @click="chave.t = {}; chave.t.time_id = chave.time_visitante_id; verTime((chave.t))" :class="chave.rodada_id != status.rodada_atual && chave.time_visitante_id != chave.vencedor_id ? 'clareamento-time' : ''">
+                    <div class="column is-5 is-clicable" @click="chave.t = {}; chave.t.time_id = chave.time_visitante_id; verTime((chave.t))" :class="chave.rodada_id != status.rodada_atual && chave.time_visitante_id != chave.vencedor_id ? 'clareamento-time' : ''">
                       <div class="media media-mobile">
                         <div class="placar-direito">
                           <span v-if="chave.rodada_id == status.rodada_atual">
@@ -481,7 +481,14 @@ export default {
 .tag-fase {
   font-weight: bold;
   font-size: 14px;
+  position: relative;
+  bottom: 31px;
 }
+.is-clicable {
+  cursor: pointer;
+  pointer-events: painted;
+}
+
 @media screen and (max-width: 768px) {
   .nome-time {
     font-size: 0.65rem;
@@ -520,6 +527,10 @@ export default {
 
   .media-mobile {
     position: relative;
+  }
+
+  .is-clicable {
+    cursor: auto;
   }
 }
 </style>
