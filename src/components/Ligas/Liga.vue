@@ -140,6 +140,9 @@
               <br>
               <p class="title is-5 has-text-centered"><b>{{mataMataStatus[liga.chaves_mata_mata[rodadaChave][0].tipo_fase]}} - Rodada {{rodadaChave}}</b></p>
               <div class="box" v-for="chave of liga.chaves_mata_mata[rodadaChave]">
+                <div class="has-text-centered">
+                  <span class="tag is-warning tag-fase" v-if="chave.tipo_fase == 'F' || chave.tipo_fase == 'T'">{{mataMataStatus[chave.tipo_fase]}}</span>
+                </div>
                 <div class="" v-if="timesCompleto[chave.time_mandante_id] && timesCompleto[chave.time_visitante_id]">
                   <div class="columns is-mobile is-gapless">
                     <div class="column is-5 is-55" @click="chave.time_id = chave.time_mandante_id; verTime(chave)" :class="chave.rodada_id != status.rodada_atual && chave.time_mandante_id != chave.vencedor_id ? 'clareamento-time': ''">
@@ -249,7 +252,8 @@ export default {
         'S': 'Semifinal',
         'Q': 'Quartas de Final',
         'O': 'Oitavas de Final',
-        'P': 'Primeira Fase'
+        'P': 'Primeira Fase',
+        'T': '3° Lugar'
       }
     }
   },
@@ -451,7 +455,7 @@ export default {
 }
 
 .is-55 {
-  width: 45% !important;
+  width: 46% !important;
 }
 
 .image-escudo-esquerda {
@@ -474,7 +478,10 @@ export default {
 .is-left-image-perfil {
   left: -14px;
 }
-
+.tag-fase {
+  font-weight: bold;
+  font-size: 14px;
+}
 @media screen and (max-width: 768px) {
   .nome-time {
     font-size: 0.65rem;
