@@ -38,7 +38,7 @@ export default {
   animation: spin .6s linear infinite;
   margin: auto;
   padding: 10px;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 45%;
   z-index: 15;
