@@ -3,7 +3,7 @@
       <div class="modal-background" v-if="!loader"></div>
       <div class="modal-card" @click.stop>
         <header class="modal-card-head">
-          <p class="modal-card-title">
+          <p class="modal-card-title" v-if="ativarGrafico">
             <span class="subtitle is-5">
               &nbsp {{atletaMercado.apelido}}
             </span>
