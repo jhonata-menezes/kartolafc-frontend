@@ -117,7 +117,7 @@
                 <br>
                 <div class="columns">
                   <div class="column" v-for="(time, i) of  liga.liga.podio">
-                    <div class="media box">
+                    <div class="media box is-clicable" @click="verTime(time)">
                       <p class="title is-4 is-bold-2">{{(i+1)}}°</p>
                       <div class="media-left">
                         <picture class="image is-48x48">
@@ -506,8 +506,10 @@ export default {
     left: 4px;
   }
   .separador-placar {
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-weight: bold;
+    position: relative;
+    bottom: -3px;
   }
   .image-escudo-esquerda {
     position: relative;
