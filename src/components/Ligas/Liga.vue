@@ -117,6 +117,30 @@
                 <button class="tag button is-warning is-small" @click="loader = true; getPontuados(true)">Atualizar</button>
               </p>
             </div>
+            <div>
+              <div v-if="liga.liga && liga.liga.podio">
+                <br>
+                <div class="columns">
+                  <div class="column" v-for="(time, i) of  liga.liga.podio">
+                    <div class="media box ">
+                      <p class="title is-4 is-bold-2">{{(i+1)}}°</p>
+                      <div class="media-left">
+                        <picture class="image is-48x48">
+                          <img :src="time.url_escudo_svg">
+                        </picture>
+                      </div>
+                      <picture class="image is-24x24 is-left-image-perfil is-hidden-touch">
+                        <img class="image-circle" :src="time.foto_perfil">
+                      </picture>&nbsp
+                      <div class="media-content">
+                        <p><b>{{time.nome.charAt(0).toUpperCase()+time.nome.slice(1)}}</b></p>
+                        <small>{{time.nome_cartola.charAt(0).toUpperCase()+time.nome_cartola.slice(1)}}</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div v-for="rodadaChave of mataMataApenasRodadasExistentes">
               <br>
               <p class="title is-5 has-text-centered"><b>{{mataMataStatus[liga.chaves_mata_mata[rodadaChave][0].tipo_fase]}} - Rodada {{rodadaChave}}</b></p>
@@ -441,6 +465,14 @@ export default {
 
 .clareamento-time {
   opacity: .2;
+}
+
+.is-bold-2{
+  font-weight: bold;
+}
+
+.is-left-image-perfil {
+  left: -14px;
 }
 
 @media screen and (max-width: 768px) {
