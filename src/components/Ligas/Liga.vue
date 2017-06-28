@@ -103,11 +103,6 @@
             </div>
           </div>
         </div>
-        <transition name="component-fade" mode="out-in">
-          <div v-if="modal.ativar">
-            <component :is="escalacaoTime" :timemodal="modal.time" :active="modal.ativar" @update:active="val => modal.ativar = val" ></component>
-          </div>
-        </transition>
       </section>
       <section class="section section-min" v-else>
         <div class="columns">
@@ -147,7 +142,7 @@
               <div class="box" v-for="chave of liga.chaves_mata_mata[rodadaChave]">
                 <div class="" v-if="timesCompleto[chave.time_mandante_id] && timesCompleto[chave.time_visitante_id]">
                   <div class="columns is-mobile is-gapless">
-                    <div class="column is-5 is-55" :class="chave.rodada_id != status.rodada_atual && chave.time_mandante_id != chave.vencedor_id ? 'clareamento-time': ''">
+                    <div class="column is-5 is-55" @click="chave.time_id = chave.time_mandante_id; verTime(chave)" :class="chave.rodada_id != status.rodada_atual && chave.time_mandante_id != chave.vencedor_id ? 'clareamento-time': ''">
                       <div class="media media-mobile">
                         <div class="media-content">
                           <div class="content has-text-right is-clearfix">
@@ -176,7 +171,7 @@
                         <span class="separador-placar">X</span>
                       </div>
                     </div>
-                    <div class="column is-5" :class="chave.rodada_id != status.rodada_atual && chave.time_visitante_id != chave.vencedor_id ? 'clareamento-time' : ''">
+                    <div class="column is-5" @click="chave.t = {}; chave.t.time_id = chave.time_visitante_id; verTime((chave.t))" :class="chave.rodada_id != status.rodada_atual && chave.time_visitante_id != chave.vencedor_id ? 'clareamento-time' : ''">
                       <div class="media media-mobile">
                         <div class="placar-direito">
                           <span v-if="chave.rodada_id == status.rodada_atual">
@@ -208,6 +203,11 @@
         </div>
       </section>
     </section>
+    <transition name="component-fade" mode="out-in">
+      <div v-if="modal.ativar">
+        <component :is="escalacaoTime" :timemodal="modal.time" :active="modal.ativar" @update:active="val => modal.ativar = val" ></component>
+      </div>
+    </transition>
     <div v-show="loader">
       <div class="loader-request"></div>
     </div>
