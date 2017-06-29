@@ -12,7 +12,9 @@ import 'font-awesome/css/font-awesome.css'
 import SocialSharing from 'vue-social-sharing'
 import subscribeNotification from './serviceWorker/register'
 import VueClipboards from 'vue-clipboards'
+import VeeValidate from 'vee-validate'
 
+Vue.use(VeeValidate)
 Vue.use(VueClipboards)
 subscribeNotification.subscribeNotification()
 let optionsProgress = {

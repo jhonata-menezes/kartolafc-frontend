@@ -9,6 +9,7 @@ import RodadaJogos from '@/components/rodada/Jogos'
 import Liga from '@/components/Ligas/Liga'
 import NotificationComponent from '@/components/configuracao/Notificacao'
 import MercadoAtletas from '@/components/atletas/Mercado'
+import Login from '@/components/login/Login'
 
 Vue.use(Router)
 
@@ -49,6 +50,10 @@ export default new Router({
     path: '/atletas/mercado',
     name: 'AtletasMercado',
     component: MercadoAtletas
+  }, {
+    path: '/login',
+    name: 'Login',
+    component: Login
   }]
   // mode: 'history'
 })
