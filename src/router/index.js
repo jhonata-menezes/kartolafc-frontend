@@ -10,6 +10,7 @@ import Liga from '@/components/Ligas/Liga'
 import NotificationComponent from '@/components/configuracao/Notificacao'
 import MercadoAtletas from '@/components/atletas/Mercado'
 import Login from '@/components/login/Login'
+import Escalacao from '@/components/escalacao/Escalacao'
 
 Vue.use(Router)
 
@@ -54,6 +55,10 @@ export default new Router({
     path: '/login',
     name: 'Login',
     component: Login
+  }, {
+    path: '/escalacao',
+    name: 'Escalacao',
+    component: Escalacao
   }]
   // mode: 'history'
 })

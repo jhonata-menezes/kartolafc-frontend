@@ -11,7 +11,7 @@
                   <p class="control">
                     <input class="input is-small is-primary" type="text" v-model="filtros.pesquisaNomeAtleta" placeholder="Nome Atleta">
                   </p>
-                  <p class="control">
+                  <p class="control has-icons-right">
                     <span class="select is-primary is-small">
                       <select class='' v-model="sort.coluna" >
                         <option value='preco_num' checked='checked'>Preço</option>
@@ -24,7 +24,7 @@
                   </p>
                 </div>
                 <div class="field is-grouped is-grouped-centered">
-                  <p class="control">
+                  <p class="control has-icons-right">
                     <span class="select is-primary is-small">
                       <select class='is-small' v-model.number="filtros.posicao_id" >
                         <option value=0 disabled>Posição</option>
