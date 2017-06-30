@@ -6,7 +6,7 @@
     <title>kartolaFC</title>
     <script>
         // utilizando bucket do GCP, a simplicidade do javascript atraiu =D
-        if (location.protocol != 'https:' && !location.host.match("^127.0.0.1|^localhost|^192.168.0.20")) {
+        if (location.protocol != 'https:' && !location.host.match("^127.0.0.1|^localhost|^192.168.0.20|^10.42.0.1")) {
             location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
         }
     </script>
