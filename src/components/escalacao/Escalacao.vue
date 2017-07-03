@@ -3,40 +3,64 @@
     <section class="section">
       <div>
         <div class="">
-          <div class="field">
-            <label class="label">Selecione o time que deseja escalar</label>
-            <p class="control has-icons-right">
-              <span class="select is-small">
-                <select v-model="time">
-                  <option v-for="t of times" :value="t" :key="t.time.time_id">{{t.time.nome}}</option>
-                </select>
-              </span>
-            </p>
-          </div>
-          <br>
         </div>
         <div class="columns">
-          <div class="column is-offset-1 is-4" v-if="time.time">
+          <div class="column is-offset-1 is-4">
             <div>
-              <div>
-                <p>Patrimônio ${{time.patrimonio.toFixed(2)}}
-                  Preço do time ${{precoTime()}}
-                </p>
+              <div class="notification is-success" v-if="status.status_mercado == 1">
+                <strong>Mercado Aberto - Rodada {{status.rodada_atual}}</strong><br>
+                Times Escalados {{status.times_escalados}}
+              </div>
+              <div class="notification is-danger" v-else>
+                <b>Mercado Fechado - Rodada {{status.rodada_atual}}</b><br>
+                Times Escalados {{status.times_escalados}}
               </div>
             </div>
-            <div v-for="(atleta, atletaId) of time.atletas.sort((a,b) => a.posicao_id > b.posicao_id ? 1 : -1)" :key="atletaId" class="box">
-              <div class="media">
-                <div class="media-left">
-                  <picture class="image is-48x48">
-                    <img :src="atleta.foto">
-                  </picture>
+            <div class="field">
+              <label class="label">Selecione o time que deseja escalar</label>
+              <p class="control has-icons-right">
+                <span class="select is-small">
+                  <select v-model="time">
+                    <option v-for="t of times" :value="t" :key="t.time.time_id">{{t.time.nome}}</option>
+                  </select>
+                </span>
+              </p>
+            </div>
+            <br>
+            <div v-if="time.time">
+              <div>
+                <div>
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <th>
+                          Patrimônio ${{time.patrimonio.toFixed(2)}}
+                        </th>
+                        <th>
+                          Preço do time ${{precoTime()}}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th>assa</th>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div class="media-content">
-                  <div class="content">
-                    <p>
-                      <strong>{{atleta.apelido}}</strong> <small>{{time.posicoes[atleta.posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[atleta.posicao_id].abreviacao.slice(1)}}</small><br>
-                      ${{atleta.preco_num}}
-                    </p>
+              </div>
+              <div v-for="(atleta, atletaId) of atletasSort" :key="atletaId" class="box">
+                <div class="media">
+                  <div class="media-left">
+                    <picture class="image is-48x48">
+                      <img :src="atleta.foto">
+                    </picture>
+                  </div>
+                  <div class="media-content">
+                    <div class="content">
+                      <p>
+                        <strong>{{atleta.apelido}}</strong> <small>{{time.posicoes[atleta.posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[atleta.posicao_id].abreviacao.slice(1)}}</small><br>
+                        ${{atleta.preco_num}}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -77,7 +101,7 @@ export default {
     init: function () {
       this.$kartolafc.mercado.getMercado(m => {
         this.mercado = m
-        for (let atl of m) {
+        for (let atl of m.atletas) {
           this.mercadoPorAltetaId[atl.atleta_id] = atl
         }
       })
@@ -98,10 +122,18 @@ export default {
   created: function () {
     this.init()
     this.getTimes()
+  },
+
+  computed: {
+    atletasSort: function () {
+      return this.time.atletas.sort((a, b) => a.posicao_id > b.posicao_id ? 1 : -1)
+    }
   }
 }
 </script>
 
 <style>
-
+.section {
+  padding-top: 2rem;
+}
 </style>

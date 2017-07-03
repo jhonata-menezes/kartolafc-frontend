@@ -3,7 +3,7 @@
     <section class="section">
       <div class="columns">
         <div class="column is-offset-4 is-4">
-          <div class="notification is-warning notification-full">
+          <div class="notification is-warning">
             <p class="title is-6">
               Os dados inseridos serão utilizados apenas para autenticar no CartolaFC e adquirir o token, em nenhum momento o KartolaFC usará ou irá distribuir esses dados.
             </p>
@@ -104,6 +104,8 @@ export default {
         response.token = token
         this.$kartolafc.tokens.set(this.input.email, response)
         this.tokens = this.$kartolafc.tokens.get()
+        this.input.email = ''
+        this.input.senha = ''
       })
     },
 
