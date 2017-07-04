@@ -60,32 +60,46 @@
                   </table>
                 </div>
               </div>
-              <div v-for="(atleta, atletaId) of atletasSort" :key="atletaId" class="box">
-                <div class="media">
+              <div v-for="i in itensGerados" :key="i" class="box">
+                <div class="media" v-if="timeMontado[i] && timeMontado[i].atleta_id">
                   <div class="media-left">
                     <picture class="image is-64x64">
-                      <img :src="atleta.foto">
+                      <img :src="timeMontado[i].foto">
                     </picture>
                     <picture class="image is-32x32 escudo-lado">
-                      <img :src="mercado.clubes[atleta.clube_id].Escudos['45x45']">
+                      <img :src="mercado.clubes[timeMontado[i].clube_id].Escudos['45x45']">
                     </picture>
                   </div>
                   <div class="media-content">
                     <div class="content">
                       <p>
-                        <strong>{{atleta.apelido}}</strong> <small>{{time.posicoes[atleta.posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[atleta.posicao_id].abreviacao.slice(1)}}</small>
-                        <span class="icon" v-if="mercadoPorAltetaId[atleta.atleta_id].status_id == 7"><i class="fa fa-check"></i></span>
+                        <strong>{{timeMontado[i].apelido}}</strong> <small>{{time.posicoes[timeMontado[i].posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[timeMontado[i].posicao_id].abreviacao.slice(1)}}</small>
+                        <span class="icon" v-if="timeMontado[i].status_id == 7"><i class="fa fa-check"></i></span>
                         <br>
-                        <div class="campos-descricao-atleta">Preço ${{atleta.preco_num}}
-                        Média {{mercadoPorAltetaId[atleta.atleta_id].media_num}}
-                        Última {{mercadoPorAltetaId[atleta.atleta_id].pontos_num}}
-                        Jogos {{mercadoPorAltetaId[atleta.atleta_id].jogos_num}}
+                        <div class="campos-descricao-atleta">Preço ${{timeMontado[i].preco_num}}
+                        Média {{timeMontado[i].media_num}}
+                        Última {{timeMontado[i].pontos_num}}
+                        Jogos {{timeMontado[i].jogos_num}}
                         </div>
+                        <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)"><i class="fa fa-times"></i>&nbsp Remover</button>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div v-else class="media">
+                  <div class="media-content">
+                    <div class="content">
+                      <p class="has-text-left">
+                        <button class="button is-success is-medium" @click="pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[i], i)">
+                          <i class="fa fa-plus"></i>&nbsp{{$kartolafc.esquemas.esquemas[time.esquema_id].posicao[i]}}</button>
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+            <div v-if="ativarComponente">
+              <component :is="componentAtletaPosicao" :atletas="atletasComponente" @update:selecionado="atl => {respostaComponente(atl)}"></component>
             </div>
           </div>
           <div class="column"></div>
@@ -97,11 +111,22 @@
 
 <script>
 import {http} from './../../axios'
+import AtletaPosicao from './AtletasPosicao'
+
 export default {
+  components: {
+    'atletaPosicao': AtletaPosicao
+  },
   data () {
     return {
+      ativarComponente: false,
+      componentAtletaPosicao: 'atletaPosicao',
+      indiceAlterar: 0,
+      atletasComponente: [],
+      itensGerados: [],
       times: [],
       time: {},
+      timeMontado: [],
       mercado: {},
       mercadoPorAltetaId: {},
       status: {},
@@ -115,7 +140,8 @@ export default {
         6: '5-3-2',
         7: '5-4-1'
       },
-      partida: {}
+      partida: {},
+      atletasPosicao: []
     }
   },
 
@@ -135,9 +161,16 @@ export default {
     init: function () {
       this.$kartolafc.mercado.getMercado(m => {
         this.mercado = m
+        let atletasPosicao = []
         for (let atl of m.atletas) {
           this.mercadoPorAltetaId[atl.atleta_id] = atl
+          // array por posicao
+          if (!atletasPosicao[atl.posicao_id]) {
+            atletasPosicao[atl.posicao_id] = []
+          }
+          atletasPosicao[atl.posicao_id].push(atl)
         }
+        this.atletasPosicao = atletasPosicao
       })
       this.$kartolafc.status.getStatus(s => {
         this.status = s
@@ -153,23 +186,47 @@ export default {
         soma += t.preco_num
       }
       return soma.toFixed(2)
+    },
+
+    pesquisarAtleta: function (nomePosicao, i) {
+      let posicaoId = 0
+      for (let p in this.mercado.posicoes) {
+        if (this.mercado.posicoes[p].nome === nomePosicao) {
+          posicaoId = this.mercado.posicoes[p].id
+          break
+        }
+      }
+      this.atletasComponente = this.atletasPosicao[posicaoId]
+      this.indiceAlterar = i
+      this.ativarComponente = true
+    },
+
+    respostaComponente: function (atleta) {
+
     }
   },
 
   created: function () {
     this.init()
     this.getTimes()
+    for (let i = 0; i < 12; i++) {
+      this.itensGerados.push(i)
+    }
   },
 
-  computed: {
-    atletasSort: function () {
-      return this.time.atletas.sort((a, b) => a.posicao_id > b.posicao_id ? 1 : -1)
+  watch: {
+    time: function (n) {
+      this.time.atletas.sort((a, b) => a.posicao_id > b.posicao_id ? 1 : -1)
+      this.timeMontado = []
+      for (let a of n.atletas) {
+        this.timeMontado.push(a)
+      }
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
 .section {
   padding-top: 2rem;
 }
