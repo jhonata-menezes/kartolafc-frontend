@@ -3,6 +3,15 @@
     <div>
       <div>
         <div>
+          <br>
+          <div>
+            <b :class="{'sticky-detalhes': detalhesFixo}">
+              Time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span>
+              Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span>&nbsp
+              <a class="delete is-large" @click="$emit('update:ativar', false)"></a>
+            </b>
+          </div>
+          <br>
           <div v-for="atl of atletasSort" class="box" :key="atl.atleta_id">
             <div class="media">
               <div class="media-left">
@@ -25,7 +34,7 @@
                     Jogos {{atl.jogos_num}}
                     </div>
                     <button v-if="atletasEscalados[atl.atleta_id]" class="button is-danger is-small" @click="removeAtleta(atl)">Vender</button>
-                    <button v-else class="button is-success is-small" @click="selecionAtleta(atl)">Comprar</button>
+                    <button v-else class="button is-success is-small" @click="selecionAtleta(atl)" :disabled="valores.restante < atl.preco_num">Comprar</button>
                   </p>
                 </div>
               </div>
@@ -39,9 +48,10 @@
 
 <script>
 export default {
-  props: ['atletas', 'timeMontado', 'esquema'],
+  props: ['atletas', 'timeMontado', 'esquema', 'valores'],
   data () {
     return {
+      detalhesFixo: false,
       sortColuna: {
         coluna: 'preco_num',
         asc: 1
@@ -106,6 +116,10 @@ export default {
     this.$kartolafc.mercado.getMercado(m => {
       this.mercado = m
     })
+    window.onscroll = () => {
+      let top = window.pageYOffset || document.documentElement.scrollTop
+      this.detalhesFixo = top > 230
+    }
   },
 
   watch: {
@@ -116,6 +130,33 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.campos-descricao-atleta {
+  font-size: .9rem;  
+}
 
+.escudo-lado {
+  left: 32px;
+  bottom: 18px
+}
+
+.fa-check-green {
+  color: #21a021;
+}
+@media screen and (max-width: 768px) {
+  .sticky-detalhes {
+    /*margin: 0;*/
+    /*margin-left: -24px;*/
+    overflow: hidden;
+    padding: 10px 0 4px 12px;
+    position: fixed;
+    top: 0px;
+    background: #f2f2f2;
+    margin-left: -24px;
+    height: 40px;
+    z-index: 1;
+    width: 100%;
+    text-align: center;
+  }
+}
 </style>

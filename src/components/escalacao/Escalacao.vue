@@ -4,7 +4,7 @@
       <div>
         <div class="">
         </div>
-        <div class="columns">
+        <div class="columns" v-if="existeTimes()">
           <div class="column is-offset-1 is-4">
             <div>
               <div class="notification is-danger" v-if="status.status_mercado == 4">
@@ -19,103 +19,123 @@
                 Times Escalados {{status.times_escalados}}
               </div>
             </div>
-            <div class="field" v-if="status.status_mercado == 1">
-              <label class="label">Selecione o time que deseja escalar</label>
-            </div>
-            <div class="field-body" v-if="status.status_mercado == 1">
-              <div class="field is-grouped">
-                <p class="control has-icons-right">
-                  <span class="select is-small">
-                    <select v-model="time">
-                      <option v-for="t of times" :value="t" :key="t.time.time_id">{{t.time.nome}}</option>
-                    </select>
-                  </span>
-                </p>
-                <p class="control has-icons-right">
-                  <span class="select is-small">
-                    <select v-model="time.esquema_id">
-                      <option v-for="(t, id) of esquemasTipos" :value="id" :key="id">{{t}}</option>
-                    </select>
-                  </span>
-                </p>
+            <div v-if="status.status_mercado == 1">
+              <div class="field">
+                <label class="label">Selecione o time que deseja escalar</label>
               </div>
-            </div>
-            <div v-if="status.status_mercado == 1 && time.time && !ativarComponente">
-              <div>
-                <div>
-                  <table class="table">
-                    <tbody>
-                      <tr>
-                        <td>
-                          Patrimônio <span class="has-text-success">${{time.patrimonio.toFixed(2)}}</span>
-                        </td>
-                        <td>
-                          Preço do time <span class="has-text-success">${{precoTime()}}</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Resta <span class="has-text-success">${{ (time.patrimonio.toFixed(2) - precoTime()).toFixed(2) }}</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div class="field-body">
+                <div class="field is-grouped">
+                  <p class="control has-icons-right">
+                    <span class="select is-small">
+                      <select v-model="time">
+                        <option v-for="t of times" :value="t" :key="t.time.time_id">{{t.time.nome}}</option>
+                      </select>
+                    </span>
+                  </p>
+                  <p class="control has-icons-right">
+                    <span class="select is-small">
+                      <select v-model="time.esquema_id">
+                        <option v-for="(t, id) of esquemasTipos" :value="id" :key="id">{{t}}</option>
+                      </select>
+                    </span>
+                  </p>
                 </div>
               </div>
-              <div v-for="i in itensGerados" :key="i" class="box">
-                <div class="media" v-if="timeMontado[i] && timeMontado[i].atleta_id">
-                  <div class="media-left">
-                    <picture class="image is-64x64">
-                      <img :src="timeMontado[i].foto">
-                    </picture>
-                    <picture class="image is-32x32 escudo-lado">
-                      <img :src="mercado.clubes[timeMontado[i].clube_id].Escudos['45x45']">
-                    </picture>
+              <transition name="escalacao">
+                <div v-if="time.time && !ativarComponente">
+                  <div>
+                    <div>
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td>
+                              Patrimônio <span class="has-text-success">${{time.patrimonio.toFixed(2)}}</span>
+                            </td>
+                            <td>
+                              Preço do time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                  <div class="media-content">
-                    <div class="content">
-                      <p>
-                        <strong>{{timeMontado[i].apelido}}</strong> <small>{{time.posicoes[timeMontado[i].posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[timeMontado[i].posicao_id].abreviacao.slice(1)}}</small>
-                        <span class="icon" v-if="timeMontado[i].status_id == 7"><i class="fa fa-check fa-check-green"></i></span>
-                        <br>
-                        <div class="campos-descricao-atleta">Preço ${{timeMontado[i].preco_num}}
-                        Média {{timeMontado[i].media_num}}
-                        Última {{timeMontado[i].pontos_num}}
-                        Jogos {{timeMontado[i].jogos_num}}
+                  <div v-for="i in itensGerados" :key="i" class="box">
+                    <div class="media" v-if="timeMontado[i] && timeMontado[i].atleta_id">
+                      <div class="media-left">
+                        <picture class="image is-64x64">
+                          <img :src="timeMontado[i].foto">
+                        </picture>
+                        <picture class="image is-32x32 escudo-lado">
+                          <img :src="mercado.clubes[timeMontado[i].clube_id].Escudos['45x45']">
+                        </picture>
+                      </div>
+                      <div class="media-content">
+                        <div class="content">
+                          <p>
+                            <strong>{{timeMontado[i].apelido}}</strong> <small>{{time.posicoes[timeMontado[i].posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[timeMontado[i].posicao_id].abreviacao.slice(1)}}</small>
+                            <span class="icon" v-if="timeMontado[i].status_id == 7"><i class="fa fa-check fa-check-green"></i></span>
+                            <br>
+                            <div class="campos-descricao-atleta">Preço ${{timeMontado[i].preco_num}}
+                            Média {{timeMontado[i].media_num}}
+                            Última {{timeMontado[i].pontos_num}}
+                            Jogos {{timeMontado[i].jogos_num}}
+                            </div>
+                            <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)">Vender</button>
+                          </p>
                         </div>
-                        <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)">Vender</button>
-                      </p>
+                      </div>
+                    </div>
+                    <div v-else class="media">
+                      <div class="media-content">
+                        <div class="content">
+                          <p class="has-text-left">
+                            <button class="button is-success is-medium" @click="pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[i], i)">
+                              <i class="fa fa-plus"></i>&nbsp{{$kartolafc.esquemas.esquemas[time.esquema_id].posicao[i]}}</button>
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div v-else class="media">
-                  <div class="media-content">
-                    <div class="content">
-                      <p class="has-text-left">
-                        <button class="button is-success is-medium" @click="pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[i], i)">
-                          <i class="fa fa-plus"></i>&nbsp{{$kartolafc.esquemas.esquemas[time.esquema_id].posicao[i]}}</button>
-                      </p>
-                    </div>
+                  <div class="field">
+                    <p class="control">
+                      <button class="button is-success is-large button-expand" :disabled="timeMontado.some(e => e === undefined)">Escalar Time</button>
+                    </p>
+                  </div>
+                  <div class="field">
+                    <p class="control">
+                      <button class="button is-danger is-large button-expand" @click="timeMontado = timeMontado.map(e => undefined)">Vender Time</button>
+                    </p>
                   </div>
                 </div>
-              </div>
-              <div class="field">
-                <p class="control">
-                  <button class="button is-success is-large button-expand" :disabled="timeMontado.some(e => e === undefined)">Escalar Time</button>
-                </p>
-              </div>
-              <div class="field">
-                <p class="control">
-                  <button class="button is-danger is-large button-expand" @click="timeMontado = timeMontado.map(e => undefined)">Vender Time</button>
-                </p>
-              </div>
-            </div>
-            <div v-if="ativarComponente && timeMontado.some(e => e === undefined)">
-              <component :is="componentAtletaPosicao" :atletas="atletasComponente" 
-              @update:selecionado="atl => {respostaComponente(atl)}" :timeMontado="timeMontado" :esquema="time.esquema_id"
-              @update:posicao="p => {pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[p], p)}">
-              </component>
+              </transition>
+              <transition name="bounce" mode="out-in">
+                <div v-if="ativarComponente && timeMontado.some(e => e === undefined)">
+                  <component :is="componentAtletaPosicao" :atletas="atletasComponente" 
+                  @update:selecionado="atl => {respostaComponente(atl)}" :timeMontado="timeMontado" :esquema="time.esquema_id"
+                  @update:posicao="p => {pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[p], p)}" 
+                  :valores="valores" @update:ativar="a => {ativarComponente = a}">
+                  </component>
+                </div>
+              </transition>
             </div>
           </div>
-          <div class="column"></div>
+          <div class="column">
+          </div>
+        </div>
+        <div v-else>
+          <div class="column is-offset-1 is-4">
+            <div class="notification is-warning">
+              <p>Para escalar time é necessario autenticar com os dados da sua conta do cartolafc</p>
+            </div>
+            <div class="field">
+              <p class="control">
+                  <router-link class="button button-expand is-large is-success" :to="{name:'Login'}">Realizar Autenticação</router-link>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>  
@@ -154,7 +174,11 @@ export default {
         7: '5-4-1'
       },
       partida: {},
-      atletasPosicao: []
+      atletasPosicao: [],
+      valores: {
+        restante: 0,
+        custoTime: 0
+      }
     }
   },
 
@@ -169,6 +193,11 @@ export default {
           }
         })
       }
+    },
+
+    existeTimes: function () {
+      let times = this.$kartolafc.tokens.get()
+      return times && Object.keys(times).length > 0
     },
 
     init: function () {
@@ -195,10 +224,18 @@ export default {
 
     precoTime: function () {
       let soma = 0
-      for (let t of this.time.atletas) {
-        soma += t.preco_num
+      for (let t of this.timeMontado) {
+        if (t) {
+          soma += t.preco_num
+        }
       }
-      return soma.toFixed(2)
+      return soma
+    },
+
+    calculaTime: function () {
+      let precoTime = this.precoTime()
+      this.valores.custoTime = precoTime
+      this.valores.restante = this.time.patrimonio - precoTime
     },
 
     pesquisarAtleta: function (nomePosicao, i) {
@@ -216,7 +253,6 @@ export default {
 
     respostaComponente: function (atleta) {
       this.$set(this.timeMontado, parseInt(this.indiceAlterar), atleta)
-      // this.ativarComponente = false
     }
   },
 
@@ -239,16 +275,16 @@ export default {
     timeMontado: function (n) {
       if (this.ativarComponente) {
         this.ativarComponente = this.timeMontado.some(e => e === undefined)
-        console.log(this.ativarComponente)
       }
+      this.calculaTime()
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 .section {
-  padding-top: 2rem;
+  padding-top: 1rem;
 }
 
 .table {
@@ -274,5 +310,46 @@ td {
 
 .button-expand {
   width: 100%;
+}
+
+.escalacao-enter-active, .escalacao-leave-active {
+  transition: opacity .4s
+}
+.escalacao-enter, .escalacao-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
+}
+
+.bounce-enter-active {
+  animation: bounce-in .8s;
+}
+.bounce-leave-active {
+  animation: bounce-in .8s reverse;
+}
+@keyframes bounce-in {
+  from, 60%, 75%, 90%, to {
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  }
+
+  from {
+    opacity: 0;
+    transform: translate3d(0, 3000px, 0);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translate3d(0, 20px, 0);
+  }
+
+  75% {
+    transform: translate3d(0, 10px, 0);
+  }
+
+  90% {
+    transform: translate3d(0, 5px, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
 }
 </style>
