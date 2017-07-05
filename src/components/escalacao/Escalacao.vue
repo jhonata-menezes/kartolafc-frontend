@@ -40,7 +40,7 @@
                 </p>
               </div>
             </div>
-            <div v-if="status.status_mercado == 1 && time.time">
+            <div v-if="status.status_mercado == 1 && time.time && !ativarComponente && !timeMontado.some(e => e === undefined)">
               <div>
                 <div>
                   <table class="table">
@@ -74,14 +74,14 @@
                     <div class="content">
                       <p>
                         <strong>{{timeMontado[i].apelido}}</strong> <small>{{time.posicoes[timeMontado[i].posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[timeMontado[i].posicao_id].abreviacao.slice(1)}}</small>
-                        <span class="icon" v-if="timeMontado[i].status_id == 7"><i class="fa fa-check"></i></span>
+                        <span class="icon" v-if="timeMontado[i].status_id == 7"><i class="fa fa-check fa-check-green"></i></span>
                         <br>
                         <div class="campos-descricao-atleta">Preço ${{timeMontado[i].preco_num}}
                         Média {{timeMontado[i].media_num}}
                         Última {{timeMontado[i].pontos_num}}
                         Jogos {{timeMontado[i].jogos_num}}
                         </div>
-                        <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)"><i class="fa fa-times"></i>&nbsp Remover</button>
+                        <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)">Vender</button>
                       </p>
                     </div>
                   </div>
@@ -97,9 +97,22 @@
                   </div>
                 </div>
               </div>
+              <div class="field">
+                <p class="control">
+                  <button class="button is-success is-large button-expand" :disabled="timeMontado.some(e => e === undefined)">Escalar Time</button>
+                </p>
+              </div>
+              <div class="field">
+                <p class="control">
+                  <button class="button is-danger is-large button-expand" @click="timeMontado = timeMontado.map(e => undefined)">Vender Time</button>
+                </p>
+              </div>
             </div>
-            <div v-if="ativarComponente">
-              <component :is="componentAtletaPosicao" :atletas="atletasComponente" @update:selecionado="atl => {respostaComponente(atl)}"></component>
+            <div v-if="ativarComponente && timeMontado.some(e => e === undefined)">
+              <component :is="componentAtletaPosicao" :atletas="atletasComponente" 
+              @update:selecionado="atl => {respostaComponente(atl)}" :timeMontado="timeMontado" :esquema="time.esquema_id"
+              @update:posicao="p => {pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[p], p)}">
+              </component>
             </div>
           </div>
           <div class="column"></div>
@@ -202,7 +215,8 @@ export default {
     },
 
     respostaComponente: function (atleta) {
-
+      this.$set(this.timeMontado, parseInt(this.indiceAlterar), atleta)
+      // this.ativarComponente = false
     }
   },
 
@@ -248,7 +262,11 @@ td {
   bottom: 18px
 }
 
-.fa-check {
+.fa-check-green {
   color: #21a021;
+}
+
+.button-expand {
+  width: 100%;
 }
 </style>
