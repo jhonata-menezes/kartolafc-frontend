@@ -40,7 +40,7 @@
                 </p>
               </div>
             </div>
-            <div v-if="status.status_mercado == 1 && time.time && !ativarComponente && !timeMontado.some(e => e === undefined)">
+            <div v-if="status.status_mercado == 1 && time.time && !ativarComponente">
               <div>
                 <div>
                   <table class="table">
@@ -234,6 +234,12 @@ export default {
       this.timeMontado = []
       for (let a of n.atletas) {
         this.timeMontado.push(a)
+      }
+    },
+    timeMontado: function (n) {
+      if (this.ativarComponente) {
+        this.ativarComponente = this.timeMontado.some(e => e === undefined)
+        console.log(this.ativarComponente)
       }
     }
   }
