@@ -54,13 +54,16 @@
                             <td>
                               Preço do time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span>
                             </td>
-                          </tr>
-                          <tr>
                             <td>Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span></td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
+                  </div>
+                  <div class="field">
+                    <p class="control">
+                      <button class="button is-danger is-medium button-expand" @click="timeMontado = timeMontado.map(e => undefined)">Vender Time</button>
+                    </p>
                   </div>
                   <div v-for="i in itensGerados" :key="i" class="box">
                     <div class="media" v-if="timeMontado[i] && timeMontado[i].atleta_id">
@@ -102,11 +105,6 @@
                   <div class="field">
                     <p class="control">
                       <button class="button is-success is-large button-expand" :disabled="timeMontado.some(e => e === undefined)">Escalar Time</button>
-                    </p>
-                  </div>
-                  <div class="field">
-                    <p class="control">
-                      <button class="button is-danger is-large button-expand" @click="timeMontado = timeMontado.map(e => undefined)">Vender Time</button>
                     </p>
                   </div>
                 </div>
@@ -294,6 +292,8 @@ export default {
 td {
   padding: .2rem .5rem !important;
   font-weight: bold;
+  font-size: .8rem;
+  border: none !important;
 }
 .campos-descricao-atleta {
   font-size: .9rem;  
@@ -313,7 +313,7 @@ td {
 }
 
 .escalacao-enter-active, .escalacao-leave-active {
-  transition: opacity .4s
+  transition: opacity .2s
 }
 .escalacao-enter, .escalacao-leave-to /* .fade-leave-active in <2.1.8 */ {
   opacity: 0

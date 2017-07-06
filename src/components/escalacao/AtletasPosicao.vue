@@ -5,10 +5,28 @@
         <div>
           <br>
           <div>
-            <b :class="{'sticky-detalhes': detalhesFixo}">
+            <b class="info-time" :class="{'sticky-detalhes': detalhesFixo}">
               Time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span>
-              Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span>&nbsp
-              <a class="delete is-large" @click="$emit('update:ativar', false)"></a>
+              Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span><br class="is-hidden-tablet">
+              Posições em aberto <span class="has-text-info">{{timeMontado.filter(a => a === undefined).length}}</span>
+              &nbsp<a class="delete is-large" @click="$emit('update:ativar', false)"></a>
+              <div>
+                <button @click="filtros.verFiltros=!filtros.verFiltros" class="button is-black is-small"><span class="icon is-small"><i class="fa fa-filter" aria-hidden="true"></i></span></button>
+              </div>
+              <div v-if="filtros.verFiltros">
+                <div class="field is-grouped">
+                  <p class="control">
+                    <span class="select is-small has-icon-right">
+                      <select v-model="filtros.atletaStatus">
+                        <option v-for="s of mercado.status" :value="s.id">{{s.nome}}</option>
+                      </select>
+                    </span>
+                  </p>
+                  <p class="control">
+                    <input type="text" class="input is-small" v-model="filtros.pesquisaNome" placeholder="Nome do Atleta ou time">
+                  </p>
+                </div>
+              </div>
             </b>
           </div>
           <br>
@@ -51,6 +69,11 @@ export default {
   props: ['atletas', 'timeMontado', 'esquema', 'valores'],
   data () {
     return {
+      filtros: {
+        verFiltros: false,
+        pesquisaNome: '',
+        atletaStatus: 7
+      },
       detalhesFixo: false,
       sortColuna: {
         coluna: 'preco_num',
@@ -108,7 +131,14 @@ export default {
         atl = this.atletas
         atl.sort(this.sortBy)
       }
-      return atl.filter(a => a.status_id === 7)
+      atl = atl.filter(a => a.status_id === this.filtros.atletaStatus)
+        .filter(a => {
+          if (a.apelido.toLowerCase().indexOf(this.filtros.pesquisaNome.toLowerCase()) >= 0 ||
+            (this.mercado.clubes && this.mercado.clubes[a.clube_id].nome.toLowerCase().indexOf(this.filtros.pesquisaNome.toLowerCase()) >= 0)) {
+            return true
+          }
+        })
+      return atl
     }
   },
 
@@ -143,6 +173,10 @@ export default {
 .fa-check-green {
   color: #21a021;
 }
+
+.info-time {
+  font-size: .8rem;
+}
 @media screen and (max-width: 768px) {
   .sticky-detalhes {
     /*margin: 0;*/
@@ -153,7 +187,7 @@ export default {
     top: 0px;
     background: #f2f2f2;
     margin-left: -24px;
-    height: 40px;
+    /*height: 40px;*/
     z-index: 1;
     width: 100%;
     text-align: center;
