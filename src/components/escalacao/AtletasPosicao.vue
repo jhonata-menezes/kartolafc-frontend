@@ -7,14 +7,12 @@
           <div>
             <b class="info-time" :class="{'sticky-detalhes': detalhesFixo}">
               Time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span>
-              Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span><br class="is-hidden-tablet">
+              Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span>
+              &nbsp<a class="delete is-large" @click="$emit('update:ativar', false)"></a><br class="is-hidden-tablet">
+              <button @click="filtros.verFiltros=!filtros.verFiltros" class="button is-white is-small"><span class="icon is-small"><i class="fa fa-filter" aria-hidden="true"></i></span></button>
               Posições em aberto <span class="has-text-info">{{timeMontado.filter(a => a === undefined).length}}</span>
-              &nbsp<a class="delete is-large" @click="$emit('update:ativar', false)"></a>
-              <div>
-                <button @click="filtros.verFiltros=!filtros.verFiltros" class="button is-black is-small"><span class="icon is-small"><i class="fa fa-filter" aria-hidden="true"></i></span></button>
-              </div>
               <div v-if="filtros.verFiltros">
-                <div class="field is-grouped">
+                <div class="field is-grouped is-grouped-centered">
                   <p class="control">
                     <span class="select is-small has-icon-right">
                       <select v-model="filtros.atletaStatus">
@@ -44,7 +42,7 @@
                 <div class="content">
                   <p>
                     <strong>{{atl.apelido}}</strong> <small v-if="mercado.posicoes && mercado.posicoes[atl.posicao_id]">{{mercado.posicoes[atl.posicao_id].abreviacao.charAt(0).toUpperCase() + mercado.posicoes[atl.posicao_id].abreviacao.slice(1)}}</small>
-                    <span class="icon" v-if="atl.status_id == 7"><i class="fa fa-check fa-check-green"></i></span>
+                    <span class="icon is-small" :title="mercado.status[atl.status_id].nome"><i class="fa" :class="statusIcon[atl.status_id]"></i></span>
                     <br>
                     <div class="campos-descricao-atleta">Preço ${{atl.preco_num}}
                     Média {{atl.media_num}}
@@ -80,7 +78,14 @@ export default {
         asc: 1
       },
       mercado: {},
-      atletasEscalados: {}
+      atletasEscalados: {},
+      statusIcon: {
+        2: 'fa-question fa-color-red',
+        3: 'fa-square fa-color-red',
+        5: 'fa-plus fa-color-red',
+        6: '',
+        7: 'fa-check fa-check-green'
+      }
     }
   },
 
@@ -177,6 +182,9 @@ export default {
 .info-time {
   font-size: .8rem;
 }
+.fa-color-red {
+  color: red;
+}
 @media screen and (max-width: 768px) {
   .sticky-detalhes {
     /*margin: 0;*/
@@ -187,7 +195,6 @@ export default {
     top: 0px;
     background: #f2f2f2;
     margin-left: -24px;
-    /*height: 40px;*/
     z-index: 1;
     width: 100%;
     text-align: center;

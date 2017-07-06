@@ -79,7 +79,7 @@
                         <div class="content">
                           <p>
                             <strong>{{timeMontado[i].apelido}}</strong> <small>{{time.posicoes[timeMontado[i].posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[timeMontado[i].posicao_id].abreviacao.slice(1)}}</small>
-                            <span class="icon" v-if="timeMontado[i].status_id == 7"><i class="fa fa-check fa-check-green"></i></span>
+                             <span class="icon is-small" :title="mercado.status[timeMontado[i].status_id].nome"><i class="fa" :class="statusIcon[timeMontado[i].status_id]"></i></span>
                             <br>
                             <div class="campos-descricao-atleta">Preço ${{timeMontado[i].preco_num}}
                             Média {{timeMontado[i].media_num}}
@@ -176,6 +176,13 @@ export default {
       valores: {
         restante: 0,
         custoTime: 0
+      },
+      statusIcon: {
+        2: 'fa-question fa-color-red',
+        3: 'fa-square fa-color-red',
+        5: 'fa-plus fa-color-red',
+        6: '',
+        7: 'fa-check fa-check-green'
       }
     }
   },
@@ -324,6 +331,9 @@ td {
 }
 .bounce-leave-active {
   animation: bounce-in .8s reverse;
+}
+.fa-color-red {
+  color: red;
 }
 @keyframes bounce-in {
   from, 60%, 75%, 90%, to {
