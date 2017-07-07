@@ -42,12 +42,12 @@
                 <div class="content">
                   <p>
                     <strong>{{atl.apelido}}</strong> <small v-if="mercado.posicoes && mercado.posicoes[atl.posicao_id]">{{mercado.posicoes[atl.posicao_id].abreviacao.charAt(0).toUpperCase() + mercado.posicoes[atl.posicao_id].abreviacao.slice(1)}}</small>
-                    <span class="icon is-small" :title="mercado.status[atl.status_id].nome"><i class="fa" :class="statusIcon[atl.status_id]"></i></span>
+                    <span class="icon is-small" v-if="mercado.status" :title="mercado.status[atl.status_id].nome"><i class="fa" :class="statusIcon[atl.status_id]"></i></span>
                     <br>
-                    <div class="campos-descricao-atleta">Preço ${{atl.preco_num}}
-                    Média {{atl.media_num}}
-                    Última {{atl.pontos_num}}
-                    Jogos {{atl.jogos_num}}
+                    <div class="campos-descricao-atleta">Preço <span class="has-text-success">${{atl.preco_num}}</span></div>
+                    <div class="campos-descricao-atleta">Média <span :class="atl.media_num < 0 ? 'has-text-danger': 'has-text-success'">{{atl.media_num}}</span></div>
+                    <div class="campos-descricao-atleta">Última <span :class="atl.pontos_num < 0 ? 'has-text-danger': 'has-text-success'">{{atl.pontos_num}}</span></div>
+                    <div class="campos-descricao-atleta">Jogos <span class="has-text-success">{{atl.jogos_num}}</span></div>
                     </div>
                     <button v-if="atletasEscalados[atl.atleta_id]" class="button is-danger is-small" @click="removeAtleta(atl)">Vender</button>
                     <button v-else class="button is-success is-small" @click="selecionAtleta(atl)" :disabled="valores.restante < atl.preco_num">Comprar</button>
@@ -167,7 +167,12 @@ export default {
 
 <style scoped>
 .campos-descricao-atleta {
-  font-size: .9rem;  
+  font-size: .9rem;
+  font-weight: bold; 
+  display: inline-block;
+  max-width: 3.5rem;
+  min-width: 2rem;
+  text-align: center;
 }
 
 .escudo-lado {
@@ -198,6 +203,12 @@ export default {
     z-index: 1;
     width: 100%;
     text-align: center;
+  }
+
+  .campos-descricao-atleta {
+    font-size: .8rem;
+    max-width: 2.5rem;
+    min-width: 2rem;    
   }
 }
 </style>

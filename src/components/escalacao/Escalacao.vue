@@ -79,13 +79,12 @@
                         <div class="content">
                           <p>
                             <strong>{{timeMontado[i].apelido}}</strong> <small>{{time.posicoes[timeMontado[i].posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[timeMontado[i].posicao_id].abreviacao.slice(1)}}</small>
-                             <span class="icon is-small" :title="mercado.status[timeMontado[i].status_id].nome"><i class="fa" :class="statusIcon[timeMontado[i].status_id]"></i></span>
+                             <span class="icon is-small" v-if="mercado.status" :title="mercado.status[timeMontado[i].status_id].nome"><i class="fa" :class="statusIcon[timeMontado[i].status_id]"></i></span>
                             <br>
-                            <div class="campos-descricao-atleta">Preço ${{timeMontado[i].preco_num}}
-                            Média {{timeMontado[i].media_num}}
-                            Última {{timeMontado[i].pontos_num}}
-                            Jogos {{timeMontado[i].jogos_num}}
-                            </div>
+                            <div class="campos-descricao-atleta">Preço  <span class="has-text-success">${{timeMontado[i].preco_num}}</span></div>
+                            <div class="campos-descricao-atleta">Média <span :class="timeMontado[i].media_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].media_num}}</span></div>
+                            <div class="campos-descricao-atleta">Última <span :class="timeMontado[i].pontos_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].pontos_num}}</span></div>
+                            <div class="campos-descricao-atleta">Jogos  <span class="has-text-success">{{timeMontado[i].jogos_num}}</span></div>
                             <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)">Vender</button>
                           </p>
                         </div>
@@ -335,6 +334,14 @@ td {
 .fa-color-red {
   color: red;
 }
+.campos-descricao-atleta {
+  font-size: .9rem;
+  font-weight: bold; 
+  display: inline-block;
+  max-width: 3rem;
+  min-width: 2rem;
+  text-align: center;
+}
 @keyframes bounce-in {
   from, 60%, 75%, 90%, to {
     animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
@@ -360,6 +367,14 @@ td {
 
   to {
     transform: translate3d(0, 0, 0);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .campos-descricao-atleta {
+    font-size: .8rem;
+    max-width: 2.5rem;
+    min-width: 2rem;    
   }
 }
 </style>
