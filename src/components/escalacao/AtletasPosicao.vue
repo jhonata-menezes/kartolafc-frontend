@@ -5,12 +5,16 @@
         <div>
           <br>
           <div>
-            <b class="info-time" :class="{'sticky-detalhes': detalhesFixo}">
-              Time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span>
-              Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span>
-              &nbsp<a class="delete is-large" @click="$emit('update:ativar', false)"></a><br class="is-hidden-tablet">
-              <button @click="filtros.verFiltros=!filtros.verFiltros" class="button is-white is-small"><span class="icon is-small"><i class="fa fa-filter" aria-hidden="true"></i></span></button>
-              Posições em aberto <span class="has-text-info">{{timeMontado.filter(a => a === undefined).length}}</span>
+            <b class="info-time " :class="{'sticky-detalhes': detalhesFixo}" v-if="detalhesFixo">
+              <span class="info-time-item">Time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span></span>
+              <span class="info-time-item">Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span></span>
+              <span class="info-time-item">Em aberto <span class="has-text-info">{{timeMontado.filter(a => a === undefined).length}}</span></span>
+              <span class="info-time-item">
+                <span class="icon is-medium" @click="filtros.verFiltros=!filtros.verFiltros"><i class="fa fa-filter" aria-hidden="true"></i></span>
+              </span>&nbsp
+              <span class="info-time-item">
+                <a class="delete is-large" @click="$emit('update:ativar', false)"></a><br class="is-hidden-tablet">
+              </span>
               <div v-if="filtros.verFiltros">
                 <div class="field is-grouped is-grouped-centered">
                   <p class="control">
@@ -21,11 +25,68 @@
                     </span>
                   </p>
                   <p class="control">
-                    <input type="text" class="input is-small" v-model="filtros.pesquisaNome" placeholder="Nome do Atleta ou time">
+                    <span class="select is-small">
+                      <select class="is-small" v-model="sortColuna.coluna">
+                        <option value="media_num">Média</option>
+                        <option value="pontos_num">Ult. Pontuação</option>
+                        <option value="variacao_num">Variação</option>
+                        <option value="jogos_num">Jogos</option>
+                        <option value="preco_num">Preço</option>
+                      </select>
+                    </span>
+                  </p>
+                  <p class="control">
+                    <span @click="sortColuna.asc=(sortColuna.asc * -1)" class="icon is-small"><i class="fa" :class="sortColuna.asc == 1 ? 'fa-sort-asc': 'fa-sort-desc'"></i></span>
+                  </p>
+                </div>
+                <div class="field is-grouped is-grouped-centered">
+                  <p class="control">
+                    <input type="text" class="input is-small" v-model="filtros.pesquisaNome" placeholder="Atleta ou time">
                   </p>
                 </div>
               </div>
             </b>
+            <div class="info-time has-text-centered">
+              <span class="info-time-item">Time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span></span>
+              <span class="info-time-item">Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span></span>
+              <span class="info-time-item">Em aberto <span class="has-text-info">{{timeMontado.filter(a => a === undefined).length}}</span></span>
+              <span class="info-time-item">
+                <span class="icon is-medium" @click="filtros.verFiltros=!filtros.verFiltros"><i class="fa fa-filter" aria-hidden="true"></i></span>
+              </span>&nbsp
+              <span class="info-time-item">
+                <a class="delete is-large" @click="$emit('update:ativar', false)"></a><br class="is-hidden-tablet">
+              </span>
+              <div v-if="filtros.verFiltros">
+                <div class="field is-grouped is-grouped-centered">
+                  <p class="control">
+                    <span class="select is-small has-icon-right">
+                      <select v-model="filtros.atletaStatus">
+                        <option v-for="s of mercado.status" :value="s.id">{{s.nome}}</option>
+                      </select>
+                    </span>
+                  </p>
+                  <p class="control">
+                    <span class="select is-small">
+                      <select class="is-small" v-model="sortColuna.coluna">
+                        <option value="media_num">Média</option>
+                        <option value="pontos_num">Ult. Pontuação</option>
+                        <option value="variacao_num">Variação</option>
+                        <option value="jogos_num">Jogos</option>
+                        <option value="preco_num">Preço</option>
+                      </select>
+                    </span>
+                  </p>
+                  <p class="control">
+                    <span @click="sortColuna.asc=(sortColuna.asc * -1)" class="icon is-small"><i class="fa" :class="sortColuna.asc == 1 ? 'fa-sort-asc': 'fa-sort-desc'"></i></span>
+                  </p>
+                </div>
+                <div class="field is-grouped is-grouped-centered">
+                  <p class="control">
+                    <input type="text" class="input is-small" v-model="filtros.pesquisaNome" placeholder="Atleta ou time">
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
           <br>
           <div v-for="atl of atletasSort" class="box" :key="atl.atleta_id">
@@ -46,10 +107,10 @@
                     <br>
                     <div class="campos-descricao-atleta">Preço <span class="has-text-success">${{atl.preco_num}}</span></div>
                     <div class="campos-descricao-atleta">Média <span :class="atl.media_num < 0 ? 'has-text-danger': 'has-text-success'">{{atl.media_num}}</span></div>
+                    <div class="campos-descricao-atleta">Variação <span :class="atl.variacao_num < 0 ? 'has-text-danger': 'has-text-success'">{{atl.variacao_num}}</span></div>
                     <div class="campos-descricao-atleta">Última <span :class="atl.pontos_num < 0 ? 'has-text-danger': 'has-text-success'">{{atl.pontos_num}}</span></div>
-                    <div class="campos-descricao-atleta">Jogos <span class="has-text-success">{{atl.jogos_num}}</span></div>
-                    </div>
-                    <div>
+                    <div class="campos-descricao-atleta">Jogos <br><span class="has-text-success">{{atl.jogos_num}}</span></div>
+                    <div class="campos-descricao-atleta campos-descricao-atleta-jogos">
                       <div class="campos-descricao-jogo" v-if="partidas[atl.clube_id] && mercado.clubes">
                         <div v-for="a of partidas[atl.clube_id].aproveitamento_mandante" :key="a" :class="statusJogo[a]"></div>
                         <picture>
@@ -193,9 +254,13 @@ export default {
   font-size: .9rem;
   font-weight: bold; 
   display: inline-block;
-  max-width: 3.5rem;
+  max-width: 3.8rem;
   min-width: 2rem;
   text-align: center;
+}
+
+.campos-descricao-atleta-jogos {
+  max-width: 10rem !important;
 }
 
 .escudo-lado {
@@ -209,6 +274,7 @@ export default {
 
 .info-time {
   font-size: .8rem;
+  font-weight: bold;
 }
 .fa-color-red {
   color: red;
@@ -216,11 +282,12 @@ export default {
 
 .box {
   background-color: rgba(230, 230, 230, 0.52);
+  padding-left: .5rem;
 }
 
 .campos-descricao-jogo {
   display: inline-block;
-  max-width: 10rem;
+  max-width: 19rem;
 }
 
 .image-escudo {
@@ -248,10 +315,15 @@ export default {
   background: red;
 }
 
+.info-time-item {
+  display: inline-block;
+  max-width: 4.3rem;
+  text-align: center;
+  vertical-align: text-top;
+}
+
 @media screen and (max-width: 768px) {
   .sticky-detalhes {
-    /*margin: 0;*/
-    /*margin-left: -24px;*/
     overflow: hidden;
     padding: 10px 0 4px 12px;
     position: fixed;
@@ -265,7 +337,7 @@ export default {
 
   .campos-descricao-atleta {
     font-size: .8rem;
-    max-width: 2.5rem;
+    max-width: 2.8rem;
     min-width: 2rem;    
   }
 

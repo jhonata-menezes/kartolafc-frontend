@@ -83,9 +83,10 @@
                             <br>
                             <div class="campos-descricao-atleta">Preço  <span class="has-text-success">${{timeMontado[i].preco_num}}</span></div>
                             <div class="campos-descricao-atleta">Média <span :class="timeMontado[i].media_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].media_num}}</span></div>
+                            <div class="campos-descricao-atleta">Variação <span :class="timeMontado[i].variacao_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].variacao_num}}</span></div>
                             <div class="campos-descricao-atleta">Última <span :class="timeMontado[i].pontos_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].pontos_num}}</span></div>
-                            <div class="campos-descricao-atleta">Jogos  <span class="has-text-success">{{timeMontado[i].jogos_num}}</span></div>
-                            <div>
+                            <div class="campos-descricao-atleta">Jogos <br><span class="has-text-success">{{timeMontado[i].jogos_num}}</span></div>
+                            <div class="campos-descricao-atleta campos-descricao-atleta-jogos">
                               <div class="campos-descricao-jogo" v-if="timeMontado[i] && partidas[timeMontado[i].clube_id] && mercado.clubes">
                                 <div v-for="a of partidas[timeMontado[i].clube_id].aproveitamento_mandante" :key="a" :class="statusJogo[a]"></div>
                                 <picture>
@@ -301,6 +302,9 @@ export default {
           this.$kartolafc.toast.info(r.data.mensagem)
         }
         this.salvandoTime = false
+      }).catch(() => {
+        this.$kartolafc.toast.error('Não foi possível salvar, tente novamente em alguns segundos')
+        this.salvandoTime = false
       })
     }
   },
@@ -346,9 +350,6 @@ td {
   font-size: .8rem;
   border: none !important;
 }
-.campos-descricao-atleta {
-  font-size: .9rem;  
-}
 
 .escudo-lado {
   left: 32px;
@@ -379,13 +380,18 @@ td {
 .fa-color-red {
   color: red;
 }
+
 .campos-descricao-atleta {
   font-size: .9rem;
   font-weight: bold; 
   display: inline-block;
-  max-width: 3rem;
+  max-width: 3.8rem;
   min-width: 2rem;
   text-align: center;
+}
+
+.campos-descricao-atleta-jogos {
+  max-width: 10rem !important;
 }
 
 .button-size-default {
@@ -396,11 +402,12 @@ td {
 
 .box {
   background-color: rgba(230, 230, 230, 0.52);
+  padding-left: .5rem;
 }
 
 .campos-descricao-jogo {
   display: inline-block;
-  max-width: 10rem;
+  max-width: 19rem;
 }
 
 .image-escudo {
@@ -459,7 +466,7 @@ td {
 @media screen and (max-width: 768px) {
   .campos-descricao-atleta {
     font-size: .8rem;
-    max-width: 2.5rem;
+    max-width: 2.8rem;
     min-width: 2rem;    
   }
 
