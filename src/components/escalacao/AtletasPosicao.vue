@@ -49,6 +49,19 @@
                     <div class="campos-descricao-atleta">Última <span :class="atl.pontos_num < 0 ? 'has-text-danger': 'has-text-success'">{{atl.pontos_num}}</span></div>
                     <div class="campos-descricao-atleta">Jogos <span class="has-text-success">{{atl.jogos_num}}</span></div>
                     </div>
+                    <div>
+                      <div class="campos-descricao-jogo" v-if="partidas[atl.clube_id] && mercado.clubes">
+                        <div v-for="a of partidas[atl.clube_id].aproveitamento_mandante" :key="a" :class="statusJogo[a]"></div>
+                        <picture>
+                          <img class="image-escudo" :src="mercado.clubes[partidas[atl.clube_id].clube_casa_id].Escudos['45x45']">
+                        </picture>
+                        X
+                        <picture>
+                          <img class="image-escudo" :src="mercado.clubes[partidas[atl.clube_id].clube_visitante_id].Escudos['45x45']">
+                        </picture>
+                        <div v-for="a of reverse(partidas[atl.clube_id].aproveitamento_visitante)" :key="a" :class="statusJogo[a]"></div>  
+                      </div>
+                    </div>
                     <button v-if="atletasEscalados[atl.atleta_id]" class="button is-danger is-small" @click="removeAtleta(atl)">Vender</button>
                     <button v-else class="button is-success is-small" @click="selecionAtleta(atl)" :disabled="valores.restante < atl.preco_num">Comprar</button>
                   </p>
@@ -64,7 +77,7 @@
 
 <script>
 export default {
-  props: ['atletas', 'timeMontado', 'esquema', 'valores'],
+  props: ['atletas', 'timeMontado', 'esquema', 'valores', 'partidas'],
   data () {
     return {
       filtros: {
@@ -85,6 +98,11 @@ export default {
         5: 'fa-plus fa-color-red',
         6: '',
         7: 'fa-check fa-check-green'
+      },
+      statusJogo: {
+        'v': 'status-jogo status-jogo-vitoria',
+        'e': 'status-jogo status-jogo-empate',
+        'd': 'status-jogo status-jogo-derrota'
       }
     }
   },
@@ -126,6 +144,11 @@ export default {
       }
       this.$emit('update:selecionado', undefined)
       this.updateMontados()
+    },
+
+    reverse: function (i) {
+      let a = i.slice()
+      return a.reverse()
     }
   },
 
@@ -190,6 +213,41 @@ export default {
 .fa-color-red {
   color: red;
 }
+
+.box {
+  background-color: rgba(230, 230, 230, 0.52);
+}
+
+.campos-descricao-jogo {
+  display: inline-block;
+  max-width: 10rem;
+}
+
+.image-escudo {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.status-jogo {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: .1rem;
+}
+
+.status-jogo-vitoria {
+  background: green;
+}
+
+.status-jogo-empate {
+  background: #b5b5b5;
+}
+
+.status-jogo-derrota {
+  background: red;
+}
+
 @media screen and (max-width: 768px) {
   .sticky-detalhes {
     /*margin: 0;*/
@@ -209,6 +267,11 @@ export default {
     font-size: .8rem;
     max-width: 2.5rem;
     min-width: 2rem;    
+  }
+
+  .image-escudo {
+    height: 1.3rem;
+    width: 1.3rem;
   }
 }
 </style>

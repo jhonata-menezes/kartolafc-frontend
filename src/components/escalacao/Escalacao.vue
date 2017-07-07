@@ -85,6 +85,19 @@
                             <div class="campos-descricao-atleta">Média <span :class="timeMontado[i].media_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].media_num}}</span></div>
                             <div class="campos-descricao-atleta">Última <span :class="timeMontado[i].pontos_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].pontos_num}}</span></div>
                             <div class="campos-descricao-atleta">Jogos  <span class="has-text-success">{{timeMontado[i].jogos_num}}</span></div>
+                            <div>
+                              <div class="campos-descricao-jogo" v-if="timeMontado[i] && partidas[timeMontado[i].clube_id] && mercado.clubes">
+                                <div v-for="a of partidas[timeMontado[i].clube_id].aproveitamento_mandante" :key="a" :class="statusJogo[a]"></div>
+                                <picture>
+                                  <img class="image-escudo" :src="mercado.clubes[partidas[timeMontado[i].clube_id].clube_casa_id].Escudos['45x45']">
+                                </picture>
+                                X
+                                <picture>
+                                  <img class="image-escudo" :src="mercado.clubes[partidas[timeMontado[i].clube_id].clube_visitante_id].Escudos['45x45']">
+                                </picture>
+                                <div v-for="a of reverse(partidas[timeMontado[i].clube_id].aproveitamento_visitante)" :key="a" :class="statusJogo[a]"></div>  
+                              </div>
+                            </div>
                             <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)">Vender</button>
                           </p>
                         </div>
@@ -93,8 +106,8 @@
                     <div v-else class="media">
                       <div class="media-content">
                         <div class="content">
-                          <p class="has-text-left">
-                            <button class="button is-success is-medium" @click="pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[i], i)">
+                          <p class="">
+                            <button class="button is-success is-medium button-size-default" @click="pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[i], i)">
                               <i class="fa fa-plus"></i>&nbsp{{$kartolafc.esquemas.esquemas[time.esquema_id].posicao[i]}}</button>
                           </p>
                         </div>
@@ -113,7 +126,7 @@
                   <component :is="componentAtletaPosicao" :atletas="atletasComponente" 
                   @update:selecionado="atl => {respostaComponente(atl)}" :timeMontado="timeMontado" :esquema="time.esquema_id"
                   @update:posicao="p => {pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[p], p)}" 
-                  :valores="valores" @update:ativar="a => {ativarComponente = a}">
+                  :valores="valores" @update:ativar="a => {ativarComponente = a}" :partidas="partidas">
                   </component>
                 </div>
               </transition>
@@ -170,7 +183,7 @@ export default {
         6: '5-3-2',
         7: '5-4-1'
       },
-      partida: {},
+      partidas: {},
       atletasPosicao: [],
       valores: {
         restante: 0,
@@ -182,6 +195,11 @@ export default {
         5: 'fa-plus fa-color-red',
         6: '',
         7: 'fa-check fa-check-green'
+      },
+      statusJogo: {
+        'v': 'status-jogo status-jogo-vitoria',
+        'e': 'status-jogo status-jogo-empate',
+        'd': 'status-jogo status-jogo-derrota'
       }
     }
   },
@@ -222,7 +240,12 @@ export default {
         this.status = s
       })
       http.get('/partidas/0').then(r => {
-        this.partida = r.data
+        let p = {}
+        for (let partida of r.data.partidas) {
+          p[partida.clube_casa_id] = partida
+          p[partida.clube_visitante_id] = partida
+        }
+        this.partidas = p
       })
     },
 
@@ -240,6 +263,11 @@ export default {
       let precoTime = this.precoTime()
       this.valores.custoTime = precoTime
       this.valores.restante = this.time.patrimonio - precoTime
+    },
+
+    reverse: function (i) {
+      let a = i.slice()
+      return a.reverse()
     },
 
     pesquisarAtleta: function (nomePosicao, i) {
@@ -342,6 +370,47 @@ td {
   min-width: 2rem;
   text-align: center;
 }
+
+.button-size-default {
+  width: 100%;
+  margin-left: 0%;
+  margin-right: 10%;
+}
+
+.box {
+  background-color: rgba(230, 230, 230, 0.52);
+}
+
+.campos-descricao-jogo {
+  display: inline-block;
+  max-width: 10rem;
+}
+
+.image-escudo {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.status-jogo {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: .1rem;
+}
+
+.status-jogo-vitoria {
+  background: green;
+}
+
+.status-jogo-empate {
+  background: #b5b5b5;
+}
+
+.status-jogo-derrota {
+  background: red;
+}
+
 @keyframes bounce-in {
   from, 60%, 75%, 90%, to {
     animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
@@ -375,6 +444,11 @@ td {
     font-size: .8rem;
     max-width: 2.5rem;
     min-width: 2rem;    
+  }
+
+  .image-escudo {
+    height: 1.3rem;
+    width: 1.3rem;
   }
 }
 </style>
