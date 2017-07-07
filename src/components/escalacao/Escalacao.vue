@@ -116,7 +116,7 @@
                   </div>
                   <div class="field">
                     <p class="control">
-                      <button class="button is-success is-large button-expand" :disabled="timeMontado.some(e => e === undefined)">Escalar Time</button>
+                      <button class="button is-success is-large button-expand" :class="{'is-loading': salvandoTime}" :disabled="timeMontado.some(e => e === undefined)" @click="salvarTime()">Escalar Time</button>
                     </p>
                   </div>
                 </div>
@@ -200,7 +200,8 @@ export default {
         'v': 'status-jogo status-jogo-vitoria',
         'e': 'status-jogo status-jogo-empate',
         'd': 'status-jogo status-jogo-derrota'
-      }
+      },
+      salvandoTime: false
     }
   },
 
@@ -210,7 +211,7 @@ export default {
       for (let t in times) {
         http.get('/time/info', {headers: {token: times[t].token}}).then(r => {
           if (r.data.time) {
-            r.data.token = t
+            r.data.token = times[t].token
             this.times.push(r.data)
           }
         })
@@ -285,6 +286,22 @@ export default {
 
     respostaComponente: function (atleta) {
       this.$set(this.timeMontado, parseInt(this.indiceAlterar), atleta)
+    },
+
+    salvarTime: function () {
+      this.salvandoTime = true
+      let time = {}
+      time.atleta = []
+      for (let t of this.timeMontado) {
+        time.atleta.push(t.atleta_id)
+      }
+      time.esquema = this.time.esquema_id
+      http.post('/time/salvar', time, {headers: {token: this.time.token}}).then(r => {
+        if (r.data.mensagem) {
+          this.$kartolafc.toast.info(r.data.mensagem)
+        }
+        this.salvandoTime = false
+      })
     }
   },
 
