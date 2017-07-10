@@ -5,7 +5,7 @@
         <div>
           <br>
           <div>
-            <b class="info-time " :class="{'sticky-detalhes': detalhesFixo}" v-if="detalhesFixo">
+            <b class="info-time" :class="{'sticky-detalhes': detalhesFixo}" v-if="detalhesFixo">
               <span class="info-time-item">Time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span></span>
               <span class="info-time-item">Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span></span>
               <span class="info-time-item">Em aberto <span class="has-text-info">{{timeMontado.filter(a => a === undefined).length}}</span></span>
