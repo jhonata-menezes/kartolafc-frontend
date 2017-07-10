@@ -93,7 +93,6 @@
 </template>
 
 <script>
-import { http } from './../../axios'
 import moment from 'moment'
 import ModalNotificacao from './../shared/ModalNotificacao'
 import JogoRodada from './../shared/JogoRodada'
@@ -125,10 +124,10 @@ export default {
       this.$Progress.start()
       this.$Progress.increase(50)
       this.setMensagem()
-      http.get('/partidas/' + rodada).then(r => {
-        if (r.data.rodada) {
-          this.partida = r.data
-          this.rodadaAtual = r.data.rodada
+      this.$kartolafc.rodadas(rodada, r => {
+        if (r.rodada) {
+          this.partida = r
+          this.rodadaAtual = r.rodada
         } else {
           this.rodadaAtual = parseInt(rodada)
           this.alerta = true

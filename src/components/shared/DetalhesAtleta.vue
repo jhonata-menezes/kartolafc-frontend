@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import {http} from './../../axios'
 import Chart from './DefaultChart'
 
 export default {
@@ -125,10 +124,10 @@ export default {
       this.loader = true
       // Overwriting base render method with actual data.
       this.$kartolafc.mercado.getMercado(m => {
-        http.get('/atletas/historico/' + this.atletaId).then(r => {
+        this.$kartolafc.atletasHistorico(this.atletaId, r => {
           this.$kartolafc.status.getStatus(s => {
             this.status = s
-            this.atletaHistorico = r.data
+            this.atletaHistorico = r
             this.transformaHistoricoGrafico()
             m.atletas.forEach(e => {
               if (e.atleta_id === this.atletaId) {

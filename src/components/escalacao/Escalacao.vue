@@ -134,6 +134,12 @@
             </div>
           </div>
           <div class="column">
+            <div>
+              <posicao-estatistica posicaoId="5"></posicao-estatistica>
+            </div>
+            <div>
+              <clube-estatistica clubeId="264"></clube-estatistica>
+            </div>
           </div>
         </div>
         <div v-else>
@@ -156,10 +162,14 @@
 <script>
 import {http} from './../../axios'
 import AtletaPosicao from './AtletasPosicao'
+import PosicaoEstatistica from './../estatisticas/Posicao'
+import ClubeEstatistica from './../estatisticas/Clube'
 
 export default {
   components: {
-    'atletaPosicao': AtletaPosicao
+    'atletaPosicao': AtletaPosicao,
+    'posicao-estatistica': PosicaoEstatistica,
+    'clube-estatistica': ClubeEstatistica
   },
   data () {
     return {

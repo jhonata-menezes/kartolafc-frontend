@@ -9,6 +9,8 @@ import timeHistorico from './services/time_historico'
 import Scouts from './services/scouts'
 import Tokens from './services/tokens'
 import Esquemas from './services/esquemas'
+import AtletasHistorico from './services/atletas_historico'
+import Rodadas from './services/rodadas'
 
 let instaled = false
 
@@ -24,6 +26,8 @@ kartolafc.liga = liga.liga
 kartolafc.scouts = Scouts
 kartolafc.tokens = Tokens
 kartolafc.esquemas = Esquemas
+kartolafc.atletasHistorico = AtletasHistorico
+kartolafc.rodadas = Rodadas
 
 // plugin install
 const install = Vue => {
