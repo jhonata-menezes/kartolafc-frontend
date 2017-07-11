@@ -30,7 +30,7 @@
             </p>
             <div v-if="iconeAdicionarTimes">
               <div class="field is-grouped">
-                <input type="text" class="input is-4" v-model="pesquisaTimes" placeholder="Time ou cartoleiro" @keyup.enter="searchTimes"><button @click="searchTimes" class="button is-light control">Pesquisar</button>
+                <input type="text" class="input is-4" v-model="pesquisaTimes" placeholder="Time ou cartoleiro" @keyup.enter="searchTimes"><button @click="searchTimes" class="button is-light control" :class="{'is-loading': pesquisandoTime}" >Pesquisar</button>
               </div>
               <div v-for="time of retornoTimes">
                 <div class="box">
@@ -64,7 +64,7 @@
                   <img :src="time.time.url_escudo_svg" alt="Escudo">
                 </figure>
                 <figure class="image is-32x32">
-                  <img :src="time.time.foto_perfil" alt="Perfil Facebook">
+                  <img class="image-circle" :src="time.time.foto_perfil" alt="Perfil Facebook">
                 </figure>
               </div>
               <div class="media-content">
@@ -72,9 +72,6 @@
                   <p>{{ time.time.nome }}</br>
                     <small>{{ time.time.nome_cartola }}</small></br>
                     <small>Pts: {{ calculaPontos(time) }}</small></br>
-                    <small v-if="status.status_mercado === 2">
-                    Posicao: {{ time.posicao }}</br>
-                    </small>
                     <a class="button is-info is-small" @click="modal.active=true; modal.time=time">Ver Time</a>
                     <a class="button is-danger is-small" @click="removerTime(time)">Remover</a>
                   </p>
@@ -187,6 +184,7 @@ export default {
 
   data () {
     return {
+      pesquisandoTime: false,
       iconeAdicionarTimes: false,
       detalhes: {
         ativo: false,
@@ -215,13 +213,14 @@ export default {
   methods: {
     searchTimes: function () {
       if (this.pesquisaTimes) {
-        var self = this
-        http.get('/times/' + this.pesquisaTimes).then(function (r) {
+        this.pesquisandoTime = true
+        http.get('/times/' + this.pesquisaTimes).then(r => {
           if (r.data.times) {
-            self.retornoTimes = r.data.times
+            this.retornoTimes = r.data.times
           } else {
-            self.retornoTimes = []
+            this.retornoTimes = []
           }
+          this.pesquisandoTime = false
         })
       }
     },
@@ -257,7 +256,6 @@ export default {
         for (let mt of time) {
           this.$kartolafc.time.getTime(mt.time.time_id, t => {
             this.meusTimes.push(t)
-            this.getRankingGeral()
           })
         }
       }).catch(function (err) {
@@ -268,7 +266,6 @@ export default {
     addMeuTime: function (time) {
       this.$kartolafc.time.getTime(time.time_id, t => {
         this.meusTimes.push(t)
-        this.getRankingGeral()
         // precisa salva meu time em uma tabela separada, apenas para nao criar coluna ou alguma flag
         db.meuTime.put(t).then(() => {
           console.log('time salvo ou atualizado')
@@ -277,16 +274,6 @@ export default {
         }).catch(err => { console.log('endpoint nao respondeu', err) })
         this.retornoTimes = []
       })
-    },
-
-    getRankingGeral: function () {
-      for (let i in this.meusTimes) {
-        if (this.meusTimes[i].posicao >= 0) continue
-        http.get('/ranking/time/id/' + this.meusTimes[i].time.time_id).then(r => {
-          if (this.meusTimes[i].posicao) return
-          this.$set(this.meusTimes[i], 'posicao', r.data.posicao)
-        })
-      }
     },
 
     removerTime: function (time) {
