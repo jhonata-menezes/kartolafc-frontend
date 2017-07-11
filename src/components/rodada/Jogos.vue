@@ -135,12 +135,6 @@ export default {
         }
         this.$Progress.finish()
         this.loader = false
-      }).catch(err => {
-        console.log(err)
-        this.$Progress.fail()
-        this.alerta = true
-        this.partida = {}
-        this.loader = false
       })
     },
 

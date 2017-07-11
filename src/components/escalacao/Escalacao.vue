@@ -5,7 +5,7 @@
         <div class="">
         </div>
         <div class="columns" v-if="existeTimes()">
-          <div class="column is-offset-1 is-4">
+          <div class="column is-offset-1 is-4 escalacao-scroll">
             <div>
               <div class="notification is-danger" v-if="status.status_mercado == 4">
                 <b>Mercado em manutenção</b><br>
@@ -66,7 +66,7 @@
                     </p>
                   </div>
                   <div v-for="i in itensGerados" :key="i" class="box">
-                    <div class="media" v-if="timeMontado[i] && timeMontado[i].atleta_id">
+                    <div class="media" v-if="timeMontado[i] && timeMontado[i].atleta_id" @click="setDataComponents(timeMontado[i])">
                       <div class="media-left">
                         <picture class="image is-64x64">
                           <img :src="timeMontado[i].foto">
@@ -127,18 +127,38 @@
                   <component :is="componentAtletaPosicao" :atletas="atletasComponente" 
                   @update:selecionado="atl => {respostaComponente(atl)}" :timeMontado="timeMontado" :esquema="time.esquema_id"
                   @update:posicao="p => {pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[p], p)}" 
-                  :valores="valores" @update:ativar="a => {ativarComponente = a}" :partidas="partidas">
+                  :valores="valores" @update:ativar="a => {ativarComponente = a}" :partidas="partidas"
+                  @update:est="a =>{setDataComponents(a)}">
                   </component>
                 </div>
               </transition>
             </div>
           </div>
-          <div class="column">
-            <div>
-              <posicao-estatistica posicaoId="5"></posicao-estatistica>
-            </div>
-            <div>
-              <clube-estatistica clubeId="264"></clube-estatistica>
+          <div class="column is-hidden-touch">
+            <div class="tile is-ancestor">
+              <div class="tile is-vertical is-8">
+                <div class="tile">
+                  <div class="tile is-parent is-vertical">
+                    <article class="tile is-child notification tela-est">
+                      <div>
+                        <posicao-estatistica :posicaoId="componentData.posicaoId"></posicao-estatistica>
+                      </div>
+                    </article>
+                    <article class="tile is-child notification tela-est">
+                      <div>
+                        <clube-estatistica :clubeId="componentData.clubeId" ></clube-estatistica>
+                      </div>
+                    </article>
+                  </div>
+                  <div class="tile is-parent">
+                    <article class="tile is-child notification is-warning">
+                      <div>
+                        <scouts-estatistica :atletaId="componentData.atletaId"></scouts-estatistica>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -164,15 +184,22 @@ import {http} from './../../axios'
 import AtletaPosicao from './AtletasPosicao'
 import PosicaoEstatistica from './../estatisticas/Posicao'
 import ClubeEstatistica from './../estatisticas/Clube'
+import ScoutEstatistica from './../estatisticas/Scouts'
 
 export default {
   components: {
     'atletaPosicao': AtletaPosicao,
     'posicao-estatistica': PosicaoEstatistica,
-    'clube-estatistica': ClubeEstatistica
+    'clube-estatistica': ClubeEstatistica,
+    'scouts-estatistica': ScoutEstatistica
   },
   data () {
     return {
+      componentData: {
+        clubeId: 0,
+        atletaId: 0,
+        posicaoId: 0
+      },
       ativarComponente: false,
       componentAtletaPosicao: 'atletaPosicao',
       indiceAlterar: 0,
@@ -316,6 +343,14 @@ export default {
         this.$kartolafc.toast.error('Não foi possível salvar, tente novamente em alguns segundos')
         this.salvandoTime = false
       })
+    },
+
+    setDataComponents: function (atl) {
+      if (atl) {
+        this.componentData.atletaId = atl.atleta_id
+        this.componentData.clubeId = atl.clube_id
+        this.componentData.posicaoId = atl.posicao_id
+      }
     }
   },
 
@@ -445,6 +480,20 @@ td {
   background: red;
 }
 
+.escalacao-scroll {
+  overflow-y: auto;
+  max-height: 38rem;
+}
+
+.escalacao-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+ 
+.escalacao-scroll::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
 @keyframes bounce-in {
   from, 60%, 75%, 90%, to {
     animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
@@ -483,6 +532,11 @@ td {
   .image-escudo {
     height: 1.3rem;
     width: 1.3rem;
+  }
+
+  .escalacao-scroll {
+    overflow-y: hidden;
+    max-height: auto;
   }
 }
 </style>

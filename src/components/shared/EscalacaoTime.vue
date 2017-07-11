@@ -48,7 +48,6 @@
                 <span v-if="patrimonio !== 0"><b>Patrimônio:</b> ${{patrimonio}}</span>
                 <br class="is-hidden-desktop">
                 <b> Pró</b>: {{ time.time.assinante ? 'sim' : 'não' }}
-                <span v-if="posicaoGeral"> <b>Posição</b>: {{posicaoGeral}}</span>
               </small><br>
               <em class="is-bold is-6 subtitle">Clique no atleta para ver os scouts</em>
             </div>
@@ -107,7 +106,6 @@
 </template>
 
 <script>
-import {http} from './../../axios'
 import TimeHistorico from './TimeHistorico'
 import ScoutsRodada from './scouts/ScoutsRodada'
 
@@ -156,17 +154,6 @@ export default {
       return ''
     },
 
-    getRankingGeral: function () {
-      if (this.timemodal.time) {
-        http.get('/ranking/time/id/' + this.timemodal.time.time_id).then(r => {
-          if (r.data.posicao >= 1) {
-            this.posicaoGeral = r.data.posicao
-          }
-        })
-      }
-      return true
-    },
-
     defaultImage: function (src) {
       src.time.foto_perfil = '/static/img/icon.png'
       return true
@@ -190,7 +177,6 @@ export default {
           return 0
         })
       }
-      this.getRankingGeral()
       return this.timemodal
     }
   },

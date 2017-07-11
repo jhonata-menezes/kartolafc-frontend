@@ -131,11 +131,10 @@ export default {
 }
 
 .section {
-  padding: 0rem 1.5rem;
+  /*padding: 0rem 1.5rem;*/
 }
 
 .section-message {
-  /*padding: .0rem 0.0rem 0rem .0rem;*/
   margin-left: 0;
   margin-right: 0;
 }
@@ -144,4 +143,5 @@ export default {
   margin-left: -1.5rem;
   margin-right: -1.5rem;
 }
+
 </style>

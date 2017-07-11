@@ -4,7 +4,6 @@ import Home from '@/components/Home'
 import Time from '@/components/Times/Time'
 import Ligas from '@/components/Ligas/Ligas'
 import Times from '@/components/Times/Times'
-import RankingTimes from '@/components/ranking/Times'
 import RodadaJogos from '@/components/rodada/Jogos'
 import Liga from '@/components/Ligas/Liga'
 import NotificationComponent from '@/components/configuracao/Notificacao'
@@ -35,10 +34,6 @@ export default new Router({
     path: '/times',
     name: 'Times',
     component: Times
-  }, {
-    path: '/ranking/times',
-    name: 'RankingTimes',
-    component: RankingTimes
   }, {
     path: '/rodada/jogos/:rodada?',
     name: 'RodadaJogos',

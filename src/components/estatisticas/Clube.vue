@@ -2,22 +2,23 @@
   <div>
     <div>
       <div v-if="ativar">
-        <bar :data="data" :options="options"></bar>
+        <bar :data="data" :options="options" :height="250" :width="400"></bar>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Bar from './../shared/chart/Bar'
+import HorizontalBar from './../shared/chart/HorizontalBar'
 export default {
   props: ['clubeId'],
   components: {
-    'bar': Bar
+    'bar': HorizontalBar
   },
 
   data () {
     return {
+      mercado: {},
       ativar: false,
       atletas: [],
       est: {
@@ -35,7 +36,7 @@ export default {
             data: []
           },
           {
-            label: 'Pontuacao da ultima',
+            label: 'Última Pontuação',
             borderColor: 'rgb(54, 162, 235)',
             backgroundColor: 'rgb(54, 162, 235)',
             data: []
@@ -49,10 +50,15 @@ export default {
         ]
       },
       options: {
+        elements: {
+          rectangle: {
+            borderWidth: 2
+          }
+        },
         responsive: false,
         title: {
           display: true,
-          text: 'Estatísticas do Clube'
+          text: ''
         },
         scales: {
           xAxes: [{
@@ -70,12 +76,13 @@ export default {
   methods: {
     getClubes: function () {
       if (this.clubeId) {
+        this.ativar = false
         this.atletas = []
         this.$kartolafc.mercado.getMercado(m => {
+          this.mercado = m
           for (let a of m.atletas.filter(a => a.clube_id === parseInt(this.clubeId))) {
             this.atletas.push(a)
           }
-          this.ativar = false
           this.parseAtletas()
           this.ativar = true
         })
@@ -89,16 +96,23 @@ export default {
         this.est.variacao += a.variacao_num
       }
       this.data.datasets[0].data = []
-      this.data.datasets[0].data.push(this.est.media)
+      this.data.datasets[0].data.push(this.est.media.toFixed(2))
       this.data.datasets[1].data = []
-      this.data.datasets[1].data.push(this.est.pontuacao)
+      this.data.datasets[1].data.push(this.est.pontuacao.toFixed(2))
       this.data.datasets[2].data = []
-      this.data.datasets[2].data.push(this.est.variacao)
+      this.data.datasets[2].data.push(this.est.variacao.toFixed(2))
+      this.options.title.text = 'Estatísticas do Clube - ' + this.mercado.clubes[this.clubeId].nome
     }
   },
 
   mounted: function () {
     this.getClubes()
+  },
+
+  watch: {
+    clubeId: function () {
+      this.getClubes()
+    }
   }
 }
 </script>

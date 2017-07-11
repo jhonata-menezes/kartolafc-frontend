@@ -90,7 +90,7 @@
           </div>
           <br>
           <div v-for="atl of atletasSort" class="box" :key="atl.atleta_id">
-            <div class="media">
+            <div class="media" @click="$emit('update:est', atl)">
               <div class="media-left">
                 <picture class="image is-64x64">
                   <img :src="atl.foto">

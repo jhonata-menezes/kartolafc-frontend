@@ -2,22 +2,23 @@
   <div>
     <div>
       <div v-if="ativarGrafico">
-        <bar :data="dataGrafico" :options="options"></bar>
+        <bar :data="dataGrafico" :options="options" :height="250" :width="400"></bar>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Bar from './../shared/chart/Bar'
+import HorizontalBar from './../shared/chart/HorizontalBar'
 
 export default {
   props: ['posicaoId'],
   components: {
-    'bar': Bar
+    'bar': HorizontalBar
   },
   data () {
     return {
+      mercado: {},
       ativarGrafico: false,
       atletas: [],
       est: {
@@ -49,10 +50,18 @@ export default {
         ]
       },
       options: {
+        elements: {
+          rectangle: {
+            borderWidth: 2
+          }
+        },
         responsive: false,
+        legend: {
+          position: 'top'
+        },
         title: {
           display: true,
-          text: 'Estatísticas da posição'
+          text: ''
         },
         scales: {
           xAxes: [{
@@ -68,7 +77,12 @@ export default {
   },
   methods: {
     getAtletas: function () {
+      if (!this.posicaoId) {
+        return
+      }
+      this.ativarGrafico = false
       this.$kartolafc.mercado.getMercado(m => {
+        this.mercado = m
         this.atletas = []
         let media = 0
         let total = 0
@@ -88,7 +102,6 @@ export default {
         this.est.mediaPontuacao = media / total
         Promise.all(promises).then(c => {
           this.parseAtletas()
-          this.ativarGrafico = false
           this.ativarGrafico = true
         })
       })
@@ -104,16 +117,23 @@ export default {
         }
       }
       this.dataGrafico.datasets[0].data = []
-      this.dataGrafico.datasets[0].data.push(this.est.mediaPontuacao)
+      this.dataGrafico.datasets[0].data.push(this.est.mediaPontuacao.toFixed(2))
       this.dataGrafico.datasets[1].data = []
-      this.dataGrafico.datasets[1].data.push(this.est.maiorPontuador.pontos)
+      this.dataGrafico.datasets[1].data.push(this.est.maiorPontuador.pontos.toFixed(2))
       this.dataGrafico.datasets[2].data = []
-      this.dataGrafico.datasets[2].data.push(this.est.menorPontuador.pontos)
+      this.dataGrafico.datasets[2].data.push(this.est.menorPontuador.pontos.toFixed(2))
+      this.options.title.text = 'Estatísticas da posição - ' + this.mercado.posicoes[this.posicaoId].nome
     }
   },
 
   mounted: function () {
     this.getAtletas()
+  },
+
+  watch: {
+    posicaoId: function () {
+      this.getAtletas()
+    }
   }
 }
 </script>
