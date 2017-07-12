@@ -53,16 +53,4 @@ db.version(8).stores({
   rodadas: `rodada`
 })
 
-db.open().catch(err => {
-  console.log('open', err)
-  let req = indexedDB.deleteDatabase('kartolafc')
-  req.onsuccess = function () {
-    console.log('deletado com sucesso')
-    location.reload()
-  }
-  req.onerror = function () {
-    console.log('nao foi possivel deletar')
-  }
-})
-
 export default db

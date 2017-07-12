@@ -314,7 +314,7 @@ export default {
             this.$Progress.finish()
           })
         }
-      })
+      }, force)
     },
 
     fimPesquisaComErro: function (msg) {
