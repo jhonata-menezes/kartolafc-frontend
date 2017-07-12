@@ -13,7 +13,9 @@ import SocialSharing from 'vue-social-sharing'
 import subscribeNotification from './serviceWorker/register'
 import VueClipboards from 'vue-clipboards'
 import VeeValidate from 'vee-validate'
+import Smoothscrool from 'smoothscroll-polyfill'
 
+Smoothscrool.polyfill()
 Vue.use(VeeValidate)
 Vue.use(VueClipboards)
 subscribeNotification.subscribeNotification()

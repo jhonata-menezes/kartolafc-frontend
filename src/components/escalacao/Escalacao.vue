@@ -11,8 +11,9 @@
                 <b>Mercado em manutenção</b><br>
               </div>
               <div class="notification is-success" v-if="status.status_mercado == 1">
-                <strong>Mercado Aberto - Rodada {{status.rodada_atual}}</strong><br>
-                Times Escalados {{status.times_escalados}}
+                <b>Mercado Aberto - Rodada {{status.rodada_atual}}</b><br>
+                Times Escalados <b>{{status.times_escalados}}<br>
+                </b> Mercado Fecha em <b>{{tempoParaFechamento}}</b>
               </div>
               <div class="notification is-danger" v-if="status.status_mercado == 2">
                 <b>Mercado Fechado - Rodada {{status.rodada_atual}}</b><br>
@@ -120,7 +121,7 @@
                   </div>
                   <div class="field">
                     <p class="control">
-                      <button class="button is-success is-large button-expand" :class="{'is-loading': salvandoTime}" :disabled="timeMontado.some(e => e === undefined)" @click="salvarTime()">Escalar Time</button>
+                      <button ref="btnEscalar" class="button is-success is-large button-expand" :class="{'is-loading': salvandoTime}" :disabled="timeMontado.some(e => e === undefined)" @click="salvarTime()">Escalar Time</button>
                     </p>
                   </div>
                 </div>
@@ -131,7 +132,7 @@
                   @update:selecionado="atl => {respostaComponente(atl)}" :timeMontado="timeMontado" :esquema="time.esquema_id"
                   @update:posicao="p => {pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[p], p)}" 
                   :valores="valores" @update:ativar="a => {ativarComponente = a}" :partidas="partidas"
-                  @update:est="a =>{setDataComponents(a)}">
+                  @update:est="a =>{setDataComponents(a)}" :posicaoId="posicaoIdEscalar">
                   </component>
                 </div>
               </transition>
@@ -194,6 +195,8 @@ import PosicaoEstatistica from './../estatisticas/Posicao'
 import ClubeEstatistica from './../estatisticas/Clube'
 import ScoutEstatistica from './../estatisticas/Scouts'
 import ScoutsGeral from './../shared/scouts/ScoutsRodadaGeral'
+import moment from 'moment'
+import 'moment/locale/pt-br'
 
 export default {
   components: {
@@ -205,6 +208,7 @@ export default {
   },
   data () {
     return {
+      tempoParaFechamento: '',
       componentScoutGeral: 'scouts-geral',
       componentAtletaIdSomenteMobile: 0,
       ativarPopupScouts: false,
@@ -252,7 +256,9 @@ export default {
         'e': 'status-jogo status-jogo-empate',
         'd': 'status-jogo status-jogo-derrota'
       },
-      salvandoTime: false
+      salvandoTime: false,
+      posicaoIdEscalar: 0,
+      setIntervalFechamento: null
     }
   },
 
@@ -290,6 +296,7 @@ export default {
       })
       this.$kartolafc.status.getStatus(s => {
         this.status = s
+        this.processarTempo()
       })
       http.get('/partidas/0').then(r => {
         let p = {}
@@ -323,14 +330,14 @@ export default {
     },
 
     pesquisarAtleta: function (nomePosicao, i) {
-      let posicaoId = 0
+      this.posicaoIdEscalar = 0
       for (let p in this.mercado.posicoes) {
         if (this.mercado.posicoes[p].nome === nomePosicao) {
-          posicaoId = this.mercado.posicoes[p].id
+          this.posicaoIdEscalar = this.mercado.posicoes[p].id
           break
         }
       }
-      this.atletasComponente = this.atletasPosicao[posicaoId]
+      this.atletasComponente = this.atletasPosicao[this.posicaoIdEscalar]
       this.indiceAlterar = i
       this.ativarComponente = true
     },
@@ -364,6 +371,32 @@ export default {
         this.componentData.clubeId = atl.clube_id
         this.componentData.posicaoId = atl.posicao_id
       }
+    },
+
+    timeIgual: function () {
+      let tempTime = {}
+      for (let t of this.timeMontado) {
+        tempTime[t.atleta_id] = t
+      }
+      // true se o time for igual ao que esta escalado
+      return !this.time.atletas.some(a => tempTime[a.atleta_id] === undefined)
+    },
+
+    scrollEscalar: function () {
+      window.setTimeout(() => {
+        this.$refs.btnEscalar.scrollIntoView({behavior: 'smooth'})
+      }, 1000)
+    },
+
+    processarTempo: function () {
+      if (this.status) {
+        // moment.locale('pt-BR')
+        let fechamento = moment.unix(this.status.fechamento.timestamp)
+        this.setIntervalFechamento = window.setInterval(() => {
+          let diff = fechamento.diff(moment(), 'unix')
+          this.tempoParaFechamento = moment(diff).utc().format('HH:mm:ss')
+        }, 1000)
+      }
     }
   },
 
@@ -375,6 +408,9 @@ export default {
     }
   },
 
+  computed: {
+  },
+
   watch: {
     time: function (n) {
       this.time.atletas.sort((a, b) => a.posicao_id > b.posicao_id ? 1 : -1)
@@ -384,11 +420,20 @@ export default {
       }
     },
     timeMontado: function (n) {
+      let montado = this.timeMontado.some(e => e === undefined)
       if (this.ativarComponente) {
-        this.ativarComponente = this.timeMontado.some(e => e === undefined)
+        this.ativarComponente = montado
+      }
+      // realiza o scroll até o botao de escalar
+      if (!montado && !this.timeIgual()) {
+        this.scrollEscalar()
       }
       this.calculaTime()
     }
+  },
+
+  beforeDestroy: function () {
+    window.clearInterval(this.setIntervalFechamento)
   }
 }
 </script>
@@ -430,10 +475,10 @@ td {
 }
 
 .bounce-enter-active {
-  animation: bounce-in .8s;
+  animation: bounce-in .5s;
 }
 .bounce-leave-active {
-  animation: bounce-in .8s reverse;
+  animation: bounce-in .5s reverse;
 }
 .fa-color-red {
   color: red;
@@ -495,7 +540,7 @@ td {
 
 .escalacao-scroll {
   overflow-y: auto;
-  max-height: 35rem;
+  max-height: 38rem;
 }
 
 .escalacao-scroll::-webkit-scrollbar {
@@ -505,10 +550,6 @@ td {
 .escalacao-scroll::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;
-}
-
-.fa-plus {
-  color: #587ad2;
 }
 
 .scouts-geral-enter-active, .scouts-geral-leave-active {

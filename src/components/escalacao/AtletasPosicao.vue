@@ -46,7 +46,7 @@
                 </div>
               </div>
             </b>
-            <div class="info-time has-text-centered">
+            <div class="info-time has-text-centered" ref="top">
               <span class="info-time-item">Time <span class="has-text-success">${{valores.custoTime.toFixed(2)}}</span></span>
               <span class="info-time-item">Restam <span class="has-text-success">${{valores.restante.toFixed(2)}}</span></span>
               <span class="info-time-item">Em aberto <span class="has-text-info">{{timeMontado.filter(a => a === undefined).length}}</span></span>
@@ -138,7 +138,7 @@
 
 <script>
 export default {
-  props: ['atletas', 'timeMontado', 'esquema', 'valores', 'partidas'],
+  props: ['atletas', 'timeMontado', 'esquema', 'valores', 'partidas', 'posicaoId'],
   data () {
     return {
       filtros: {
@@ -210,6 +210,12 @@ export default {
     reverse: function (i) {
       let a = i.slice()
       return a.reverse()
+    },
+
+    scrollTop: function () {
+      window.setTimeout(() => {
+        this.$refs.top.scrollIntoView({behavior: 'smooth'})
+      }, 400)
     }
   },
 
@@ -242,8 +248,15 @@ export default {
   },
 
   watch: {
-    timeMontado: function (n) {
+    timeMontado: function (n, old) {
       this.updateMontados()
+    },
+
+    posicaoId: function (n, old) {
+      console.log(n, old)
+      if (n !== old) {
+        this.scrollTop()
+      }
     }
   }
 }
