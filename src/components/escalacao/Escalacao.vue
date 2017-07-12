@@ -35,7 +35,7 @@
                   </p>
                   <p class="control has-icons-right">
                     <span class="select is-small">
-                      <select v-model="time.esquema_id">
+                      <select v-model="esquema">
                         <option v-for="(t, id) of esquemasTipos" :value="id" :key="id">{{t}}</option>
                       </select>
                     </span>
@@ -397,6 +397,17 @@ export default {
           this.tempoParaFechamento = moment(diff).utc().format('HH:mm:ss')
         }, 1000)
       }
+    },
+
+    alteraEsquema: function () {
+      for (let a in this.timeMontado) {
+        if (this.timeMontado[a]) {
+          let nome = this.$kartolafc.esquemas.esquemas[this.esquema].posicao[a]
+          if (this.mercado.posicoes[this.timeMontado[a].posicao_id].nome !== nome) {
+            this.timeMontado[a] = undefined
+          }
+        }
+      }
     }
   },
 
@@ -412,12 +423,13 @@ export default {
   },
 
   watch: {
-    time: function (n) {
+    time: function (n, old) {
       this.time.atletas.sort((a, b) => a.posicao_id > b.posicao_id ? 1 : -1)
       this.timeMontado = []
       for (let a of n.atletas) {
         this.timeMontado.push(a)
       }
+      this.esquema = this.time.esquema_id
     },
     timeMontado: function (n) {
       let montado = this.timeMontado.some(e => e === undefined)
@@ -429,6 +441,11 @@ export default {
         this.scrollEscalar()
       }
       this.calculaTime()
+    },
+
+    esquema: function (n) {
+      this.time.esquema_id = n
+      this.alteraEsquema()
     }
   },
 
@@ -540,6 +557,7 @@ td {
 
 .escalacao-scroll {
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: 38rem;
 }
 
