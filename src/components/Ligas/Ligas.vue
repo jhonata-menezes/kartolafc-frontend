@@ -124,8 +124,8 @@ export default {
             this.fimPesquisaComErro('Nenhum time nesta liga')
             return
           }
-          if (r.data.liga.total_times_liga > 100) {
-            this.$kartolafc.toast.info('Liga com mais de 100 times, apenas os 100 primeiros serão adicionados')
+          if (r.data.liga.total_times_liga > 500) {
+            this.$kartolafc.toast.info('Liga com mais de 500 times, apenas os 500 primeiros serão adicionados')
           }
           this.$Progress.start()
           for (let i = 0; i <= parseInt(parseInt(r.data.liga.total_times_liga) / 20); i++) {

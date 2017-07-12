@@ -278,8 +278,8 @@ export default {
       this.$Progress.start()
       this.loader = true
       this.$kartolafc.liga.getLiga(this.slug, l => {
-        if (parseInt(l.liga.total_times_liga) > 100) {
-          this.$kartolafc.toast.info('Liga com mais de 100 times, apenas os 100 primeiros serão visualizados')
+        if (parseInt(l.liga.total_times_liga) > 500) {
+          this.$kartolafc.toast.info('Liga com mais de 500 times, apenas os 500 primeiros serão visualizados')
         }
         this.liga = l
         this.getPontuados()
@@ -291,32 +291,25 @@ export default {
       this.$kartolafc.pontuados.getPontuados(p => {
         this.pontuados = p
         if (this.liga.times) {
-          this.timesSort = []
-          this.liga.times.forEach((e, k) => {
-            this.$kartolafc.time.getTime(e.time_id, t => {
-              if (!this.timesCompleto[e.time_id]) {
-                this.$set(this.timesCompleto, e.time_id, t)
-              }
-
-              if (t.time.time_id === this.liga.liga.time_dono_id) {
-                this.presidente = t.time.nome
-              }
-
-              let soma = 0
-              for (let atl of t.atletas) {
-                if (p.atletas[atl.atleta_id]) {
-                  soma += p.atletas[atl.atleta_id].pontuacao
+          let promisses = []
+          for (let k in this.liga.times) {
+            let pro = new Promise((resolve, reject) => {
+              this.$kartolafc.time.getTime(this.liga.times[k].time_id, t => {
+                if (t.time.time_id === this.liga.liga.time_dono_id) {
+                  this.presidente = t.time.nome
                 }
-              }
-              if (this.liga.times[k].pontuacao !== undefined) {
-                this.liga.times[k].pontuacao = soma
-              } else {
-                this.$set(this.liga.times[k], 'pontuacao', soma)
-              }
-              this.$set(this.timesCompleto[e.time_id], 'pontuacao', soma)
-              this.timesSort.push(this.liga.times[k])
+                t.pontuacao = 0
+                t.atletas.reduce((a, b) => { if (p.atletas[b.atleta_id]) t.pontuacao += p.atletas[b.atleta_id].pontuacao }, 0)
+                this.$set(this.timesCompleto, t.time.time_id, t)
+                this.$set(this.liga.times[k], 'pontuacao', t.pontuacao)
+                resolve(this.liga.times[k])
+              })
             })
-          }, this)
+            promisses.push(pro)
+          }
+          Promise.all(promisses).then(times => {
+            this.timesSort = times
+          })
         }
         this.loader = false
         this.$Progress.finish()
