@@ -309,11 +309,12 @@ export default {
           }
           Promise.all(promisses).then(times => {
             this.timesSort = times
+            console.log
+            this.loader = false
+            this.$Progress.finish()
           })
         }
-        this.loader = false
-        this.$Progress.finish()
-      }, force)
+      })
     },
 
     fimPesquisaComErro: function (msg) {
