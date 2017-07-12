@@ -2,7 +2,7 @@
   <div>
     <div>
       <div v-if="ativarGrafico">
-        <bar :data="dataGrafico" :options="options" :height="250" :width="400"></bar>
+        <bar :data="dataGrafico" :options="options" :height="220" :width="350"></bar>
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@ export default {
         labels: [''],
         datasets: [
           {
-            label: 'Média',
+            label: 'Média das médias',
             borderColor: 'rgba(182, 28, 0, 0.6)',
             backgroundColor: 'rgba(182, 28, 0, 0.6)',
             data: []

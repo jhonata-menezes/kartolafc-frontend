@@ -2,7 +2,7 @@
   <div>
     <div>
       <div v-if="ativar">
-        <bar :data="data" :options="options" :height="250" :width="400"></bar>
+        <bar :data="data" :options="options" :height="220" :width="350"></bar>
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@ export default {
         labels: [''],
         datasets: [
           {
-            label: 'Média',
+            label: 'Média das médias',
             borderColor: 'rgba(182, 28, 0, 0.6)',
             backgroundColor: 'rgba(182, 28, 0, 0.6)',
             data: []
@@ -90,13 +90,16 @@ export default {
     },
 
     parseAtletas: function () {
+      this.est.media = 0
+      this.est.pontuacao = 0
+      this.est.variacao = 0
       for (let a of this.atletas) {
         this.est.media += a.media_num
         this.est.pontuacao += a.pontos_num
         this.est.variacao += a.variacao_num
       }
       this.data.datasets[0].data = []
-      this.data.datasets[0].data.push(this.est.media.toFixed(2))
+      this.data.datasets[0].data.push((this.est.media / this.atletas.length).toFixed(2))
       this.data.datasets[1].data = []
       this.data.datasets[1].data.push(this.est.pontuacao.toFixed(2))
       this.data.datasets[2].data = []

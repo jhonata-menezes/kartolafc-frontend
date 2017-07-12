@@ -21,7 +21,7 @@
             </div>
           </div>
           <div class="content" v-else>
-          Sem scouts no momento
+          Sem scouts no momento {{atletaId}}
           <button class="delete is-pulled-right" @click="close()"></button>
           </div>
         </div>

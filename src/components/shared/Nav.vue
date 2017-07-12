@@ -34,6 +34,7 @@
                     <router-link class="navbar-item" :class="this.$route.path === '/configuracao/notificacao' ? 'is-active is-active-color': ''"to="/configuracao/notificacao"><span class="icon"><i class="fa fa-bell-o"></i></span>Notificacões</router-link>
                     <a class="navbar-item" href="https://goo.gl/forms/oKRKaObtHVLkhMqY2" target="_blank"><span class="icon"><i class="fa fa-exclamation"></i></span>Sugestões</a>
                     <a class="navbar-item" href="https://github.com/search?utf8=%E2%9C%93&q=kartolafc+user%3Ajhonata-menezes&type=Repositories&ref=advsearch&l=&l=" target="_blank"><span class="icon"><i class="fa fa-github"></i></span>GitHub</a>
+                    <!--<a class="navbar-item" href="https://www.linkedin.com/in/jhonata-santos-a3659011a/" target="_blank"><span class="icon"><i class="fa fa-linkedin"></i></span>Linkedin</a>-->
                   </div>
                 </div>
                 <!--<router-link class="nav-item is-tab is-hidden-tablet" :class="this.$route.path === '/ranking/times' ? 'is-active is-active-color': ''"to="/ranking/times"><span class="icon"><i class="fa fa-sort-numeric-asc"></i></span>Melhores Times da Rodada</router-link>-->

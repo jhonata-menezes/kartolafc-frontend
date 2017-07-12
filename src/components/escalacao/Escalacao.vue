@@ -5,7 +5,7 @@
         <div class="">
         </div>
         <div class="columns" v-if="existeTimes()">
-          <div class="column is-offset-1 is-4 escalacao-scroll">
+          <div class="column is-4 escalacao-scroll">
             <div>
               <div class="notification is-danger" v-if="status.status_mercado == 4">
                 <b>Mercado em manutenção</b><br>
@@ -65,8 +65,8 @@
                       <button class="button is-danger is-medium button-expand" @click="timeMontado = timeMontado.map(e => undefined)">Vender Time</button>
                     </p>
                   </div>
-                  <div v-for="i in itensGerados" :key="i" class="box">
-                    <div class="media" v-if="timeMontado[i] && timeMontado[i].atleta_id" @click="setDataComponents(timeMontado[i])">
+                  <div v-for="i in itensGerados" :key="i" class="box" @click="setDataComponents(timeMontado[i])">
+                    <div class="media" v-if="timeMontado[i] && timeMontado[i].atleta_id">
                       <div class="media-left">
                         <picture class="image is-64x64">
                           <img :src="timeMontado[i].foto">
@@ -79,12 +79,14 @@
                         <div class="content">
                           <p>
                             <strong>{{timeMontado[i].apelido}}</strong> <small>{{time.posicoes[timeMontado[i].posicao_id].abreviacao.charAt(0).toUpperCase() + time.posicoes[timeMontado[i].posicao_id].abreviacao.slice(1)}}</small>
-                             <span class="icon is-small" v-if="mercado.status" :title="mercado.status[timeMontado[i].status_id].nome"><i class="fa" :class="statusIcon[timeMontado[i].status_id]"></i></span>
+
+                             <span class="icon is-small" v-if="mercado.status" :title="mercado.status[timeMontado[i].status_id].nome">
+                               <i class="fa" :class="statusIcon[timeMontado[i].status_id]"></i></span>
                             <br>
                             <div class="campos-descricao-atleta">Preço  <span class="has-text-success">${{timeMontado[i].preco_num}}</span></div>
                             <div class="campos-descricao-atleta">Média <span :class="timeMontado[i].media_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].media_num}}</span></div>
                             <div class="campos-descricao-atleta">Variação <span :class="timeMontado[i].variacao_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].variacao_num}}</span></div>
-                            <div class="campos-descricao-atleta">Última <span :class="timeMontado[i].pontos_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].pontos_num}}</span></div>
+                            <div class="campos-descricao-atleta">Última <br><span :class="timeMontado[i].pontos_num < 0 ? 'has-text-danger': 'has-text-success'">{{timeMontado[i].pontos_num}}</span></div>
                             <div class="campos-descricao-atleta">Jogos <br><span class="has-text-success">{{timeMontado[i].jogos_num}}</span></div>
                             <div class="campos-descricao-atleta campos-descricao-atleta-jogos">
                               <div class="campos-descricao-jogo" v-if="timeMontado[i] && partidas[timeMontado[i].clube_id] && mercado.clubes">
@@ -100,6 +102,7 @@
                               </div>
                             </div>
                             <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)">Vender</button>
+                            <button class="button is-info is-small" @click="ativarPopupScouts = true; componentAtletaIdSomenteMobile=timeMontado[i].atleta_id">Scouts</button>
                           </p>
                         </div>
                       </div>
@@ -132,6 +135,11 @@
                   </component>
                 </div>
               </transition>
+              <transition name="scouts-geral">
+                <div v-if="ativarPopupScouts" class="popup2">
+                  <component :is="componentScoutGeral" @update:ativo="a=>{ativarPopupScouts=a}" :atletaId="componentAtletaIdSomenteMobile" :mercadoPorAtletaId="mercadoPorAltetaId"></component>
+                  </div>
+              </transition>
             </div>
           </div>
           <div class="column is-hidden-touch">
@@ -150,8 +158,8 @@
                       </div>
                     </article>
                   </div>
-                  <div class="tile is-parent">
-                    <article class="tile is-child notification is-warning">
+                  <div class="tile is-parent is-8">
+                    <article class="tile is-child notification">
                       <div>
                         <scouts-estatistica :atletaId="componentData.atletaId"></scouts-estatistica>
                       </div>
@@ -185,16 +193,21 @@ import AtletaPosicao from './AtletasPosicao'
 import PosicaoEstatistica from './../estatisticas/Posicao'
 import ClubeEstatistica from './../estatisticas/Clube'
 import ScoutEstatistica from './../estatisticas/Scouts'
+import ScoutsGeral from './../shared/scouts/ScoutsRodadaGeral'
 
 export default {
   components: {
     'atletaPosicao': AtletaPosicao,
     'posicao-estatistica': PosicaoEstatistica,
     'clube-estatistica': ClubeEstatistica,
-    'scouts-estatistica': ScoutEstatistica
+    'scouts-estatistica': ScoutEstatistica,
+    'scouts-geral': ScoutsGeral
   },
   data () {
     return {
+      componentScoutGeral: 'scouts-geral',
+      componentAtletaIdSomenteMobile: 0,
+      ativarPopupScouts: false,
       componentData: {
         clubeId: 0,
         atletaId: 0,
@@ -482,7 +495,7 @@ td {
 
 .escalacao-scroll {
   overflow-y: auto;
-  max-height: 38rem;
+  max-height: 35rem;
 }
 
 .escalacao-scroll::-webkit-scrollbar {
@@ -492,6 +505,30 @@ td {
 .escalacao-scroll::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;
+}
+
+.fa-plus {
+  color: #587ad2;
+}
+
+.scouts-geral-enter-active, .scouts-geral-leave-active {
+  transition: opacity .2s
+}
+.scouts-geral-enter, .scouts-geral-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
+}
+
+.popup2 {
+  position: fixed;
+  top: 25%;
+  left: 10%;
+  width: 75%;
+  padding: 16px;
+  border: 4px solid #3273dc;
+  background-color: white;
+  z-index: 1002;
+  overflow: auto;
+  transition: all .6s ease-in-out;
 }
 
 @keyframes bounce-in {
@@ -535,8 +572,8 @@ td {
   }
 
   .escalacao-scroll {
-    overflow-y: hidden;
-    max-height: auto;
+    overflow-y: auto;
+    max-height: none;
   }
 }
 </style>

@@ -23,6 +23,7 @@
                     </span>
                     </br>
                     <small class="subtitle is-small is-6">{{time.time.nome_cartola.charAt(0).toUpperCase() + time.time.nome_cartola.slice(1)}}</small>
+                    <span class="icon"><i class="fa fa-star" :class="{'star-ativado': time.favorito}" @click="timeFavorito();"></i></span>
                   </p>
                 </div>
               </div>
@@ -108,6 +109,7 @@
 <script>
 import TimeHistorico from './TimeHistorico'
 import ScoutsRodada from './scouts/ScoutsRodada'
+import db from './../../dexie'
 
 export default {
   components: {
@@ -165,6 +167,10 @@ export default {
 
     clipboardSuccess: function () {
       this.$kartolafc.toast.info('Link copiado')
+    },
+
+    timeFavorito: function () {
+      db.meusTimes.update(this.timemodal.time.time_id, {favorito: !this.timemodal.favorito})
     }
   },
 
@@ -237,5 +243,17 @@ export default {
 
 .up-margin {
   margin-top: -17px
+}
+
+.modal {
+  z-index: 101;
+}
+
+.fa-star {
+  color: white;
+}
+
+.star-ativado {
+  color: #c1b82f;
 }
 </style>

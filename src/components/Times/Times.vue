@@ -16,7 +16,6 @@
                   <p class="control">
                     <button @click="searchTimes" class="button is-success ">Pesquisar</button>
                     <button @click="retornoTimes = []" class="button is-danger ">Limpar</button>
-                    <button @click="retornoTimes = []" class="button"><router-link to="/ligas">Times da liga</router-link></button>
                   </p>
                 </div>
                 <div v-for="(time, k) of retornoTimes">
@@ -85,7 +84,6 @@
                     <div class="subtitle is-6">
                       <p>{{ time.time.nome_cartola }}</p>
                       <p>Pontos: {{ calculaPontos(time) }}</p>
-                      <p v-if="status.status_mercado === 2">Posição Geral: {{ time.posicao }}</p>
                       <div class="block">
                         <a class="button is-info is-small" @click="ativarModal(time)">Ver Time</a>
                         <a class="button is-danger is-small" @click="removerTimeLista(k)">Remover</a>
@@ -138,12 +136,10 @@ export default {
         return false
       }).toArray(times => {
         if (times.length >= 1) {
-          times.forEach(function (element) {
-            if (status.status_mercado === 2 && element.status_mercado !== 2) {
-              this.atualizaDadosTimes(times)
-            } else {
-              this.times.push(element)
-            }
+          times.forEach(e => {
+            this.$kartolafc.time.getTime(e.time.time_id, t => {
+              this.times.push(e)
+            })
           }, this)
         }
       }).catch(function (err) {
@@ -151,30 +147,16 @@ export default {
       })
     },
 
-    atualizaDadosTimes: function (times) {
-      times.forEach((time, k) => {
-        db.meusTimes.delete(time.time.time_id).then(() => {
-          this.$kartolafc.time.getTime(time.time.time_id, t => {
-            this.getRankingGeral(t, data => {
-              this.times.push(data)
-            })
-          })
-        })
-      })
-    },
-
     salvarTime: function (k) {
       this.addTimeAposSalva(this.retornoTimes[k].time_id)
-      this.retornoTimes.splice(k, 1)
+      this.retornoTimes = []
     },
 
     addTimeAposSalva: function (timeId) {
       this.$kartolafc.time.getTime(timeId, t => {
         db.meusTimes.update(timeId, {favorito: true}).then(u => {
           // adiciona time como favorito dos amigos
-          if (u) {
-            console.log('time salvo na tabela', timeId)
-          } else {
+          if (!u) {
             console.log('time não foi salvo na tabela', timeId)
           }
         })
@@ -192,16 +174,6 @@ export default {
       db.meusTimes.delete(this.times[k].time.time_id).then(item => {
         this.times.splice(k, 1)
       }).catch(err => { console.log(err) })
-    },
-
-    getRankingGeral: function (time, callback) {
-      http.get('/ranking/time/id/' + time.time.time_id).then(function (r) {
-        if (r.data.posicao >= 1) {
-          time.posicao = r.data.posicao
-          callback(time)
-        }
-      })
-      return true
     },
 
     calculaPontos: function (time) {

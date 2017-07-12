@@ -1,4 +1,5 @@
 <template>
+  <div>
     <div class="modal" :class="ativo != false ? 'is-active' : ''" @click="closeModal()">
       <div class="modal-background" v-if="!loader"></div>
       <div class="modal-card" @click.stop>
@@ -35,7 +36,7 @@
         </footer>-->
       </div>
     </div>
-  </div>  
+  </div> 
 </template>
 
 <script>
@@ -136,7 +137,7 @@ export default {
             }, this)
             this.loader = false
           })
-        }).catch(err => { console.log(err) })
+        })
       })
     },
 

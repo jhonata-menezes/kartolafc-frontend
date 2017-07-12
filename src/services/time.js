@@ -2,7 +2,7 @@ import {http} from './../axios'
 import db from './../dexie'
 import getStatus from './status'
 
-const getTime = function (timeId, callback) {
+const getTime = function (timeId, callback, favorito = false) {
   getStatus.getStatus(s => {
     db.meusTimes.get(timeId, item => {
       if (item) {
@@ -18,13 +18,14 @@ const getTime = function (timeId, callback) {
           }
         } else {
           db.meusTimes.delete(timeId).then(() => {
-            getTime(timeId, callback)
+            getTime(timeId, callback, item.favorito)
           })
         }
       } else {
         http.get('/time/id/' + timeId).then(r => {
           r.data.rodada_atual = s.rodada_atual
           r.data.status_mercado = s.status_mercado
+          r.data.favorito = favorito
           db.meusTimes.put(r.data).then(newItem => {
             callback(r.data)
           })

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="atletaId && mercadoPorAtletaId[atletaId]">
-      <div class="container">
+      <div class="">
         <div class="media">
           <div class="media-left">
             <picture class="image is-64x64">
@@ -9,7 +9,9 @@
             </picture>
           </div>
           <div class="media-content">
-            <b>{{mercadoPorAtletaId[atletaId].apelido}}</b>
+            <div class="content">
+              <p>{{mercadoPorAtletaId[atletaId].apelido}}</p>
+            </div>
           </div>
         </div>
         <div>

@@ -98,7 +98,7 @@
                             <div class="content">
                                <p class="title is-6 is-bold">
                                  <b>{{ atleta.apelido }}</b> <small>{{pontuados.posicoes[atleta.posicao_id].abreviacao.charAt(0).toUpperCase() + pontuados.posicoes[atleta.posicao_id].abreviacao.slice(1)}}</small>
-                                 <span class="icon is-small" @click="ativarDetalhes(atleta.atleta_id)">
+                                 <span class="icon is-small" @click="atletaIdScoutsRodada=atleta.atleta_id;ativarDetalhesScoutsRodada=true">
                                    <i class="fa fa-plus fa-plus-info"></i>
                                  </span></br>
                                  <small>PTS: <span :class="atleta.pontuacao < 0 ?'has-text-danger': 'has-text-success'">{{ atleta.pontuacao }}</span> &nbsp <span class="has-text-black">${{ getPrecoAtleta(atleta.atleta_id) }}</span></small>
@@ -115,6 +115,9 @@
                       </p>
                     </div>
                   </div>
+                </div>
+                <div class="popup2" v-if="ativarDetalhesScoutsRodada">
+                  <scouts-rodada :atletaId="atletaIdScoutsRodada" @update:ativo="a=>{ativarDetalhesScoutsRodada=a}"></scouts-rodada>
                 </div>
               </div>
             </div>
@@ -175,15 +178,19 @@ import {http} from './../axios'
 import db from './../dexie'
 import EscalacaoTime from './shared/EscalacaoTime'
 import DetalhesAleta from './shared/DetalhesAtleta'
+import ScoutsRodadaGeral from './shared/scouts/ScoutsRodada'
 
 export default {
   components: {
     'escalacao-time': EscalacaoTime,
-    'detalhes-atleta': DetalhesAleta
+    'detalhes-atleta': DetalhesAleta,
+    'scouts-rodada': ScoutsRodadaGeral
   },
 
   data () {
     return {
+      ativarDetalhesScoutsRodada: false,
+      atletaIdScoutsRodada: 0,
       pesquisandoTime: false,
       iconeAdicionarTimes: false,
       detalhes: {
@@ -387,5 +394,17 @@ export default {
 }
 .has-text-danger {
   font-weight: bold
+}
+
+.popup2 {
+  position: fixed;
+  top: 25%;
+  left: 10%;
+  width: 75%;
+  padding: 16px;
+  border: 4px solid #3273dc;
+  background-color: white;
+  z-index: 1002;
+  transition: all .6s ease-in-out;
 }
 </style>
