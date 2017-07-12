@@ -23,7 +23,7 @@
                     </span>
                     </br>
                     <small class="subtitle is-small is-6">{{time.time.nome_cartola.charAt(0).toUpperCase() + time.time.nome_cartola.slice(1)}}</small>
-                    <span class="icon"><i class="fa fa-star" :class="{'star-ativado': time.favorito}" @click="timeFavorito();"></i></span>
+                    <span v-if="habilitarFavorito" class="icon"><i class="fa fa-star" :class="{'star-ativado': time.favorito}" @click="timeFavorito()"></i></span>
                   </p>
                 </div>
               </div>
@@ -127,7 +127,8 @@ export default {
         atletaId: 0,
         verScouts: false
       },
-      patrimonio: 0
+      patrimonio: 0,
+      habilitarFavorito: true
     }
   },
 
@@ -171,6 +172,12 @@ export default {
 
     timeFavorito: function () {
       db.meusTimes.update(this.timemodal.time.time_id, {favorito: !this.timemodal.favorito})
+      if (this.timemodal.favorito) {
+        this.$kartolafc.toast.error('Removido dos Times')
+      } else {
+        this.$kartolafc.toast.success('Adicionado aos Times')
+      }
+      this.habilitarFavorito = false
     }
   },
 
