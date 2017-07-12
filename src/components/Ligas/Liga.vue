@@ -384,10 +384,6 @@ export default {
   padding-top: 1px;
   margin-bottom: 1px;
 }
-
-.section-min {
-  padding: 0rem 1.5rem;
-}
 .component-fade-enter-active, .component-fade-leave-active {
   transition: opacity .3s ease;
 }
@@ -401,19 +397,13 @@ export default {
 .bloco-casa {
   text-align: left;
   position: relative;
-  /*float: left;*/
 }
 
 .bloco-visitante {
   text-align: right;
   position: relative;
-  /*float: right;*/
 }
 
-.is-centered {
-  position: absolute;
-  left: 50%;
-}
 
 .placar-direito {
   margin-top: 3%;
@@ -448,9 +438,9 @@ export default {
   box-sizing: initial;
 }
 
-.is-55 {
+/* .is-55 {
   width: 46% !important;
-}
+} */
 
 .image-escudo-esquerda {
   height: 48px;
@@ -481,6 +471,10 @@ export default {
 .is-clicable {
   cursor: pointer;
   pointer-events: painted;
+}
+
+.section-min {
+  padding: 1rem;
 }
 
 @media screen and (max-width: 768px) {

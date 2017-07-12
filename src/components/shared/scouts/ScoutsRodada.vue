@@ -5,7 +5,7 @@
         <div class="media-content">
           <div class="content" v-if="pontuados && pontuados.atletas && pontuados.atletas[atletaId]">
             <b class="has-text-centered" @click="close()">{{pontuados.atletas[atletaId].apelido}}</b>
-            <button class="delete is-pulled-right" @click="close()"></button>
+            <button class="delete is-medium is-pulled-right" @click="close()"></button>
             <div v-if="pontuados.atletas[atletaId].scout">
               <div v-if="pontuados.atletas[atletaId].posicao_id == 6">
                 Não há detalhes específicos, já que sua pontuação é a média dos jogadores do clube.
@@ -21,7 +21,7 @@
             </div>
           </div>
           <div class="content" v-else>
-          Sem scouts no momento {{atletaId}}
+          Sem scouts no momento
           <button class="delete is-pulled-right" @click="close()"></button>
           </div>
         </div>

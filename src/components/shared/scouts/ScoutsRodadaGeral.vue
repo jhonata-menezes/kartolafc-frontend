@@ -5,7 +5,7 @@
         <div class="media-content">
           <div class="content" v-if="mercadoPorAtletaId && mercadoPorAtletaId[atletaId]">
             <b class="has-text-centered" @click="$emit('update:ativo', false)">{{mercadoPorAtletaId[atletaId].apelido}}</b>
-            <button class="delete is-pulled-right" @click="$emit('update:ativo', false)"></button>
+            <button class="delete is-medium is-pulled-right" @click="$emit('update:ativo', false)"></button>
             <div v-if="mercadoPorAtletaId[atletaId].scout">
               <div v-if="mercadoPorAtletaId[atletaId].posicao_id == 6">
                 Não há detalhes específicos, já que sua pontuação é a média dos jogadores do clube.
