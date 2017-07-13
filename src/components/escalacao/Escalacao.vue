@@ -559,6 +559,7 @@ td {
   overflow-y: auto;
   overflow-x: hidden;
   max-height: 38rem;
+   min-height: 15rem; 
 }
 
 .escalacao-scroll::-webkit-scrollbar {
