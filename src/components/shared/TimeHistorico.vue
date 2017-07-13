@@ -85,7 +85,7 @@
                 Pontuação Total: {{historico[rodadaSelecionada].pontos.toFixed(2)}}
               </p>
               <hr class="hr-atleta">
-              <div v-for="t of historico[rodadaSelecionada].atletas">
+              <div v-for="t of historico[rodadaSelecionada].atletas.slice().sort((a, b) => a.posicao_id>b.posicao_id ? 1 : -1)" :key="t">
                 <article class="media">
                   <figure class="media-left">
                     <p class="image is-16x16">
