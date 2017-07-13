@@ -74,7 +74,7 @@
                 <p class="control has-icons-right">
                   <span class="select is-small">
                     <select v-model="rodadaSelecionada">
-                      <option v-if="rodada > 0" v-for="(time, rodada) of historico" :value="rodada">Rodada {{rodada}}</option>
+                      <option v-if="rodada > 0" :key="rodada" v-for="(time, rodada) of historico" :value="rodada">Rodada {{rodada}}</option>
                     </select>
                   </span>
                 </p>
