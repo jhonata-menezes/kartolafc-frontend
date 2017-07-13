@@ -71,6 +71,12 @@ export default {
 
   created: function () {
     this.getPontuados()
+  },
+
+  watch: {
+    atletaId: function () {
+      this.somaPontuacao()
+    }
   }
 
 }
