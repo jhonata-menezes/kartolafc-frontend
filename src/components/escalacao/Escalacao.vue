@@ -103,7 +103,7 @@
                               </div>
                             </div>
                             <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)">Vender</button>
-                            <button class="button is-info is-small" @click="ativarPopupScouts = true; componentAtletaIdSomenteMobile=timeMontado[i].atleta_id">Scouts</button>
+                            <button class="button is-info is-small is-hidden-desktop" @click="ativarPopupScouts = true; componentAtletaIdSomenteMobile=timeMontado[i].atleta_id">Scouts</button>
                           </p>
                         </div>
                       </div>
