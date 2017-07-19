@@ -299,7 +299,9 @@ export default {
                   this.presidente = t.time.nome
                 }
                 t.pontuacao = 0
-                t.atletas.reduce((a, b) => { if (p.atletas[b.atleta_id]) t.pontuacao += p.atletas[b.atleta_id].pontuacao }, 0)
+                if (t.atletas && t.atletas.length) {
+                  t.atletas.reduce((a, b) => { if (p.atletas[b.atleta_id]) t.pontuacao += p.atletas[b.atleta_id].pontuacao }, 0)
+                }
                 this.$set(this.timesCompleto, t.time.time_id, t)
                 this.$set(this.liga.times[k], 'pontuacao', t.pontuacao)
                 resolve(this.liga.times[k])
@@ -309,7 +311,6 @@ export default {
           }
           Promise.all(promisses).then(times => {
             this.timesSort = times
-            console.log
             this.loader = false
             this.$Progress.finish()
           })

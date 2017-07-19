@@ -6,7 +6,7 @@ let run = false
 
 const getPontuados = (callback, force = false) => {
   if (run === true && !force) {
-    if (pontuados.total_atletas >= 1) {
+    if (pontuados.rodada >= 1) {
       callback(pontuados)
       return
     }
