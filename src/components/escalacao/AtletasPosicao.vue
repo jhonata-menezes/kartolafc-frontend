@@ -114,11 +114,11 @@
                       <div class="campos-descricao-jogo" v-if="partidas[atl.clube_id] && mercado.clubes">
                         <div v-for="a of partidas[atl.clube_id].aproveitamento_mandante" :key="a" :class="statusJogo[a]"></div>
                         <picture>
-                          <img class="image-escudo" :src="mercado.clubes[partidas[atl.clube_id].clube_casa_id].Escudos['45x45']">
+                          <img class="image-escudo" v-if="mercado.clubes[partidas[atl.clube_id].clube_casa_id]" :src="mercado.clubes[partidas[atl.clube_id].clube_casa_id].Escudos['45x45']">
                         </picture>
                         X
                         <picture>
-                          <img class="image-escudo" :src="mercado.clubes[partidas[atl.clube_id].clube_visitante_id].Escudos['45x45']">
+                          <img class="image-escudo" v-if="mercado.clubes[partidas[atl.clube_id].clube_visitante_id]" :src="mercado.clubes[partidas[atl.clube_id].clube_visitante_id].Escudos['45x45']">
                         </picture>
                         <div v-for="a of reverse(partidas[atl.clube_id].aproveitamento_visitante)" :key="a" :class="statusJogo[a]"></div>  
                       </div>

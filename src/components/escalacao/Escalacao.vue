@@ -73,7 +73,7 @@
                           <img :src="timeMontado[i].foto">
                         </picture>
                         <picture class="image is-32x32 escudo-lado">
-                          <img :src="mercado.clubes[timeMontado[i].clube_id].Escudos['45x45']">
+                          <img v-if="mercado.clubes[timeMontado[i].clube_id]" :src="mercado.clubes[timeMontado[i].clube_id].Escudos['45x45']">
                         </picture>
                       </div>
                       <div class="media-content">
@@ -93,11 +93,11 @@
                               <div class="campos-descricao-jogo" v-if="timeMontado[i] && partidas[timeMontado[i].clube_id] && mercado.clubes">
                                 <div v-for="a of partidas[timeMontado[i].clube_id].aproveitamento_mandante" :key="a" :class="statusJogo[a]"></div>
                                 <picture>
-                                  <img class="image-escudo" :src="mercado.clubes[partidas[timeMontado[i].clube_id].clube_casa_id].Escudos['45x45']">
+                                  <img v-if="mercado.clubes[timeMontado[i].clube_id]" class="image-escudo" :src="mercado.clubes[partidas[timeMontado[i].clube_id].clube_casa_id].Escudos['45x45']">
                                 </picture>
                                 X
                                 <picture>
-                                  <img class="image-escudo" :src="mercado.clubes[partidas[timeMontado[i].clube_id].clube_visitante_id].Escudos['45x45']">
+                                  <img class="image-escudo" v-if="mercado.clubes[timeMontado[i].clube_id]" :src="mercado.clubes[partidas[timeMontado[i].clube_id].clube_visitante_id].Escudos['45x45']">
                                 </picture>
                                 <div v-for="a of reverse(partidas[timeMontado[i].clube_id].aproveitamento_visitante)" :key="a" :class="statusJogo[a]"></div>  
                               </div>
