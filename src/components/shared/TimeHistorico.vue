@@ -7,7 +7,7 @@
         </div>
         <div v-else>
           <div v-if="ativarGrafico" class="container-canvas">
-            <chart :chartData="datasets" :options="options" :height="300" :width="500"></chart>
+            <chart :chartData="datasets" :options="options" :height="300" :width="1000"></chart>
           </div>
           <hr class="hr">
           <div>
