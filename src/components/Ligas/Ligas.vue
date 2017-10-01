@@ -52,7 +52,7 @@
                       <div class="media-content">
                         <p class="title is-6">{{ l.liga.nome }}</p>
                         <div class="subtitle is-6">
-                          <p>Total de times: {{ l.liga.total_times_liga }}</p>
+                          <!-- <p>Total de times: {{ l.liga.total_times_liga }}</p> -->
                           <div class="block">
                             <router-link class="button is-info is-small" :to="{name:'Liga', params: { slug: l.liga.slug }}">Ver Liga</router-link>
                             <a class="button is-danger is-small" @click="removerLiga(k)">Remover</a>
@@ -120,7 +120,7 @@ export default {
       this.loader = true
       http.get('/liga/' + liga.slug + '/' + 1).then(r => {
         if (r.data) {
-          if (r.data.liga.total_times_liga === 0) {
+          if (r.data.times.length === 0) {
             this.fimPesquisaComErro('Nenhum time nesta liga')
             return
           }
