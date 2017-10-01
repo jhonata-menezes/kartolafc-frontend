@@ -50,9 +50,9 @@
                         </figure>
                       </div>
                       <div class="media-content">
-                        <p class="title is-6">{{ l.liga.nome }}</p>
+                        <p class="title is-6"><b>{{ l.liga.nome }}</b></p>
                         <div class="subtitle is-6">
-                          <!-- <p>Total de times: {{ l.liga.total_times_liga }}</p> -->
+                          <p>{{ l.liga.descricao }}</p>
                           <div class="block">
                             <router-link class="button is-info is-small" :to="{name:'Liga', params: { slug: l.liga.slug }}">Ver Liga</router-link>
                             <a class="button is-danger is-small" @click="removerLiga(k)">Remover</a>
