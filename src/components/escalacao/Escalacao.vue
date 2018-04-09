@@ -127,7 +127,7 @@
                 </div>
               </transition>
               <transition name="bounce" mode="out-in">
-                <div v-if="ativarComponente">
+                <div v-if="ativarComponente && timeMontado.some(e => e === undefined)">
                   <component :is="componentAtletaPosicao" :atletas="atletasComponente" 
                   @update:selecionado="atl => {respostaComponente(atl)}" :timeMontado="timeMontado" :esquema="time.esquema_id"
                   @update:posicao="p => {pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[p], p)}" 
