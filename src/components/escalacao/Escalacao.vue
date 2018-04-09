@@ -91,7 +91,7 @@
                             <div class="campos-descricao-atleta">Jogos <br><span class="has-text-success">{{timeMontado[i].jogos_num}}</span></div>
                             <div class="campos-descricao-atleta campos-descricao-atleta-jogos">
                               <div class="campos-descricao-jogo" v-if="timeMontado[i] && partidas[timeMontado[i].clube_id] && mercado.clubes">
-                                <div v-for="a of partidas[timeMontado[i].clube_id].aproveitamento_mandante" :key="a" :class="statusJogo[a]"></div>
+                                <div v-for="a of partidas[timeMontado[i].clube_id].aproveitamento_mandante" :key="Math.random()" :class="statusJogo[a]"></div>
                                 <picture>
                                   <img v-if="mercado.clubes[timeMontado[i].clube_id]" class="image-escudo" :src="mercado.clubes[partidas[timeMontado[i].clube_id].clube_casa_id].Escudos['45x45']">
                                 </picture>
@@ -99,7 +99,7 @@
                                 <picture>
                                   <img class="image-escudo" v-if="mercado.clubes[timeMontado[i].clube_id]" :src="mercado.clubes[partidas[timeMontado[i].clube_id].clube_visitante_id].Escudos['45x45']">
                                 </picture>
-                                <div v-for="a of reverse(partidas[timeMontado[i].clube_id].aproveitamento_visitante)" :key="a" :class="statusJogo[a]"></div>  
+                                <div v-for="a of reverse(partidas[timeMontado[i].clube_id].aproveitamento_visitante)" :key="Math.random()" :class="statusJogo[a]"></div>  
                               </div>
                             </div>
                             <button class="button is-danger is-small" @click="$set(timeMontado, i, undefined)">Vender</button>
@@ -127,7 +127,7 @@
                 </div>
               </transition>
               <transition name="bounce" mode="out-in">
-                <div v-if="ativarComponente && timeMontado.some(e => e === undefined)">
+                <div v-if="ativarComponente">
                   <component :is="componentAtletaPosicao" :atletas="atletasComponente" 
                   @update:selecionado="atl => {respostaComponente(atl)}" :timeMontado="timeMontado" :esquema="time.esquema_id"
                   @update:posicao="p => {pesquisarAtleta($kartolafc.esquemas.esquemas[time.esquema_id].posicao[p], p)}" 

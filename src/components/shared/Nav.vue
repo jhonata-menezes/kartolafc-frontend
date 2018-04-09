@@ -20,7 +20,7 @@
                   <div class="navbar-dropdown">
                     <router-link class="navbar-item" :class="this.$route.path === '/times' ? 'is-active is-active-color': ''" to="/times"><span class="icon"><i class="fa fa-shield"></i></span>Times</router-link>
                     <router-link class="navbar-item " :class="this.$route.path === '/ligas' ? 'is-active is-active-color': ''"to="/ligas"><span class="icon"><i class="fa fa-users"></i></span>Ligas</router-link>
-                    <router-link class="navbar-item " :class="this.$route.path === '/escalacao' ? 'is-active is-active-color': ''"to="/escalacao"><span class="icon"><i class="fa fa-user"></i></span>Escalação</router-link>
+                    <!-- <router-link class="navbar-item " :class="this.$route.path === '/escalacao' ? 'is-active is-active-color': ''"to="/escalacao"><span class="icon"><i class="fa fa-user"></i></span>Escalação</router-link> -->
                   </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable">

@@ -112,7 +112,7 @@
                     <div class="campos-descricao-atleta">Jogos <br><span class="has-text-success">{{atl.jogos_num}}</span></div>
                     <div class="campos-descricao-atleta campos-descricao-atleta-jogos">
                       <div class="campos-descricao-jogo" v-if="partidas[atl.clube_id] && mercado.clubes">
-                        <div v-for="a of partidas[atl.clube_id].aproveitamento_mandante" :key="a" :class="statusJogo[a]"></div>
+                        <div v-for="a of partidas[atl.clube_id].aproveitamento_mandante" :key="atl.atleta_id + Math.random()" :class="statusJogo[a]"></div>
                         <picture>
                           <img class="image-escudo" v-if="mercado.clubes[partidas[atl.clube_id].clube_casa_id]" :src="mercado.clubes[partidas[atl.clube_id].clube_casa_id].Escudos['45x45']">
                         </picture>
@@ -120,7 +120,7 @@
                         <picture>
                           <img class="image-escudo" v-if="mercado.clubes[partidas[atl.clube_id].clube_visitante_id]" :src="mercado.clubes[partidas[atl.clube_id].clube_visitante_id].Escudos['45x45']">
                         </picture>
-                        <div v-for="a of reverse(partidas[atl.clube_id].aproveitamento_visitante)" :key="a" :class="statusJogo[a]"></div>  
+                        <div v-for="a of reverse(partidas[atl.clube_id].aproveitamento_visitante)" :key="atl.atleta_id+Math.random()" :class="statusJogo[a]"></div>  
                       </div>
                     </div>
                     <button v-if="atletasEscalados[atl.atleta_id]" class="button is-danger is-small" @click="removeAtleta(atl)">Vender</button>
@@ -253,7 +253,6 @@ export default {
     },
 
     posicaoId: function (n, old) {
-      console.log(n, old)
       if (n !== old) {
         this.scrollTop()
       }
