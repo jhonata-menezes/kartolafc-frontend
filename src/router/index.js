@@ -13,7 +13,7 @@ import Escalacao from '@/components/escalacao/Escalacao'
 
 Vue.use(Router)
 
-export default new Router({
+let route = new Router({
   routes: [{
     path: '/',
     name: 'Home',
@@ -57,3 +57,14 @@ export default new Router({
   }]
   // mode: 'history'
 })
+
+// passando parametros de alteracao do layout
+route.beforeEach((to, from, next) => {
+  if (Object.keys(from.query).length && JSON.stringify(from.query) !== JSON.stringify(to.query)) {
+    next({name: to.name, query: from.query, hash: to.hash})
+  } else {
+    next()
+  }
+})
+
+export default route

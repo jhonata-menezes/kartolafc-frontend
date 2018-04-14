@@ -1,6 +1,6 @@
 <template>
   <div>
-  <section class="hero is-success is-small">
+  <section class="hero is-small" :class="[$route.query.color ? $route.query.color : 'is-success']">
     <div class="hero-body">
       <div class="container has-text-centered">
         <h1 class="title">
