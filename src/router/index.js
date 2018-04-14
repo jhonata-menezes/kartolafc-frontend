@@ -61,7 +61,7 @@ let route = new Router({
 // passando parametros de alteracao do layout
 route.beforeEach((to, from, next) => {
   if (Object.keys(from.query).length && JSON.stringify(from.query) !== JSON.stringify(to.query)) {
-    next({name: to.name, query: from.query, hash: to.hash})
+    next({name: to.name, query: from.query, hash: to.hash, params: to.params})
   } else {
     next()
   }
