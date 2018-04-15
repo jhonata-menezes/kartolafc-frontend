@@ -217,7 +217,9 @@ export default {
       })
       this.$kartolafc.timeHistorico(this.timeId, h => {
         this.historico = h
-        this.mountGraficoTime()
+        if (Object.keys(h).length > 0) {
+          this.mountGraficoTime()
+        }
         this.loader = false
       })
     },
