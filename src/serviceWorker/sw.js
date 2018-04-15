@@ -2,6 +2,8 @@ import c from './../services/configuracao'
 import db from './../dexie'
 'use strict'
 
+self.addEventListener('fetch', function(event) {})
+
 self.addEventListener('push', function (event) {
   const pushNotification = (n) => {
     const title = n.title
@@ -26,7 +28,7 @@ self.addEventListener('push', function (event) {
     }
     event.waitUntil(self.registration.showNotification(title, options))
   }
-
+  
   let n = event.data.json()
   if (Notification.permission !== 'granted') {
     return
