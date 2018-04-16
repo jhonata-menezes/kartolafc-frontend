@@ -184,7 +184,7 @@ export default {
       }
       time.atletas.forEach(function (atleta) {
         if (self.pontuados.atletas[atleta.atleta_id]) {
-          total += self.pontuados.atletas[atleta.atleta_id].pontuacao
+          total += self.pontuados.atletas[atleta.atleta_id].pontuacao * (atleta.atleta_id === time.capitao_id ? 2 : 1)
         }
       })
       return total.toFixed(2)

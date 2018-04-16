@@ -8,7 +8,7 @@ const getTime = function (timeId, callback, favorito = false) {
       if (item) {
         if (item.status_mercado === s.status_mercado && item.rodada_atual === s.rodada_atual) {
           // alguns times pode estar com nome vazio
-          if (item.time.nome === undefined || item.time.nome === '') {
+          if (item.time.nome === undefined || item.time.nome === '' || item.capitao_id === undefined) {
             db.meusTimes.delete(timeId).then(() => {
               getTime(timeId, callback)
             })

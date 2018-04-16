@@ -1,7 +1,7 @@
 const scouts = {
   RB: {
     nome: 'Roubada de bola',
-    pontos: 1.7
+    pontos: 1.5
   },
   FC: {
     nome: 'Falta cometida',
@@ -9,7 +9,7 @@ const scouts = {
   },
   GC: {
     nome: 'Gol contra',
-    pontos: -6.0
+    pontos: -5.0
   },
   CA: {
     nome: 'Cartão amarelo',
@@ -29,15 +29,15 @@ const scouts = {
   },
   FT: {
     nome: 'Finalização na trave',
-    pontos: 3.5
+    pontos: 3.0
   },
   FD: {
     nome: 'Finalização defendida',
-    pontos: 1.0
+    pontos: 1.2
   },
   FF: {
     nome: 'Finalização para fora',
-    pontos: 0.7
+    pontos: 0.8
   },
   G: {
     nome: 'Gols',
@@ -49,7 +49,7 @@ const scouts = {
   },
   PP: {
     nome: 'Penalti perdido',
-    pontos: -3.5
+    pontos: -4.0
   },
   A: {
     nome: 'Assistência',

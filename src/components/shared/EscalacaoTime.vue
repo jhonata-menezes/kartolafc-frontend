@@ -63,10 +63,11 @@
                 <div class="media-content">
                   <div class="content">
                     <p>
+                      <span v-if="t.atleta_id === time.capitao_id" class="tag is-small is-warning" title="Capitão"><b>C</b></span>
                       <strong>{{ t.apelido }}</strong><small> {{ posicao(t) }}</small>
                       <strong class="is-pulled-right is-success" v-if="atletasPontuados.atletas[t.atleta_id]" :class="atletasPontuados.atletas[t.atleta_id].pontuacao < 0 ? 'has-text-danger': 'has-text-success'">
-                        {{ atletasPontuados.atletas[t.atleta_id].pontuacao }}</strong>
-                      <strong class="is-pulled-right is-success" v-else="">0</strong>
+                        {{ atletasPontuados.atletas[t.atleta_id].pontuacao * (t.atleta_id === time.capitao_id ? 2 : 1) }}</strong>
+                      <strong class="is-pulled-right is-success" v-else>0</strong>
                     </p>
                   </div>
                 </div>
@@ -141,9 +142,9 @@ export default {
 
     somaPontuacao: function (time) {
       let total = 0
-      for (let k in time.atletas) {
-        if (this.atletasPontuados.atletas[time.atletas[k].atleta_id]) {
-          total += this.atletasPontuados.atletas[time.atletas[k].atleta_id].pontuacao
+      for (let k of time.atletas) {
+        if (this.atletasPontuados.atletas[k.atleta_id]) {
+          total += this.atletasPontuados.atletas[k.atleta_id].pontuacao * (k.atleta_id === this.time.capitao_id ? 2 : 1)
         }
       }
       return total.toFixed(2)

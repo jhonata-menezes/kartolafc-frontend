@@ -300,7 +300,7 @@ export default {
                 }
                 t.pontuacao = 0
                 if (t.atletas && t.atletas.length) {
-                  t.atletas.reduce((a, b) => { if (p.atletas[b.atleta_id]) t.pontuacao += p.atletas[b.atleta_id].pontuacao }, 0)
+                  t.atletas.reduce((a, b) => { if (p.atletas[b.atleta_id]) t.pontuacao += p.atletas[b.atleta_id].pontuacao * (t.capitao_id === b.atleta_id ? 2 : 1) }, 0)
                 }
                 this.$set(this.timesCompleto, t.time.time_id, t)
                 this.$set(this.liga.times[k], 'pontuacao', t.pontuacao)
