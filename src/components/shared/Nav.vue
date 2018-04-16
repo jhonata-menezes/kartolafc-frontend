@@ -2,7 +2,7 @@
     <div>
         <nav class="navbar has-shadow-nav">
             <div class="navbar-brand">
-              <router-link class="navbar-item" to="/"><img class='image' src="/static/img/logo.png" alt="KartolaFC logo">&nbspartolaFC</router-link>
+              <router-link v-if="!$route.query.logo"  class="navbar-item" to="/"><img class='image' src="/static/img/logo.png" alt="KartolaFC logo">&nbspartolaFC</router-link>
               <div class="navbar-burger burger" data-target="navMenu" :class="menuIsActive ? 'is-active' : ''" @click="menuIsActive = !menuIsActive">
                 <span></span>
                 <span></span>
