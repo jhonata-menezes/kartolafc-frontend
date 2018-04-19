@@ -35,7 +35,7 @@
                   </p>
                   <p class="control has-icons-right">
                     <span class="select is-small">
-                      <select v-model="esquema">
+                      <select v-model.number="esquema">
                         <option v-for="(t, id) of esquemasTipos" :value="id" :key="id">{{t}}</option>
                       </select>
                     </span>
@@ -124,7 +124,7 @@
                       <div class="select is-medium is-primary">
                         <select v-model="capitaoId">
                           <option value=0>Selecione o Capitão</option>
-                          <option v-for="atleta of timeMontado.filter(a => a.posicao_id !== 6)" :key="atleta.atleta_id" :value="atleta.atleta_id">{{atleta.apelido}}</option>
+                          <option v-for="atleta of timeMontado.filter(a => a && a.posicao_id !== 6)" :key="atleta.atleta_id" :value="atleta.atleta_id">{{atleta.apelido}}</option>
                         </select>
                       </div>
                     </div>
@@ -441,7 +441,8 @@ export default {
       for (let a of n.atletas) {
         this.timeMontado.push(a)
       }
-      this.esquema = this.time.esquema_id
+      this.esquema = this.time.time.esquema_id
+      this.capitaoId = this.time.capitao_id
     },
     timeMontado: function (n) {
       let montado = this.timeMontado.some(e => e === undefined)
