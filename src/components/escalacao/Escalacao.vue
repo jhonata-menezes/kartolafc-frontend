@@ -120,8 +120,18 @@
                     </div>
                   </div>
                   <div class="field">
+                    <div class="control">
+                      <div class="select is-medium is-primary">
+                        <select v-model="capitaoId">
+                          <option value=0>Selecione o Capitão</option>
+                          <option v-for="atleta of timeMontado.filter(a => a.posicao_id !== 6)" :key="atleta.atleta_id" :value="atleta.atleta_id">{{atleta.apelido}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field">
                     <p class="control">
-                      <button ref="btnEscalar" class="button is-success is-large button-expand" :class="{'is-loading': salvandoTime}" :disabled="timeMontado.some(e => e === undefined)" @click="salvarTime()">Escalar Time</button>
+                      <button ref="btnEscalar" class="button is-success is-large button-expand" :class="{'is-loading': salvandoTime}" :disabled="timeMontado.some(e => e === undefined) || capitaoId === 0" @click="salvarTime()">Escalar Time</button>
                     </p>
                   </div>
                 </div>
@@ -225,6 +235,7 @@ export default {
       times: [],
       time: {},
       timeMontado: [],
+      capitaoId: 0,
       mercado: {},
       mercadoPorAltetaId: {},
       status: {},
@@ -349,11 +360,12 @@ export default {
     salvarTime: function () {
       this.salvandoTime = true
       let time = {}
-      time.atleta = []
+      time.atletas = []
       for (let t of this.timeMontado) {
-        time.atleta.push(t.atleta_id)
+        time.atletas.push(t.atleta_id)
       }
       time.esquema = this.time.esquema_id
+      time.capitao = this.capitaoId
       http.post('/time/salvar', time, {headers: {token: this.time.token}}).then(r => {
         if (r.data.mensagem) {
           this.$kartolafc.toast.info(r.data.mensagem)
