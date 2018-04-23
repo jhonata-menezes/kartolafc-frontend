@@ -3,7 +3,7 @@ import {apiUrl} from './config'
 
 export const http = axios.create({
   baseURL: apiUrl,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
       //
   }
