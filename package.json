@@ -24,6 +24,7 @@
     "moment": "^2.22.0",
     "pusher-js": "^4.1.0",
     "pwa-manifest-webpack-plugin": "^1.0.3",
+    "raven-js": "^3.24.2",
     "serviceworker-webpack-plugin": "^0.2.2",
     "smoothscroll-polyfill": "^0.3.5",
     "vee-validate": "^2.0.0-rc.6",

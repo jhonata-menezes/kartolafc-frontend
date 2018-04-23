@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueAnalytics from 'vue-analytics'
-import {analytics} from './config'
+import {analytics, env} from './config'
 import kartolafc from './pluginKartolafc'
 import VueProgressBar from 'vue-progressbar'
 import 'bulma/css/bulma.css'
@@ -14,6 +14,15 @@ import subscribeNotification from './serviceWorker/register'
 import VueClipboards from 'vue-clipboards'
 import VeeValidate from 'vee-validate'
 import Smoothscrool from 'smoothscroll-polyfill'
+import Raven from 'raven-js'
+import RavenVue from 'raven-js/plugins/vue'
+
+if (env.NODE_ENV === 'production') {
+  Raven
+      .config('https://68106bd6b6f341308f0eda7926e0ab17@sentry.io/1194388')
+      .addPlugin(RavenVue, Vue)
+      .install()
+}
 
 Smoothscrool.polyfill()
 Vue.use(VeeValidate)
