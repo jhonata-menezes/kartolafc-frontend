@@ -56,15 +56,15 @@
             <div v-for="t of time.atletas">
               <article class="media" @click="scout.atletaId=t.atleta_id; scout.verScouts=true">
                 <figure class="media-left">
-                  <p class="image is-16x16">
+                  <p class="image is-is-24x24">
                     <img :src="atletasPontuados.clubes[t.clube_id].Escudos['30x30']">
                   </p>
                 </figure>
                 <div class="media-content">
                   <div class="content">
                     <p>
-                      <span v-if="t.atleta_id === time.capitao_id" class="tag is-small is-warning" title="Capitão"><b>C</b></span>
                       <strong>{{ t.apelido }}</strong><small> {{ posicao(t) }}</small>
+                                            <span v-if="t.atleta_id === time.capitao_id" class="tag is-small is-warning" title="Capitão"><b>C</b></span>
                       <strong class="is-pulled-right is-success" v-if="atletasPontuados.atletas[t.atleta_id]" :class="atletasPontuados.atletas[t.atleta_id].pontuacao < 0 ? 'has-text-danger': 'has-text-success'">
                         {{ atletasPontuados.atletas[t.atleta_id].pontuacao * (t.atleta_id === time.capitao_id ? 2 : 1) }}</strong>
                       <strong class="is-pulled-right is-success" v-else>0</strong>
@@ -214,8 +214,20 @@ export default {
 }
 
 .hr-atleta {
-  margin: 0.1rem 0.1rem
+  margin: 0.4rem 0.4rem
 }
+
+@media screen and (max-width: 768px) {
+  .hr-atleta {
+    margin: 0.1rem 0.1rem
+  }
+
+  .modal-card-head {
+    padding: 12px;
+    padding-bottom: 2px;
+  }
+}
+
 .color-header {
   background-color: rgb(148, 239, 133);
 }
