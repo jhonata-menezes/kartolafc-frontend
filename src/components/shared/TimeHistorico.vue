@@ -7,7 +7,7 @@
         </div>
         <div v-else>
           <div v-if="ativarGrafico" class="container-canvas">
-            <chart :chartData="datasets" :options="options" :height="300" :width="1000"></chart>
+            <chart :chartData="datasets" :options="options" :height="300" :width="(status.rodada_atual - 1) * 100"></chart>
           </div>
           <hr class="hr">
           <div>
@@ -122,6 +122,7 @@ export default {
 
   data () {
     return {
+      status: {},
       loader: false,
       pontuados: {},
       historico: [],
@@ -210,6 +211,9 @@ export default {
 
   methods: {
     getHistorico: function () {
+      this.$kartolafc.status.getStatus(s => {
+        this.status = s
+      })
       this.loader = true
       this.ativarGrafico = false
       this.$kartolafc.pontuados.getPontuados(p => {
