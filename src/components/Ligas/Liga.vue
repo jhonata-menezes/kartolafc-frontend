@@ -84,17 +84,17 @@
             </div>
             <div class="media">
               <div class="media-content">
-                <div v-for="(time, k) of timesComputed" class="">
+                <div v-for="(time, k) of timesComputed" class="k-center">
                   <p @click="verTime(time)">
-                    <small class="is-pulled-left">{{ k+1 }}°&nbsp</small>
-                    <picture class="image is-24x24 is-pulled-left">
+                    <b class="text-default is-pulled-left">{{ k+1 }}°&nbsp</b>
+                    <picture class="image is-32x32 is-pulled-left">
                       <img :src="time.url_escudo_svg" @error="time.url_escudo_svg='/static/img/icon.png'">
                     </picture>
-                    <span class="">{{time.nome.substring(0,15)}}</span>
-                    <b><small v-if="!timesPontuacao.somarPontuacao && time.pontuacao !== undefined" class="is-6 is-pulled-right">{{ time.pontuacao.toFixed(2) }} &nbsp</small></b>
-                    <small class="is-6 is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{time.pontos[timesPontuacao.nome].toFixed(2)}} &nbsp</small>
-                    <b><small class="is-6 is-pulled-right" v-if="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{ (time.pontos[timesPontuacao.nome] + time.pontuacao).toFixed(2) }} &nbsp</small></b>
-                    <small class="is-6 is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome === 'patrimonio'">$ {{time.patrimonio.toFixed(2)}} &nbsp</small>
+                    <span class="subtitle is-5">{{time.nome.substring(0,15)}}</span>
+                    <b><small v-if="!timesPontuacao.somarPontuacao && time.pontuacao !== undefined" class="text-default is-pulled-right">{{ time.pontuacao.toFixed(2) }} &nbsp</small></b>
+                    <small class="text-default is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{time.pontos[timesPontuacao.nome].toFixed(2)}} &nbsp</small>
+                    <b><small class="text-default is-pulled-right" v-if="timesPontuacao.somarPontuacao && timesPontuacao.nome !== 'padrao' && timesPontuacao.nome !== 'patrimonio'">{{ (time.pontos[timesPontuacao.nome] + time.pontuacao).toFixed(2) }} &nbsp</small></b>
+                    <small class="text-default is-pulled-right" v-if="!timesPontuacao.somarPontuacao && timesPontuacao.nome === 'patrimonio'">$ {{time.patrimonio.toFixed(2)}} &nbsp</small>
                   </p>
 
                   <hr class="hr">
@@ -380,10 +380,29 @@ export default {
 
 <style scoped>
 .hr {
-  margin: 0.4rem 0.4rem;
+  margin: 0.6rem 0.6rem 0.6rem;
   clear: both;
   padding-top: 1px;
-  margin-bottom: 1px;
+  padding-bottom: 1px;
+}
+
+.text-default {
+  font-size: 1.2rem;
+}
+
+.k-center {
+  vertical-align: baseline;
+}
+
+@media screen and (max-width: 768px){ 
+  .hr {
+    margin: 0.4rem 0.4rem;
+    margin-bottom: 0.4rem;
+    clear: both;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin-top: 0.4rem;
+  }
 }
 .component-fade-enter-active, .component-fade-leave-active {
   transition: opacity .3s ease;
