@@ -18,6 +18,14 @@ const getPontuados = (callback, force = false) => {
   http.get('/atletas/pontuados').then(r => {
     pontuados = r.data
 
+    if (pontuados && pontuados.atletas) {
+      for (let i in pontuados.atletas) {
+        if (pontuados.atletas[i].clube_id === 0) {
+          delete pontuados.atletas[i]
+        }
+      }
+    }
+
     while (queue.length) {
       queue.shift()(pontuados)
     }
