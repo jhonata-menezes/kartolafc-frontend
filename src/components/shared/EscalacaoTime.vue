@@ -217,6 +217,10 @@ export default {
   margin: 0.4rem 0.4rem
 }
 
+.modal-card-head {
+  z-index: 2;
+}
+
 @media screen and (max-width: 768px) {
   .hr-atleta {
     margin: 0.1rem 0.1rem
