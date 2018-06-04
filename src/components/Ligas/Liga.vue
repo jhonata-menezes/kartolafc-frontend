@@ -271,11 +271,28 @@ export default {
       let options = {'async': false, 'logging': true, 'allowTaint': false, 'useCORS': true}
       html2canvas(document.body, options).then(canvas => {
         // document.body.appendChild(canvas)
-        let img = canvas.toDataURL('image/png', 1.0).replace('image/png', 'image/octet-stream')
-        this.$refs.screen.href = img
+        let img = canvas.toDataURL('image/png', 1.0).slice(22)
+        let blob = this.b64toBlob(img, 'image/png')
+        this.$refs.screen.href = window.URL.createObjectURL(blob)
         this.$refs.screen.click()
         this.salvandoImagem = false
       })
+    },
+    // example: https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+    b64toBlob: function (b64Data, contentType = '', sliceSize = 512) {
+      const byteCharacters = atob(b64Data)
+      const byteArrays = []
+      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize)
+        const byteNumbers = new Array(slice.length)
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i)
+        }
+        const byteArray = new Uint8Array(byteNumbers)
+        byteArrays.push(byteArray)
+      }
+      const blob = new Blob(byteArrays, {type: contentType})
+      return blob
     },
     getLiga: function () {
       this.slug = this.$route.params.slug
