@@ -79,7 +79,7 @@
                 <button class="tag button is-warning is-small" @click="loader = true; getPontuados(true)">Atualizar</button>
               </p>
               <p class="control">
-                <a class="tag button is-black is-small" @click="screenShot(this)" :class="{'is-loading': salvandoImagem}">Salvar como imagem</a>
+                <a class="tag button is-black is-small" @click="screenShot(this)" :class="{'is-loading': salvandoImagem}">Tirar foto</a>
                 <a ref="screen" :download="slug + '.png'"></a>
               </p>
             </div>
