@@ -20,6 +20,7 @@
     "clipboard": "^1.7.1",
     "dexie": "^2.0.3",
     "font-awesome": "^4.7.0",
+    "html2canvas": "^1.0.0-alpha.12",
     "mini-toastr": "^0.6.5",
     "moment": "^2.22.1",
     "pusher-js": "^4.1.0",

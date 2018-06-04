@@ -9,7 +9,7 @@
                 <div class="media">
                   <div class="media-right">
                     <picture class="image is-32x32">
-                      <img :src="liga.liga.mata_mata ? liga.liga.url_trofeu_svg : liga.liga.url_flamula_svg" @error="liga.liga.url_flamula_svg='/static/img/icon.png'">
+                      <img crossOrigin="anonymous" :src="'https://api.kartolafc.com.br/proxy?url=' + liga.liga.mata_mata ? liga.liga.url_trofeu_svg : liga.liga.url_flamula_svg" @error="liga.liga.url_flamula_svg='/static/img/icon.png'">
                     </picture>
                   </div>
                   <div class="media-content">
@@ -78,6 +78,10 @@
               <p class="control">
                 <button class="tag button is-warning is-small" @click="loader = true; getPontuados(true)">Atualizar</button>
               </p>
+              <p class="control">
+                <a class="tag button is-black is-small" @click="screenShot(this)" :class="{'is-loading': salvandoImagem}">Salvar como imagem</a>
+                <a ref="screen" :download="slug + '.png'"></a>
+              </p>
             </div>
             <div class="content has-text-centered">
               <p class="is-6 is-bold">Clique no time para ver a escalação</p>
@@ -88,7 +92,7 @@
                   <p @click="verTime(time)">
                     <b class="text-default is-pulled-left">{{ k+1 }}°&nbsp</b>
                     <picture class="image is-32x32 is-pulled-left">
-                      <img :src="time.url_escudo_svg" @error="time.url_escudo_svg='/static/img/icon.png'">
+                      <img crossOrigin="anonymous" :src="'https://api.kartolafc.com.br/proxy?url=' + time.url_escudo_svg" @error="time.url_escudo_svg='/static/img/icon.png'">
                     </picture>
                     <span class="subtitle is-5">{{time.nome.substring(0,15)}}</span>
                     <b><small v-if="!timesPontuacao.somarPontuacao && time.pontuacao !== undefined" class="text-default is-pulled-right">{{ time.pontuacao.toFixed(2) }} &nbsp</small></b>
@@ -112,7 +116,7 @@
                 <button class="tag button is-warning is-small" @click="loader = true; getPontuados(true)">Atualizar</button>
               </p>
             </div>
-            <div>
+            <div ref="bod">
               <div v-if="liga.liga && liga.liga.podio">
                 <br>
                 <div class="columns">
@@ -121,11 +125,11 @@
                       <p class="title is-4 is-bold-2">{{(i+1)}}°</p>
                       <div class="media-left">
                         <picture class="image is-48x48">
-                          <img :src="time.url_escudo_svg">
+                          <img crossOrigin="anonymous" :src="'https://api.kartolafc.com.br/proxy?url=' + time.url_escudo_svg">
                         </picture>
                       </div>
                       <picture class="image is-24x24 is-left-image-perfil is-hidden-touch">
-                        <img class="image-circle" :src="time.foto_perfil">
+                        <img class="image-circle" crossOrigin="anonymous" :src="'https://api.kartolafc.com.br/proxy?url=' + time.foto_perfil">
                       </picture>&nbsp
                       <div class="media-content">
                         <p><b>{{time.nome.charAt(0).toUpperCase()+time.nome.slice(1)}}</b></p>
@@ -157,7 +161,7 @@
                         </div>
                         <div class="">
                           <picture class="image image-escudo-esquerda">
-                            <img :src="timesCompleto[chave.time_mandante_id].time.url_escudo_svg">
+                            <img crossOrigin="anonymous" :src="'https://api.kartolafc.com.br/proxy?url=' + timesCompleto[chave.time_mandante_id].time.url_escudo_svg">
                           </picture>
                         </div>
                         <div class="placar-esquerdo">
@@ -185,7 +189,7 @@
                         </div>
                         <div class="">
                           <picture class="image image-escudo-direita">
-                            <img :src="timesCompleto[chave.time_visitante_id].time.url_escudo_svg">
+                            <img crossOrigin="anonymous" :src="'https://api.kartolafc.com.br/proxy?url=' + timesCompleto[chave.time_visitante_id].time.url_escudo_svg">
                           </picture>
                         </div>
                         <div class="media-content">
@@ -220,6 +224,7 @@
 
 <script>
 import EscalacaoTime from './../shared/EscalacaoTime'
+import html2canvas from 'html2canvas'
 
 export default {
 
@@ -254,11 +259,24 @@ export default {
         'O': 'Oitavas de Final',
         'P': 'Primeira Fase',
         'T': '3° Lugar'
-      }
+      },
+
+      salvandoImagem: false
     }
   },
 
   methods: {
+    screenShot: function () {
+      this.salvandoImagem = true
+      let options = {'async': false, 'logging': true, 'allowTaint': false, 'useCORS': true}
+      html2canvas(document.body, options).then(canvas => {
+        // document.body.appendChild(canvas)
+        let img = canvas.toDataURL('image/png', 1.0).replace('image/png', 'image/octet-stream')
+        this.$refs.screen.href = img
+        this.$refs.screen.click()
+        this.salvandoImagem = false
+      })
+    },
     getLiga: function () {
       this.slug = this.$route.params.slug
       this.getLigaRequest()
