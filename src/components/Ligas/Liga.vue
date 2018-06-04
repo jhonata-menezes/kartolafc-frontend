@@ -80,7 +80,7 @@
               </p>
               <p class="control">
                 <a class="tag button is-black is-small" @click="screenShot(this)" :class="{'is-loading': salvandoImagem}">Tirar foto</a>
-                <a ref="screen" :download="slug + '.png'"></a>
+                <a ref="screen" :download="slug + '.jpeg'"></a>
               </p>
             </div>
             <div class="content has-text-centered">
@@ -271,8 +271,8 @@ export default {
       let options = {'async': false, 'logging': true, 'allowTaint': false, 'useCORS': true}
       html2canvas(document.body, options).then(canvas => {
         // document.body.appendChild(canvas)
-        let img = canvas.toDataURL('image/png', 1.0).slice(22)
-        let blob = this.b64toBlob(img, 'image/png')
+        let img = canvas.toDataURL('image/jpeg', 0.1).slice(23)
+        let blob = this.b64toBlob(img, 'image/jpeg')
         this.$refs.screen.href = window.URL.createObjectURL(blob)
         this.$refs.screen.click()
         this.salvandoImagem = false
