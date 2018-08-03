@@ -1,3 +1,5 @@
+ID = "kartolafc"
+
 [build]
   base    = ""
   publish = "dist"
