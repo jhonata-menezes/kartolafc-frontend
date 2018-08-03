@@ -56,7 +56,7 @@
             <div v-for="t of time.atletas">
               <article class="media" @click="scout.atletaId=t.atleta_id; scout.verScouts=true">
                 <figure class="media-left">
-                  <p class="image is-is-24x24">
+                  <p class="image is-is-24x24" v-if="atletasPontuados.clubes[t.clube_id]">
                     <img :src="atletasPontuados.clubes[t.clube_id].Escudos['30x30']">
                   </p>
                 </figure>
