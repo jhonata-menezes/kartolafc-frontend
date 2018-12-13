@@ -3,4 +3,5 @@ ID = "kartolafc"
 [build]
   base    = ""
   publish = "dist"
-  command = "npm i && npm run build"
+  #command = "npm i && npm run build"
+  command = "cp index2.html dist/index.html"
